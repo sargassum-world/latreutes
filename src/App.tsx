@@ -1,5 +1,4 @@
 import React from 'react'
-import { readDir } from '@tauri-apps/api/fs'
 
 import './App.css'
 
