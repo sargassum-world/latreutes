@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "latreutes"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
+description = "Desktop client for browsing and connecting to Sargassum networks"
+authors = ["Ethan Li"]
+license = "Apache-2.0 OR BlueOak-1.0.0"
 repository = ""
-default-run = "app"
+default-run = "latreutes"
 edition = "2018"
 build = "src/build.rs"
 
@@ -22,3 +22,10 @@ tauri = { version = "1.0.0-beta.6", features = ["api-all"] }
 [features]
 default = [ "custom-protocol" ]
 custom-protocol = [ "tauri/custom-protocol" ]
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+incremental = false
+opt-level = "s"
