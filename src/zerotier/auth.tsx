@@ -2,14 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { createDir, readTextFile, writeFile } from '@tauri-apps/api/fs'
 import { appDir } from '@tauri-apps/api/path'
 
-function Auth() {
+interface Props {
+  authToken: string
+  setAuthToken: (authToken: string) => void
+}
+
+function Auth({authToken, setAuthToken}: Props) {
   const [configDir, setConfigDir] = useState('')
   const [authTokenFile, setAuthTokenFile] = useState('')
-  const [authToken, setAuthToken] = useState('')
   const [savedAuthToken, setSavedAuthToken] = useState('')
-  const [tokenStatus, setTokenStatus] = useState('Loading token...')
+  const [tokenStatus, setTokenStatus] = useState('Loading authtoken...')
+
   useEffect(() => {
-    if (authTokenFile) {
+    if (authToken) {
+      setTokenStatus('Using loaded authtoken.')
       return
     }
 
@@ -20,20 +26,20 @@ function Auth() {
       const authTokenFile = configDir + 'authtoken.secret'
       setAuthTokenFile(authTokenFile)
       try {
-        setTokenStatus('Loading ZeroTier authtoken.secret from: ' + authTokenFile)
+        setTokenStatus('Loading authtoken from: ' + authTokenFile)
         const authToken = await readTextFile(authTokenFile)
         if (authToken) {
-          setTokenStatus('ZeroTier authtoken.secret loaded from: ' + authTokenFile)
+          setTokenStatus('authtoken loaded from: ' + authTokenFile)
           setAuthToken(authToken)
         } else {
-          setTokenStatus('ZeroTier authtoken.secret not found. Please copy it to: ' + authTokenFile)
+          setTokenStatus('authtoken not found. Please copy it to: ' + authTokenFile)
         }
       } catch (e) {
-        setTokenStatus('ZeroTier authtoken.secret not found. Please copy it to: ' + authTokenFile)
+        setTokenStatus('authtoken not found. Please copy it to: ' + authTokenFile)
       }
     }
     read()
-  }, [authTokenFile])
+  }, [authTokenFile, setAuthToken])
   useEffect(() => {
     if (!savedAuthToken || !authTokenFile) {
       return

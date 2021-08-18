@@ -1,34 +1,31 @@
-import React from 'react'
-import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check'
+import React, { useState } from 'react'
 // @ts-ignore
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import Auth from './zerotier/auth'
+import NodeInfo from './zerotier/node'
 
 import 'react-tabs/style/react-tabs.css'
 import './App.css'
 
 function App() {
-  let os = 'Linux'
-  if (isMacOS()) {
-    os = 'macOS'
-  } else if (isWindows()) {
-    os = 'Windows'
-  }
+  const [authToken, setAuthToken] = useState('')
 
   return (
     <div className='App'>
       <Tabs>
         <TabList>
-          <Tab>Debug</Tab>
           <Tab>Auth</Tab>
+          <Tab>Info</Tab>
         </TabList>
         <TabPanel>
-          <p>This application is running on {os}.</p>
+          <Auth authToken={authToken} setAuthToken={setAuthToken} />
         </TabPanel>
-        <TabPanel>
-          <Auth />
-        </TabPanel>
+        {!!authToken && 
+          <TabPanel>
+            <NodeInfo authToken={authToken} />
+          </TabPanel>
+        }
       </Tabs>
     </div>
   )
