@@ -22,7 +22,6 @@ interface NodeStatus {
 
 function NodeInfo({authToken}: Props) {
   const [refreshCounter, setRefreshCounter] = useState(0)
-  const [result, setResult] = useState<NodeStatus>({})
   const [address, setAddress] = useState<string | undefined>()
   const [online, setOnline] = useState<boolean | undefined>()
   const [onFallback, setOnFallback] = useState<boolean | undefined>()

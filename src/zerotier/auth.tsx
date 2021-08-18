@@ -39,7 +39,7 @@ function Auth({authToken, setAuthToken}: Props) {
       }
     }
     read()
-  }, [authTokenFile, setAuthToken])
+  }, [authTokenFile, authToken, setAuthToken])
   useEffect(() => {
     if (!savedAuthToken || !authTokenFile) {
       return
