@@ -32,6 +32,7 @@ function NodeInfo({authToken}: Props) {
     }
 
     async function refreshResult() {
+      console.log(authToken)
       const response = await fetch<NodeStatus>(
         'http://127.0.0.1:9993/status',
         {
