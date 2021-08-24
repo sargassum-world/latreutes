@@ -27,16 +27,24 @@ interface PeerStatus {
 }
 
 function PeersInfo({authToken}: Props) {
-  const [refreshCounter, setRefreshCounter] = useState(0)
+  const [clock, setClock] = useState(0)
   const [peers, setPeers] = useState<PeerStatus[]>([])
+
+  useEffect(() => {
+    const clockUpdater = setInterval(() => {
+      setClock(new Date().getTime())
+    }, 500)
+    return () => {
+      clearInterval(clockUpdater)
+    }
+  }, [])
 
   useEffect(() => {
     if (!authToken) {
       return
     }
 
-    async function refreshResult() {
-      console.log(authToken)
+    async function reloadResult() {
       const response = await fetch<PeerStatus[]>(
         'http://127.0.0.1:9993/peer',
         {
@@ -46,42 +54,39 @@ function PeersInfo({authToken}: Props) {
           }
         }
       )
-      setPeers(response.data)
+      if (response.data !== undefined && Object.keys(response.data).length > 0) {
+        setPeers(response.data)
+      }
     }
-    refreshResult()
-  }, [refreshCounter, authToken])
+    reloadResult()
+  }, [clock, authToken])
 
   return (
     <>
-      <p>
-        <button onClick={() => setRefreshCounter(refreshCounter + 1)}>
-          Refresh
-        </button>
-      </p>
       {peers.map(
         (peer: PeerStatus) =>
-          <>
+          <div>
             <h3>{peer.address}</h3>
-            <ul>
-              <li>Address: {peer.address}</li>
-              <li>Role: {peer.role}</li>
-              <li>Estimated latency: {peer.latency}</li>
-              <li>
-                Paths:
-                <ul>{peer.paths?.map(
+            <table>
+              <tr><th>Node ID</th><td>{peer.address}</td></tr>
+              <tr><th>Role</th><td>{peer.role}</td></tr>
+              <tr><th>Estimated Latency</th><td>{peer.latency}</td></tr>
+              <tr>
+                <th>Paths</th>
+                <td><ul>{peer.paths?.map(
                   (path: Path) =>
                     <li>
                       {path.address} {''}
                       {path.active ? '' : '(Inactive)'}
                       {path.expired ? '(Expired)' : ''}
-                      {path.preferred ? '(Preferred)' : ''},<br />
-                      last sent {(new Date().getTime() - path.lastSend) / 1000} seconds ago,
-                      last received {(new Date().getTime() - path.lastReceive) / 1000} seconds ago
+                      {path.preferred ? '(Preferred)' : ''}<br />
+                      Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(1)} seconds ago<br />
+                      Last received {((new Date().getTime() - path.lastReceive) / 1000).toFixed(1)} seconds ago
                     </li>
-                )}</ul>
-              </li>
-            </ul>
-          </>
+                )}</ul></td>
+              </tr>
+            </table>
+          </div>
       ) }
     </>
   )

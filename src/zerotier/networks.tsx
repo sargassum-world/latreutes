@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { fetch } from '@tauri-apps/api/http'
+import { fetch, HttpVerb } from '@tauri-apps/api/http'
 
 interface Props {
   authToken: string
@@ -32,16 +32,28 @@ interface NetworkStatus {
 }
 
 function NetworksInfo({authToken}: Props) {
-  const [refreshCounter, setRefreshCounter] = useState(0)
+  const [clock, setClock] = useState(0)
+  const [networkId, setNetworkId] = useState<string>('')
+  const [submittedNetworkId, setSubmittedNetworkId] = useState<string>('')
+  const [joinLeaveAction, setJoinLeaveAction] = useState('')
+  const [joinLeaveCounter, setJoinLeaveCounter] = useState(0)
   const [networks, setNetworks] = useState<NetworkStatus[]>([])
+
+  useEffect(() => {
+    const clockUpdater = setInterval(() => {
+      setClock(new Date().getTime())
+    }, 500)
+    return () => {
+      clearInterval(clockUpdater)
+    }
+  }, [])
 
   useEffect(() => {
     if (!authToken) {
       return
     }
 
-    async function refreshResult() {
-      console.log(authToken)
+    async function reloadResult() {
       const response = await fetch<NetworkStatus[]>(
         'http://127.0.0.1:9993/network',
         {
@@ -51,35 +63,82 @@ function NetworksInfo({authToken}: Props) {
           }
         }
       )
-      setNetworks(response.data)
+      if (response.data !== undefined && Object.keys(response.data).length > 0) {
+        setNetworks(response.data)
+      }
     }
-    refreshResult()
-  }, [refreshCounter, authToken])
+    reloadResult()
+  }, [clock, authToken])
+
+  useEffect(() => {
+    if (!authToken || !submittedNetworkId) {
+      return
+    }
+
+    async function joinNetwork() {
+      let method: HttpVerb = 'GET'
+      switch (joinLeaveAction) {
+        case 'join':
+          method = 'POST'
+          break
+        case 'leave':
+          method = 'DELETE'
+          break
+      }
+      await fetch<NetworkStatus[]>(
+        `http://127.0.0.1:9993/network/${submittedNetworkId}`,
+        {
+          method: method,
+          headers: {
+            'X-ZT1-Auth': authToken
+          }
+        }
+      )
+    }
+    joinNetwork()
+  }, [submittedNetworkId, joinLeaveAction, joinLeaveCounter, authToken])
 
   return (
     <>
       <p>
-        <button onClick={() => setRefreshCounter(refreshCounter + 1)}>
-          Refresh
+        Network ID: <input
+          type='text'
+          value={networkId}
+          placeholder='Enter a ZeroTier network ID'
+          onChange={e => setNetworkId(e.target.value)}
+          size={20}
+        />
+        <button onClick={() => {
+          setSubmittedNetworkId(networkId)
+          setJoinLeaveCounter(joinLeaveCounter + 1)
+          setJoinLeaveAction('join')
+        }}>
+          Join Network
+        </button>
+        <button onClick={() => {
+          setSubmittedNetworkId(networkId);
+          setJoinLeaveAction('leave')
+        }}>
+          Leave Network
         </button>
       </p>
       {networks.map(
         (network: NetworkStatus) =>
           <>
             <h3>{network.id}</h3>
-            <ul>
-              <li>Proposed Name: {network.name}</li>
-              <li>ID: {network.id}</li>
-              <li>Type: {network.type}</li>
-              <li>Status: {network.status}</li>
-              <li>Network interface: {network.portDeviceName}</li>
-              <li>
-                IP addresses:
-                <ul>
+            <table>
+              <tr><th>Proposed Name</th><td>{network.name}</td></tr>
+              <tr><th>Network ID</th><td>{network.id}</td></tr>
+              <tr><th>Type</th><td>{network.type}</td></tr>
+              <tr><th>Status</th><td>{network.status}</td></tr>
+              <tr><th>Network Interface</th><td>{network.portDeviceName}</td></tr>
+              <tr>
+                <th>IP Addresses</th>
+                <td><ul>
                   {network.assignedAddresses?.map((address: string) => <li>{address}</li>)}
-                </ul>
-              </li>
-            </ul>
+                </ul></td>
+              </tr>
+            </table>
           </>
       ) }
     </>
