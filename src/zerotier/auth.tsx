@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import { useQueryClient } from 'react-query'
 import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check'
-import { createDir, readTextFile, writeFile } from '@tauri-apps/api/fs'
-import { appDir } from '@tauri-apps/api/path'
 
-interface Props {
-  authToken: string
-  setAuthToken: (authToken: string) => void
+import { AUTHTOKEN_FILENAME } from '../shared/config'
+import { invalidateCache } from './service'
+
+// Components
+
+interface StatusMessageProps {
+  configDirPath?: string
+  tokenStatus: string
 }
 
-function Auth({authToken, setAuthToken}: Props) {
-  const [refreshCounter, setRefreshCounter] = useState(0)
-  const [configDir, setConfigDir] = useState('')
-  const [authTokenFile, setAuthTokenFile] = useState('')
-  const [savedAuthToken, setSavedAuthToken] = useState('')
-  const [tokenStatus, setTokenStatus] = useState('Loading authtoken...')
-
+function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
+  // TODO: display instructions if the directory is missing (i.e. ZeroTier was not installed)
+  // or if the directory exists but the authtoken is missing (i.e. a new authtoken must provisioned)
+  // TODO: confirm whether the path is correct by checking whether the file exists at that path
+  // (this also allows checking if the path is actually at the BSD path)
   let ztAuthTokenPath = '/var/lib/zerotier-one/authtoken.secret'
   if (isMacOS()) {
     ztAuthTokenPath = '/Library/Application Support/ZeroTier/One/authtoken.secret'
@@ -22,86 +24,74 @@ function Auth({authToken, setAuthToken}: Props) {
     ztAuthTokenPath = '\\ProgramData\\ZeroTier\\One\\authtoken.secret'
   }
 
-  useEffect(() => {
-    if (authTokenFile) {
-      return
-    }
+  if (configDirPath === undefined) {
+    return (
+      <p>
+        Unable to determine where the authtoken file should be stored!<br />
+        Are you trying to run the application in a web browser?<br />
+        If so, you should be launching the desktop application instead.
+      </p>
+    )
+  }
 
-    async function read() {
-      const configDir = await appDir()
-      setConfigDir(configDir)
-      // Normally we'd use the @tauri-apps/api/path.join, but it doesn't seem to work
-      const authTokenFile = configDir + 'authtoken.secret'
-      setAuthTokenFile(authTokenFile)
-    }
-    read()
-  }, [authTokenFile, setConfigDir, setAuthTokenFile])
+  const tokenPath = `${configDirPath}${AUTHTOKEN_FILENAME}`
 
-  useEffect(() => {
-    if (authToken) {
-      setTokenStatus('Using loaded authtoken.')
-      return
-    }
-
-    if (!authTokenFile) {
-      return
-    }
-
-    async function read() {
-      // Normally we'd use the @tauri-apps/api/path.join, but it doesn't seem to work
-      try {
-        setTokenStatus('Loading authtoken from: ' + authTokenFile)
-        const authToken = await readTextFile(authTokenFile)
-        if (authToken) {
-          setTokenStatus('authtoken loaded from: ' + authTokenFile)
-          setAuthToken(authToken)
-          return
-        }
-      } catch (e) {
+  switch (tokenStatus) {
+    case 'loading':
+      if (!!tokenPath) {
+        return <p>{`Loading auth token from: ${tokenPath}`}</p>
+      } else {
+        return <p>{'Loading auth token...'}</p>
       }
-      setTokenStatus(`authtoken not found. Please copy it from (probably) ${ztAuthTokenPath} to ${authTokenFile}. You'll need administrator permissions to copy that file.`)
-    }
-    read()
-  }, [refreshCounter, ztAuthTokenPath, authTokenFile, authToken, setAuthToken])
-  useEffect(() => {
-    if (!savedAuthToken || !authTokenFile) {
-      return
-    }
+    case 'success':
+        return <p>{`Loaded auth token from: ${tokenPath}`}</p>
+    case 'error':
+      return (
+        <p>
+          {`authtoken not found. Please copy it from (probably) ${ztAuthTokenPath} to ${tokenPath}.`}
+          <br />
+          {`You'll need administrator permissions to copy that file.`}
+        </p>
+      )
+  }
+  return <></>
+}
 
-    async function write() {
-      await createDir(configDir, {
-        recursive: true
-      })
-      await writeFile({
-        path: authTokenFile,
-        contents: savedAuthToken
-      })
-    }
-    write()
-  }, [savedAuthToken, authTokenFile, configDir])
+interface TokenProps {
+  token?: string
+}
+function Token({ token }: TokenProps) {
+  return (
+    <p>
+      Auth token: <input
+        name='authToken'
+        type='text'
+        value={token}
+        placeholder='Loading...'
+        size={30}
+        readOnly
+      />
+    </p>
+  )
+}
+
+interface Props {
+  configDirPath?: string
+  token?: string
+  tokenStatus: string
+}
+function Auth({ configDirPath, token, tokenStatus }: Props) {
+  const queryClient = useQueryClient()
 
   return (
     <>
       <p>
-        <button onClick={() => {setAuthToken(''); setRefreshCounter(refreshCounter + 1)}}>
+        <button onClick={() => {invalidateCache(queryClient)}}>
           Reload
         </button>
       </p>
-      <p>
-        {tokenStatus}
-      </p>
-      <p>
-        Authtoken: <input
-          type='text'
-          value={authToken}
-          placeholder='Enter your ZeroTier authtoken.secret'
-          onChange={e => setAuthToken(e.target.value)}
-          size={30}
-        />
-        <button onClick={() => setSavedAuthToken(authToken)} disabled={!authToken || !authTokenFile}>
-          Save
-        </button>
-      </p>
+      <StatusMessage configDirPath={configDirPath} tokenStatus={tokenStatus} />
+      <Token token={token} />
     </>
   )
 }

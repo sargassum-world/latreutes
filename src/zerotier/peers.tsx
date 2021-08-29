@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { fetch } from '@tauri-apps/api/http'
+import React from 'react'
+import { useQuery } from 'react-query'
 
-interface Props {
-  authToken: string
-}
+import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service'
 
-interface Path {
+// Queries
+
+interface PathStatus {
   address: string
   lastSend: number
   lastReceive: number
@@ -16,80 +16,97 @@ interface Path {
 }
 
 interface PeerStatus {
-  address?: string
-  versionMajor?: number
-  versionMinor?: number
-  versionRev?: number
-  version?: string
+  address: string
+  versionMajor: number
+  versionMinor: number
+  versionRev: number
+  version: string
   latency: number
-  role?: string
-  paths?: Path[]
+  role: string
+  paths: PathStatus[]
 }
 
-function PeersInfo({authToken}: Props) {
-  const [clock, setClock] = useState(0)
-  const [peers, setPeers] = useState<PeerStatus[]>([])
+const QUERY_KEY = [...QUERY_KEY_ZT, 'peers']
+const QUERY_REFETCH = 0.5  // s
+const ROUTE = ['peer']
+export const usePeersStatus = (authToken: string) => useQuery(
+  QUERY_KEY,
+  fetcher<PeerStatus[]>(ROUTE, 'GET', authToken),
+  { retry: false, refetchInterval: QUERY_REFETCH * 1000, cacheTime: Infinity },
+)
 
-  useEffect(() => {
-    const clockUpdater = setInterval(() => {
-      setClock(new Date().getTime())
-    }, 500)
-    return () => {
-      clearInterval(clockUpdater)
-    }
-  }, [])
+// Components
 
-  useEffect(() => {
-    if (!authToken) {
-      return
-    }
+interface PathProps {
+  path: PathStatus
+}
+function Path({ path }: PathProps) {
+  return (
+    <li>
+      {path.address} {''}
+      {path.active ? '' : '(Inactive)'}
+      {path.expired ? '(Expired)' : ''}
+      {path.preferred ? '(Preferred)' : ''}<br />
+      Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(1)} seconds ago<br />
+      Last received {((new Date().getTime() - path.lastReceive) / 1000).toFixed(1)} seconds ago
+    </li>
+  )
+}
 
-    async function reloadResult() {
-      const response = await fetch<PeerStatus[]>(
-        'http://127.0.0.1:9993/peer',
-        {
-          method: 'GET',
-          headers: {
-            'X-ZT1-Auth': authToken
-          }
-        }
-      )
-      if (response.data !== undefined && Object.keys(response.data).length > 0) {
-        setPeers(response.data)
-      }
-    }
-    reloadResult()
-  }, [clock, authToken])
+interface PeerProps {
+  peer: PeerStatus
+}
+function Peer({ peer }: PeerProps) {
+  return (
+    <div>
+      <h3>{peer.address}</h3>
+      <table>
+        <tr><th>Node ID</th><td>{peer.address}</td></tr>
+        <tr><th>Role</th><td>{peer.role}</td></tr>
+        <tr><th>Estimated Latency (ms)</th><td>{peer.latency >= 0 ? peer.latency : 'N/A'}</td></tr>
+        <tr>
+          <th>Paths</th>
+          <td>
+            {peer.paths.length === 0 ? 'No paths found' :
+              <ul>{peer.paths?.map(path => <Path path={path} />)}</ul>
+            }
+          </td>
+        </tr>
+      </table>
+    </div>
+  )
+}
+
+interface Props {
+  authToken: string
+}
+
+function Peers({authToken}: Props) {
+  const { data: peersResponse, status, error } = usePeersStatus(authToken)
+
+  const renderedError = ErrorRenderer(status, error)
+  if (renderedError !== undefined) {
+    return renderedError
+  }
+
+  const peers = peersResponse!.data
 
   return (
     <>
-      {peers.map(
-        (peer: PeerStatus) =>
-          <div>
-            <h3>{peer.address}</h3>
-            <table>
-              <tr><th>Node ID</th><td>{peer.address}</td></tr>
-              <tr><th>Role</th><td>{peer.role}</td></tr>
-              <tr><th>Estimated Latency</th><td>{peer.latency}</td></tr>
-              <tr>
-                <th>Paths</th>
-                <td><ul>{peer.paths?.map(
-                  (path: Path) =>
-                    <li>
-                      {path.address} {''}
-                      {path.active ? '' : '(Inactive)'}
-                      {path.expired ? '(Expired)' : ''}
-                      {path.preferred ? '(Preferred)' : ''}<br />
-                      Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(1)} seconds ago<br />
-                      Last received {((new Date().getTime() - path.lastReceive) / 1000).toFixed(1)} seconds ago
-                    </li>
-                )}</ul></td>
-              </tr>
-            </table>
-          </div>
-      ) }
+      <h2>ZeroTier Root Servers</h2>
+      {
+        peers
+          .filter(peer => peer.role === 'PLANET' || peer.role === 'MOON')
+          .map(peer => <Peer peer={peer} />)
+      }
+      <h2>Leaf Peers</h2>
+      {
+        peers
+          .filter(peer => peer.role === 'LEAF')
+          .map(peer => <Peer peer={peer} />)
+      }
     </>
   )
 }
 
-export default PeersInfo
+export default Peers

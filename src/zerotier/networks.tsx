@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { fetch, HttpVerb } from '@tauri-apps/api/http'
+import React from 'react'
+import { QueryClient, useQueryClient, useQuery, useMutation } from 'react-query'
 
-interface Props {
-  authToken: string
-}
+import { QUERY_KEY_ZT, fetcher, invalidateCache, ErrorRenderer } from './service'
+
+// Queries
 
 interface Route {
   target: string
@@ -11,138 +11,131 @@ interface Route {
 }
 
 interface NetworkStatus {
-  id?: string
-  mac?: string
-  name?: string
-  status?: string
-  type?: string
-  mtu?: number
-  dhcp?: boolean
-  bridge?: boolean
-  broadcastEnabled?: boolean
-  portError?: number
-  netconfRevision?: number
-  assignedAddresses?: string[]
-  routes?: Route[]
-  portDeviceName?: string
-  allowManaged?: boolean
-  allowGlobal?: boolean
-  allowDefault?: boolean
-  allowDNS?: boolean
+  id: string
+  mac: string
+  name: string
+  status: string
+  type: string
+  mtu: number
+  dhcp: boolean
+  bridge: boolean
+  broadcastEnabled: boolean
+  portError: number
+  netconfRevision: number
+  assignedAddresses: string[]
+  routes: Route[]
+  portDeviceName: string
+  allowManaged: boolean
+  allowGlobal: boolean
+  allowDefault: boolean
+  allowDNS: boolean
 }
 
-function NetworksInfo({authToken}: Props) {
-  const [clock, setClock] = useState(0)
-  const [networkId, setNetworkId] = useState<string>('')
-  const [submittedNetworkId, setSubmittedNetworkId] = useState<string>('')
-  const [joinLeaveAction, setJoinLeaveAction] = useState('')
-  const [joinLeaveCounter, setJoinLeaveCounter] = useState(0)
-  const [networks, setNetworks] = useState<NetworkStatus[]>([])
-
-  useEffect(() => {
-    const clockUpdater = setInterval(() => {
-      setClock(new Date().getTime())
-    }, 500)
-    return () => {
-      clearInterval(clockUpdater)
+const QUERY_KEY = [...QUERY_KEY_ZT, 'networks']
+const QUERY_REFETCH = 0.5  // s
+const ROUTE = ['network']
+export const useNetworksStatus = (authToken: string) => useQuery(
+  QUERY_KEY,
+  fetcher<NetworkStatus[]>(ROUTE, 'GET', authToken),
+  { retry: false, refetchInterval: QUERY_REFETCH * 1000, cacheTime: Infinity },
+)
+export const useNetworkJoiner = (
+  authToken: string,
+  queryClient: QueryClient,
+) => useMutation(
+  (networkId: string) => fetcher<NetworkStatus>([...ROUTE, networkId], 'POST', authToken)(),
+  {
+    onSuccess: () => {
+      invalidateCache(queryClient)
     }
-  }, [])
-
-  useEffect(() => {
-    if (!authToken) {
-      return
+  }
+)
+export const useNetworkLeaver = (
+  networkId: string,
+  authToken: string,
+  queryClient: QueryClient
+) => useMutation(
+  fetcher<NetworkStatus>([...ROUTE, networkId], 'DELETE', authToken),
+  {
+    onSuccess: () => {
+      invalidateCache(queryClient)
     }
+  }
+)
 
-    async function reloadResult() {
-      const response = await fetch<NetworkStatus[]>(
-        'http://127.0.0.1:9993/network',
-        {
-          method: 'GET',
-          headers: {
-            'X-ZT1-Auth': authToken
-          }
-        }
-      )
-      if (response.data !== undefined && Object.keys(response.data).length > 0) {
-        setNetworks(response.data)
-      }
-    }
-    reloadResult()
-  }, [clock, authToken])
+// Components
 
-  useEffect(() => {
-    if (!authToken || !submittedNetworkId) {
-      return
-    }
-
-    async function joinNetwork() {
-      let method: HttpVerb = 'GET'
-      switch (joinLeaveAction) {
-        case 'join':
-          method = 'POST'
-          break
-        case 'leave':
-          method = 'DELETE'
-          break
-      }
-      await fetch<NetworkStatus[]>(
-        `http://127.0.0.1:9993/network/${submittedNetworkId}`,
-        {
-          method: method,
-          headers: {
-            'X-ZT1-Auth': authToken
-          }
-        }
-      )
-    }
-    joinNetwork()
-  }, [submittedNetworkId, joinLeaveAction, joinLeaveCounter, authToken])
+interface NetworkProps {
+  network: NetworkStatus
+  authToken: string
+}
+function Network({ network, authToken }: NetworkProps) {
+  const queryClient = useQueryClient()
+  const networkLeaver = useNetworkLeaver(network.id, authToken, queryClient)
 
   return (
     <>
-      <p>
-        Network ID: <input
-          type='text'
-          value={networkId}
-          placeholder='Enter a ZeroTier network ID'
-          onChange={e => setNetworkId(e.target.value)}
-          size={20}
-        />
-        <button onClick={() => {
-          setSubmittedNetworkId(networkId)
-          setJoinLeaveCounter(joinLeaveCounter + 1)
-          setJoinLeaveAction('join')
-        }}>
-          Join Network
-        </button>
-        <button onClick={() => {
-          setSubmittedNetworkId(networkId);
-          setJoinLeaveAction('leave')
-        }}>
-          Leave Network
-        </button>
-      </p>
-      {networks.map(
-        (network: NetworkStatus) =>
-          <>
-            <h3>{network.id}</h3>
-            <table>
-              <tr><th>Proposed Name</th><td>{network.name}</td></tr>
-              <tr><th>Network ID</th><td>{network.id}</td></tr>
-              <tr><th>Type</th><td>{network.type}</td></tr>
-              <tr><th>Status</th><td>{network.status}</td></tr>
-              <tr><th>Network Interface</th><td>{network.portDeviceName}</td></tr>
-              <tr>
-                <th>IP Addresses</th>
-                <td><ul>
-                  {network.assignedAddresses?.map((address: string) => <li>{address}</li>)}
-                </ul></td>
-              </tr>
-            </table>
-          </>
-      ) }
+      <h3>{network.id}</h3>
+      <button onClick={() => networkLeaver.mutate()}>
+        Leave
+      </button>
+      <table>
+        <tr><th>Proposed Name</th><td>{network.name}</td></tr>
+        <tr><th>Network ID</th><td>{network.id}</td></tr>
+        <tr><th>Type</th><td>{network.type}</td></tr>
+        <tr><th>Status</th><td>{network.status}</td></tr>
+        <tr><th>Network Interface</th><td>{network.portDeviceName}</td></tr>
+        <tr>
+          <th>IP Addresses</th>
+          <td><ul>
+            {network.assignedAddresses?.map(address => <li>{address}</li>)}
+          </ul></td>
+        </tr>
+      </table>
     </>
   )
 }
 
-export default NetworksInfo
+interface Props {
+  authToken: string
+}
+function Networks({authToken}: Props) {
+  const queryClient = useQueryClient()
+  const { data: networksResponse, status, error } = useNetworksStatus(authToken)
+  const networkJoiner = useNetworkJoiner(authToken, queryClient)
+
+  const renderedError = ErrorRenderer(status, error)
+  if (renderedError !== undefined) {
+    return renderedError
+  }
+
+  const networks = networksResponse!.data
+
+  return (
+    <>
+      <form onSubmit={e => {
+        e.preventDefault()
+        const target = e.target as typeof e.target & {
+          networkId: { value: string }
+        }
+        const { networkId: { value: networkId } } = target
+        networkJoiner.mutate(networkId)
+      }}>
+        Network ID: <input
+          type='text'
+          name='networkId'
+          placeholder='Enter a ZeroTier network ID'
+          size={20}
+        />
+        <input
+          type='submit'
+          disabled={networkJoiner.isLoading}
+          value={networkJoiner.isLoading ? 'Joining...' : 'Join'}
+        />
+      </form>
+      {networks.map(network => <Network network={network} authToken={authToken} />)}
+    </>
+  )
+}
+
+export default Networks
