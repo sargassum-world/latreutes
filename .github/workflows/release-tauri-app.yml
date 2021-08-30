@@ -2,6 +2,22 @@ name: "publish"
 on: push
 
 jobs:
+  lint:
+    strategy:
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: setup node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: install app dependencies
+      run: yarn
+    - name: run linter
+      run: yarn lint
+
   publish-tauri:
     strategy:
       fail-fast: false
@@ -24,8 +40,10 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y webkit2gtk-4.0
-    - name: install app dependencies and build it
-      run: yarn && yarn build
+    - name: install app dependencies
+      run: yarn
+    - name: build the app
+      run: yarn build
     - uses: tauri-apps/tauri-action@v0
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

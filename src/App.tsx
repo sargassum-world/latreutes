@@ -1,64 +1,68 @@
-import React from 'react'
-import { QueryClient, QueryClientProvider } from 'react-query'
-// @ts-ignore
+import React from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
-import Auth from './zerotier/auth'
-import Node from './zerotier/node'
-import Networks from './zerotier/networks'
-import Peers from './zerotier/peers'
+import { useConfigPath, useAuthToken } from './shared/config';
 
-import { useConfigPath, useAuthToken } from './shared/config'
+import Auth from './zerotier/auth';
+import Node from './zerotier/node';
+import Networks from './zerotier/networks';
+import Peers from './zerotier/peers';
 
-import 'react-tabs/style/react-tabs.css'
-import './App.css'
+import 'react-tabs/style/react-tabs.css';
+import './App.css';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 function MainWindow() {
-  const { data: configDirPath } = useConfigPath()
-  const { data: authToken, status: authTokenStatus } = useAuthToken(configDirPath)
+  const { data: configDirPath } = useConfigPath();
+  const { data: authToken, status: authTokenStatus } =
+    useAuthToken(configDirPath);
 
   return (
     <Tabs>
       <TabList>
         <Tab>Auth</Tab>
-        {!!authToken &&
-        <>
-          <Tab>Info</Tab>
-          <Tab>Networks</Tab>
-          <Tab>Peers</Tab>
-        </>
-        }
+        {!!authToken && (
+          <>
+            <Tab>Info</Tab>
+            <Tab>Networks</Tab>
+            <Tab>Peers</Tab>
+          </>
+        )}
       </TabList>
       <TabPanel>
-        <Auth configDirPath={configDirPath} token={authToken} tokenStatus={authTokenStatus} />
+        <Auth
+          configDirPath={configDirPath}
+          token={authToken}
+          tokenStatus={authTokenStatus}
+        />
       </TabPanel>
-      {!!authToken &&
-      <>
-        <TabPanel>
-          <Node authToken={authToken} />
-        </TabPanel>
-        <TabPanel>
-          <Networks authToken={authToken} />
-        </TabPanel>
-        <TabPanel>
-          <Peers authToken={authToken} />
-        </TabPanel>
-      </>
-      }
+      {!!authToken && (
+        <>
+          <TabPanel>
+            <Node authToken={authToken} />
+          </TabPanel>
+          <TabPanel>
+            <Networks authToken={authToken} />
+          </TabPanel>
+          <TabPanel>
+            <Peers authToken={authToken} />
+          </TabPanel>
+        </>
+      )}
     </Tabs>
-  )
+  );
 }
 
-function App() {
+function App(): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className='App'>
+      <div className="App">
         <MainWindow />
       </div>
     </QueryClientProvider>
-  )
+  );
 }
 
-export default App
+export default App;
