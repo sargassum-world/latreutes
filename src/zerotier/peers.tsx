@@ -1,6 +1,7 @@
 import React from 'react';
 import { UseQueryResult, useQuery } from 'react-query';
 import { Response } from '@tauri-apps/api/http';
+import { Box, Wrap, WrapItem, Heading, Text } from '@chakra-ui/react';
 
 import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service';
 
@@ -70,7 +71,9 @@ interface PeerProps {
 function Peer({ peer }: PeerProps) {
   return (
     <div>
-      <h3>{peer.address}</h3>
+      <Heading as="h3" size="md">
+        {peer.address}
+      </Heading>
       <table>
         <tr>
           <th>Node ID</th>
@@ -116,27 +119,47 @@ function Peers({ authToken }: Props): JSX.Element {
   }
 
   if (peersResponse === undefined) {
-    return <p>Error: response is undefined even though request succeeded.</p>;
+    return (
+      <Text>Error: response is undefined even though request succeeded.</Text>
+    );
   }
 
   const peers = peersResponse.data;
+  const rootServers = peers.filter(
+    (peer: PeerStatus) => peer.role === 'PLANET' || peer.role === 'MOON'
+  );
+  const leafPeers = peers.filter((peer: PeerStatus) => peer.role === 'LEAF');
 
   return (
     <>
-      <h2>ZeroTier Root Servers</h2>
-      {peers
-        .filter(
-          (peer: PeerStatus) => peer.role === 'PLANET' || peer.role === 'MOON'
-        )
-        .map((peer: PeerStatus) => (
-          <Peer peer={peer} />
-        ))}
-      <h2>Leaf Peers</h2>
-      {peers
-        .filter((peer: PeerStatus) => peer.role === 'LEAF')
-        .map((peer: PeerStatus) => (
-          <Peer peer={peer} />
-        ))}
+      {rootServers.length > 0 && (
+        <Box py={4}>
+          <Heading as="h2" size="lg">
+            ZeroTier Root Servers
+          </Heading>
+          <Wrap spacing={8}>
+            {rootServers.map((peer: PeerStatus) => (
+              <WrapItem width="28em">
+                <Peer peer={peer} />
+              </WrapItem>
+            ))}
+          </Wrap>
+        </Box>
+      )}
+      {rootServers.length > 0 && (
+        <Box py={4}>
+          <Heading as="h2" size="lg">
+            Leaf Peers
+          </Heading>
+          <Wrap spacing={8}>
+            {leafPeers.map((peer: PeerStatus) => (
+              <WrapItem width="28em">
+                <Peer peer={peer} />
+              </WrapItem>
+            ))}
+          </Wrap>
+        </Box>
+      )}
     </>
   );
 }

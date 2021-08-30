@@ -8,6 +8,15 @@ import {
   useMutation,
 } from 'react-query';
 import { Response } from '@tauri-apps/api/http';
+import {
+  Box,
+  Wrap,
+  WrapItem,
+  Button,
+  Input,
+  Heading,
+  Text,
+} from '@chakra-ui/react';
 
 import {
   QUERY_KEY_ZT,
@@ -23,11 +32,19 @@ interface Route {
   via: string | null;
 }
 
+type Status =
+  | 'REQUESTING_CONFIGURATION'
+  | 'OK'
+  | 'ACCESS_DENIED'
+  | 'NOT_FOUND'
+  | 'PORT_ERROR'
+  | 'CLIENT_TOO_OLD';
+
 interface NetworkStatus {
   id: string;
   mac: string;
   name: string;
-  status: string;
+  status: Status;
   type: string;
   mtu: number;
   dhcp: boolean;
@@ -93,11 +110,11 @@ function Network({ network, authToken }: NetworkProps) {
   const networkLeaver = useNetworkLeaver(network.id, authToken, queryClient);
 
   return (
-    <>
-      <h3>{network.id}</h3>
-      <button type="button" onClick={() => networkLeaver.mutate()}>
-        Leave
-      </button>
+    <Box>
+      <Heading as="h3" size="md">
+        {network.id}
+      </Heading>
+      <Button onClick={() => networkLeaver.mutate()}>Leave</Button>
       <table>
         <tr>
           <th>Proposed Name</th>
@@ -130,7 +147,7 @@ function Network({ network, authToken }: NetworkProps) {
           </td>
         </tr>
       </table>
-    </>
+    </Box>
   );
 }
 
@@ -152,10 +169,19 @@ function Networks({ authToken }: Props): JSX.Element {
   }
 
   if (networksResponse === undefined) {
-    return <p>Error: response is undefined even though request succeeded.</p>;
+    return (
+      <Text>Error: response is undefined even though request succeeded.</Text>
+    );
   }
 
   const networks = networksResponse.data;
+  const joinedNetworks = networks.filter((network) => network.status === 'OK');
+  const unauthorizedNetworks = networks.filter(
+    (network) => network.status === 'ACCESS_DENIED'
+  );
+  const otherNetworks = networks.filter(
+    (network) => network.status !== 'OK' && network.status !== 'ACCESS_DENIED'
+  );
 
   return (
     <>
@@ -172,21 +198,57 @@ function Networks({ authToken }: Props): JSX.Element {
         }}
       >
         Network ID:{' '}
-        <input
+        <Input
           type="text"
           name="networkId"
           placeholder="Enter a ZeroTier network ID"
-          size={20}
         />
-        <input
-          type="submit"
-          disabled={networkJoiner.isLoading}
-          value={networkJoiner.isLoading ? 'Joining...' : 'Join'}
-        />
+        <Button type="submit" disabled={networkJoiner.isLoading}>
+          {networkJoiner.isLoading ? 'Joining...' : 'Join'}
+        </Button>
       </form>
-      {networks.map((network) => (
-        <Network network={network} authToken={authToken} />
-      ))}
+      {joinedNetworks.length > 0 && (
+        <Box py={4}>
+          <Heading as="h2" size="lg">
+            Joined Networks
+          </Heading>
+          <Wrap spacing={8}>
+            {joinedNetworks.map((network) => (
+              <WrapItem width="28em">
+                <Network network={network} authToken={authToken} />
+              </WrapItem>
+            ))}
+          </Wrap>
+        </Box>
+      )}
+      {unauthorizedNetworks.length > 0 && (
+        <Box py={4}>
+          <Heading as="h2" size="lg">
+            Unauthorized Networks
+          </Heading>
+          <Wrap spacing={8}>
+            {unauthorizedNetworks.map((network) => (
+              <WrapItem width="28em">
+                <Network network={network} authToken={authToken} />
+              </WrapItem>
+            ))}
+          </Wrap>
+        </Box>
+      )}
+      {otherNetworks.length > 0 && (
+        <Box py={4}>
+          <Heading as="h2" size="lg">
+            Other Networks
+          </Heading>
+          <Wrap spacing={8}>
+            {otherNetworks.map((network) => (
+              <WrapItem width="28em">
+                <Network network={network} authToken={authToken} />
+              </WrapItem>
+            ))}
+          </Wrap>
+        </Box>
+      )}
     </>
   );
 }

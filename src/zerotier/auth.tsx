@@ -1,6 +1,7 @@
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check';
+import { Button, Input, Text } from '@chakra-ui/react';
 
 import { AUTHTOKEN_FILENAME } from '../shared/config';
 import { invalidateCache } from './service';
@@ -27,13 +28,13 @@ function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
 
   if (configDirPath === undefined) {
     return (
-      <p>
+      <Text>
         Unable to determine where the authtoken file should be stored!
         <br />
         Are you trying to run the application in a web browser?
         <br />
         If so, you should be launching the desktop application instead.
-      </p>
+      </Text>
     );
   }
 
@@ -42,18 +43,18 @@ function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
   switch (tokenStatus) {
     case 'loading':
       if (tokenPath) {
-        return <p>{`Loading auth token from: ${tokenPath}`}</p>;
+        return <Text>{`Loading auth token from: ${tokenPath}`}</Text>;
       }
-      return <p>Loading auth token...</p>;
+      return <Text>Loading auth token...</Text>;
     case 'success':
-      return <p>{`Loaded auth token from: ${tokenPath}`}</p>;
+      return <Text>{`Loaded auth token from: ${tokenPath}`}</Text>;
     case 'error':
       return (
-        <p>
+        <Text>
           {`authtoken not found. Please copy it from (probably) ${ztAuthTokenPath} to ${tokenPath}.`}
           <br />
           You will need administrator permissions to copy that file.
-        </p>
+        </Text>
       );
     default:
       return <></>;
@@ -65,17 +66,16 @@ interface TokenProps {
 }
 function Token({ token }: TokenProps) {
   return (
-    <p>
+    <Text>
       Auth token:{' '}
-      <input
+      <Input
         name="authToken"
         type="text"
         value={token}
         placeholder="Loading..."
-        size={30}
         readOnly
       />
-    </p>
+    </Text>
   );
 }
 
@@ -89,16 +89,15 @@ function Auth({ configDirPath, token, tokenStatus }: Props): JSX.Element {
 
   return (
     <>
-      <p>
-        <button
-          type="button"
+      <Text>
+        <Button
           onClick={() => {
             invalidateCache(queryClient);
           }}
         >
           Reload
-        </button>
-      </p>
+        </Button>
+      </Text>
       <StatusMessage configDirPath={configDirPath} tokenStatus={tokenStatus} />
       <Token token={token} />
     </>
