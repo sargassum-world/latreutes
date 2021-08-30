@@ -27,7 +27,12 @@ interface MainContainerProps {
 }
 function MainContainer({ children }: MainContainerProps) {
   return (
-    <Flex flexGrow={1} p={4} direction="column">
+    <Flex
+      flexGrow={1}
+      p={{ base: 4, lg: 8 }}
+      direction="column"
+      overflow="auto"
+    >
       {children}
     </Flex>
   );
@@ -39,7 +44,11 @@ interface AuthenticatedPageProps {
 }
 function AuthenticatedPage({ Component, authToken }: AuthenticatedPageProps) {
   if (authToken === undefined) {
-    return <ErrorPage error="Missing auth token!" />;
+    return (
+      <MainContainer>
+        <ErrorPage error="Missing auth token!" />
+      </MainContainer>
+    );
   }
 
   return <Component authToken={authToken} />;
@@ -59,14 +68,12 @@ function MainContent({
     <MainContainer>
       <Switch>
         <Route exact path="/">
-          <HomePage />
+          <MainContainer>
+            <HomePage />
+          </MainContainer>
         </Route>
         <Route path="/auth">
-          <Auth
-            configDirPath={configDirPath}
-            token={authToken}
-            tokenStatus={authTokenStatus}
-          />
+          <Auth configDirPath={configDirPath} tokenStatus={authTokenStatus} />
         </Route>
         <Route path="/node">
           <AuthenticatedPage Component={Node} authToken={authToken} />
@@ -108,7 +115,9 @@ function MainWindow() {
       <Flex direction={{ base: 'column', lg: 'row' }} height="100vh">
         <WindowSizer />
         <Navbar links={[]} />
-        <LandingPage />
+        <MainContainer>
+          <LandingPage />
+        </MainContainer>
         <Flex alignItems="center" justifyContent="center">
           <Flex direction="column" p={12}>
             <IconButton
@@ -122,8 +131,8 @@ function MainWindow() {
     );
   }
 
-  const baseMenuItems = [
-    { name: 'Home', href: '/', exact: true },
+  const baseMenuItems = [{ name: 'Home', href: '/', exact: true }];
+  const unauthenticatedMenuItems = [
     { name: 'Auth', href: '/auth', exact: false },
   ];
   const authenticatedMenuItems = [
@@ -132,11 +141,12 @@ function MainWindow() {
     { name: 'Peers', href: '/peers', exact: false },
   ];
   const menuItems = authTokenMissing
-    ? baseMenuItems
+    ? [...baseMenuItems, ...unauthenticatedMenuItems]
     : [...baseMenuItems, ...authenticatedMenuItems];
 
   return (
     <Flex direction={{ base: 'column', lg: 'row' }} height="100vh">
+      <WindowSizer />
       <Navbar links={menuItems} />
       <MainContent
         configDirPath={configDirPath}

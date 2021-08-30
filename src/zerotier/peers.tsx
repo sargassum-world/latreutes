@@ -84,7 +84,7 @@ function Peer({ peer }: PeerProps) {
           <td>{peer.role}</td>
         </tr>
         <tr>
-          <th>Estimated Latency (ms)</th>
+          <th>Estimated Latency</th>
           <td>{peer.latency >= 0 ? peer.latency : 'N/A'}</td>
         </tr>
         <tr>
@@ -134,7 +134,7 @@ function Peers({ authToken }: Props): JSX.Element {
     <>
       {rootServers.length > 0 && (
         <Box py={4}>
-          <Heading as="h2" size="lg">
+          <Heading as="h2" size="xl" py={4}>
             ZeroTier Root Servers
           </Heading>
           <Wrap spacing={8}>
@@ -148,7 +148,7 @@ function Peers({ authToken }: Props): JSX.Element {
       )}
       {rootServers.length > 0 && (
         <Box py={4}>
-          <Heading as="h2" size="lg">
+          <Heading as="h2" size="xl" py={4}>
             Leaf Peers
           </Heading>
           <Wrap spacing={8}>

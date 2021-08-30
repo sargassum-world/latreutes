@@ -185,6 +185,9 @@ function Networks({ authToken }: Props): JSX.Element {
 
   return (
     <>
+      <Heading as="h2" size="xl" py={4}>
+        Join a Network
+      </Heading>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -209,7 +212,7 @@ function Networks({ authToken }: Props): JSX.Element {
       </form>
       {joinedNetworks.length > 0 && (
         <Box py={4}>
-          <Heading as="h2" size="lg">
+          <Heading as="h2" size="xl" py={4}>
             Joined Networks
           </Heading>
           <Wrap spacing={8}>
@@ -223,7 +226,7 @@ function Networks({ authToken }: Props): JSX.Element {
       )}
       {unauthorizedNetworks.length > 0 && (
         <Box py={4}>
-          <Heading as="h2" size="lg">
+          <Heading as="h2" size="xl" py={4}>
             Unauthorized Networks
           </Heading>
           <Wrap spacing={8}>
@@ -237,7 +240,7 @@ function Networks({ authToken }: Props): JSX.Element {
       )}
       {otherNetworks.length > 0 && (
         <Box py={4}>
-          <Heading as="h2" size="lg">
+          <Heading as="h2" size="xl" py={4}>
             Other Networks
           </Heading>
           <Wrap spacing={8}>

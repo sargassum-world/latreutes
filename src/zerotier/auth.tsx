@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check';
-import { Button, Input, Text } from '@chakra-ui/react';
+import { Button, Text } from '@chakra-ui/react';
 
 import { AUTHTOKEN_FILENAME } from '../shared/config';
 import { invalidateCache } from './service';
@@ -47,7 +47,7 @@ function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
       }
       return <Text>Loading auth token...</Text>;
     case 'success':
-      return <Text>{`Loaded auth token from: ${tokenPath}`}</Text>;
+      return <Text>Loaded auth token.</Text>;
     case 'error':
       return (
         <Text>
@@ -61,30 +61,11 @@ function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
   }
 }
 
-interface TokenProps {
-  token: string | undefined;
-}
-function Token({ token }: TokenProps) {
-  return (
-    <Text>
-      Auth token:{' '}
-      <Input
-        name="authToken"
-        type="text"
-        value={token}
-        placeholder="Loading..."
-        readOnly
-      />
-    </Text>
-  );
-}
-
 interface Props {
   configDirPath: string | undefined;
-  token: string | undefined;
   tokenStatus: string;
 }
-function Auth({ configDirPath, token, tokenStatus }: Props): JSX.Element {
+function Auth({ configDirPath, tokenStatus }: Props): JSX.Element {
   const queryClient = useQueryClient();
 
   return (
@@ -99,7 +80,6 @@ function Auth({ configDirPath, token, tokenStatus }: Props): JSX.Element {
         </Button>
       </Text>
       <StatusMessage configDirPath={configDirPath} tokenStatus={tokenStatus} />
-      <Token token={token} />
     </>
   );
 }

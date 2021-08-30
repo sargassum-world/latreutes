@@ -1,6 +1,7 @@
 import React from 'react';
 import { UseQueryResult, useQuery } from 'react-query';
 import { Response } from '@tauri-apps/api/http';
+import { Text } from '@chakra-ui/react';
 
 import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service';
 
@@ -47,7 +48,9 @@ function Node({ authToken }: Props): JSX.Element {
   }
 
   if (nodeResponse === undefined) {
-    return <p>Error: response is undefined even though request succeeded.</p>;
+    return (
+      <Text>Error: response is undefined even though request succeeded.</Text>
+    );
   }
 
   const { address, online, tcpFallbackActive: onFallback } = nodeResponse.data;
@@ -58,8 +61,8 @@ function Node({ authToken }: Props): JSX.Element {
 
   return (
     <>
-      <p>Node ID: {address}</p>
-      <p>Status: {statusMessage}</p>
+      <Text>Node ID: {address}</Text>
+      <Text>Status: {statusMessage}</Text>
     </>
   );
 }

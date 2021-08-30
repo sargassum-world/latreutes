@@ -4,7 +4,7 @@ import { Flex, Heading, Text } from '@chakra-ui/react';
 interface Props {
   error: string;
 }
-function LandingPage({ error }: Props): JSX.Element {
+function ErrorPage({ error }: Props): JSX.Element {
   return (
     <Flex flexGrow={1} alignItems="center" justifyContent="center">
       <Flex direction="column" p={12}>
@@ -15,4 +15,4 @@ function LandingPage({ error }: Props): JSX.Element {
   );
 }
 
-export default LandingPage;
+export default ErrorPage;
