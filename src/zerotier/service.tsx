@@ -1,6 +1,7 @@
 import React from 'react';
 import { QueryClient } from 'react-query';
 import { HttpVerb, Response, fetch } from '@tauri-apps/api/http';
+import { Text } from '@chakra-ui/react';
 
 export const QUERY_KEY_ZT = ['latreutes', 'zerotier'];
 const SERVICE_HOST_ZT = 'http://127.0.0.1:9993';
@@ -10,7 +11,8 @@ type Empty = Record<string, never>;
 export function fetcher<ResponseData>(
   route: string[],
   method: HttpVerb,
-  authToken: string
+  authToken: string,
+  emptyError = false
 ) {
   return async (): Promise<Response<ResponseData>> => {
     let response;
@@ -25,6 +27,7 @@ export function fetcher<ResponseData>(
       );
     }
     if (
+      emptyError &&
       response.data instanceof Object &&
       Object.keys(response.data).length === 0
     ) {
@@ -45,12 +48,12 @@ export function ErrorRenderer(
   switch (status) {
     case 'idle':
     case 'loading':
-      return <p>Loading...</p>;
+      return <Text>Loading...</Text>;
     case 'error':
       if (error === null) {
-        return <p>Error: unknown</p>;
+        return <Text>Error: unknown</Text>;
       }
-      return <p>Error: {error.message}</p>;
+      return <Text>Error: {error.message}</Text>;
     default:
       return undefined;
   }

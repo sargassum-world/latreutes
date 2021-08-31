@@ -23,10 +23,10 @@
       ],
       "resources": [],
       "externalBin": [],
-      "copyright": "",
-      "category": "DeveloperTool",
-      "shortDescription": "",
-      "longDescription": "",
+      "copyright": "Copyright Sargassum Project contributors",
+      "category": "Utility",
+      "shortDescription": "Desktop client for browsing and connecting to Sargassum networks.",
+      "longDescription": "This application provides a more user-friendly way of discovering and joining ZeroTier networks, using DNS-based hostnames as well as public registries of networks.",
       "deb": {
         "depends": [],
         "useBootstrapper": false
@@ -54,8 +54,10 @@
     "windows": [
       {
         "title": "Latreutes",
-        "width": 800,
+        "width": 600,
         "height": 600,
+        "minWidth": 400,
+        "minHeight": 400,
         "resizable": true,
         "fullscreen": false
       }

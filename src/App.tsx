@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import {
   ChakraProvider,
@@ -10,49 +10,45 @@ import { mode } from '@chakra-ui/theme-tools';
 import { CloseIcon } from '@chakra-ui/icons';
 
 import { useConfigPath, useAuthToken } from './shared/config';
+import { ContentContainer } from './shared/layout';
 
 import Auth from './zerotier/auth';
 import Node from './zerotier/node';
 import Networks from './zerotier/networks';
 import Peers from './zerotier/peers';
 
-import { LogicalSize, useWindowMinSizeSetter } from './app/window';
 import Navbar from './app/navbar';
 import HomePage from './app/main/home-page';
 import LandingPage from './app/main/landing-page';
 import ErrorPage from './app/main/error-page';
 
-interface MainContainerProps {
-  children: ReactNode;
-}
-function MainContainer({ children }: MainContainerProps) {
-  return (
-    <Flex
-      flexGrow={1}
-      p={{ base: 4, lg: 8 }}
-      direction="column"
-      overflow="auto"
-    >
-      {children}
-    </Flex>
-  );
-}
-
 interface AuthenticatedPageProps {
   Component: ({ authToken }: { authToken: string }) => JSX.Element;
+  pad?: boolean;
   authToken: string | undefined;
 }
-function AuthenticatedPage({ Component, authToken }: AuthenticatedPageProps) {
+function AuthenticatedPage({
+  Component,
+  pad,
+  authToken,
+}: AuthenticatedPageProps) {
   if (authToken === undefined) {
     return (
-      <MainContainer>
+      <ContentContainer pad>
         <ErrorPage error="Missing auth token!" />
-      </MainContainer>
+      </ContentContainer>
     );
   }
 
-  return <Component authToken={authToken} />;
+  return (
+    <ContentContainer pad={pad}>
+      <Component authToken={authToken} />
+    </ContentContainer>
+  );
 }
+AuthenticatedPage.defaultProps = {
+  pad: false,
+};
 
 interface MainContentProps {
   configDirPath: string | undefined;
@@ -65,41 +61,28 @@ function MainContent({
   authTokenStatus,
 }: MainContentProps) {
   return (
-    <MainContainer>
-      <Switch>
-        <Route exact path="/">
-          <MainContainer>
-            <HomePage />
-          </MainContainer>
-        </Route>
-        <Route path="/auth">
+    <Switch>
+      <Route exact path="/">
+        <ContentContainer pad>
+          <HomePage />
+        </ContentContainer>
+      </Route>
+      <Route path="/auth">
+        <ContentContainer>
           <Auth configDirPath={configDirPath} tokenStatus={authTokenStatus} />
-        </Route>
-        <Route path="/node">
-          <AuthenticatedPage Component={Node} authToken={authToken} />
-        </Route>
-        <Route path="/networks">
-          <AuthenticatedPage Component={Networks} authToken={authToken} />
-        </Route>
-        <Route path="/peers">
-          <AuthenticatedPage Component={Peers} authToken={authToken} />
-        </Route>
-      </Switch>
-    </MainContainer>
+        </ContentContainer>
+      </Route>
+      <Route path="/node">
+        <AuthenticatedPage Component={Node} pad authToken={authToken} />
+      </Route>
+      <Route path="/networks">
+        <AuthenticatedPage Component={Networks} authToken={authToken} />
+      </Route>
+      <Route path="/peers">
+        <AuthenticatedPage Component={Peers} pad authToken={authToken} />
+      </Route>
+    </Switch>
   );
-}
-
-function WindowSizer() {
-  const windowMinSizeSetter = useWindowMinSizeSetter();
-
-  useEffect(() => {
-    windowMinSizeSetter.mutate(new LogicalSize(500, 500));
-    // We only want the window sizing to run exactly once when the component mounts,
-    // or else it runs in an infinite loop. So we have to remove the dependencies.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return <></>;
 }
 
 function MainWindow() {
@@ -113,11 +96,10 @@ function MainWindow() {
   if (showLanding && authTokenMissing) {
     return (
       <Flex direction={{ base: 'column', lg: 'row' }} height="100vh">
-        <WindowSizer />
         <Navbar links={[]} />
-        <MainContainer>
+        <ContentContainer pad>
           <LandingPage />
-        </MainContainer>
+        </ContentContainer>
         <Flex alignItems="center" justifyContent="center">
           <Flex direction="column" p={12}>
             <IconButton
@@ -146,7 +128,6 @@ function MainWindow() {
 
   return (
     <Flex direction={{ base: 'column', lg: 'row' }} height="100vh">
-      <WindowSizer />
       <Navbar links={menuItems} />
       <MainContent
         configDirPath={configDirPath}
@@ -158,11 +139,12 @@ function MainWindow() {
 }
 
 const theme = extendTheme({
+  colors: { black: '#12141c' },
   styles: {
     global: (props: { colorMode: string; theme: string }) => ({
       'div.navbar': {
         'a.active': {
-          backgroundColor: mode('gray.300', 'gray.600')(props),
+          backgroundColor: mode('gray.400', 'gray.800')(props),
         },
       },
     }),

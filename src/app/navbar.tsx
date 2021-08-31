@@ -25,7 +25,7 @@ const NavLink = ({ children, href, exact }: NavLinkProps) => (
     py={2}
     _hover={{
       textDecoration: 'none',
-      bg: useColorModeValue('gray.200', 'gray.700'),
+      bg: useColorModeValue('gray.400', 'gray.800'),
     }}
     to={href}
     as={RouterNavLink}
@@ -63,7 +63,7 @@ function Navbar({ links }: Props): JSX.Element {
   return (
     <Box
       className="navbar"
-      bg={useColorModeValue('gray.100', 'gray.900')}
+      bg={useColorModeValue('gray.300', 'black')}
       px={4}
       py={{ lg: 4 }}
     >
