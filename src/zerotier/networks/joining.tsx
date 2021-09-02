@@ -17,6 +17,7 @@ import {
 import { useTxtResolver } from '../../dns/lookup';
 
 import { QUERY_REFETCH, useNetworkStatus, useNetworkJoiner } from './service';
+import { NetworkId } from './network';
 import DNS_ZT_NETWORK_KEY from './dns';
 
 // Components
@@ -40,11 +41,15 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
     return <></>;
   }
 
-  // Bug: if NetworkIdJoiner is merely redrawn when the props change, rather than
+  // Note: if NetworkIdJoiner is merely redrawn when the props change, rather than
   // being destroyed and created again, then joined will not reset, even though
   // we want it to reset!
   if (joined) {
-    return <Text>Attempted to join {networkId}!</Text>;
+    return (
+      <Text>
+        Attempted to join <NetworkId networkId={networkId} />!
+      </Text>
+    );
   }
 
   if (networkResponse !== undefined) {
@@ -52,8 +57,9 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
     if (network.id === networkId) {
       return (
         <Text>
-          This device has already joined the network with ZeroTier network&nbsp;
-          ID <Code>{networkId}.</Code>
+          This device has already joined the network with ZeroTier network
+          ID&nbsp;
+          <NetworkId networkId={networkId} />.
         </Text>
       );
     }
@@ -61,7 +67,13 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
 
   networkJoiner.mutate(networkId);
   setJoined(true);
-  return <Text>Joining {networkId}...</Text>;
+  return (
+    <Text>
+      Joining&nbsp;
+      <NetworkId networkId={networkId} />
+      ...
+    </Text>
+  );
 }
 
 interface HostnameJoinerProps {
@@ -130,8 +142,8 @@ function HostnameJoiner({ hostname, authToken }: HostnameJoinerProps) {
   return (
     <>
       <Text>
-        The network at <Code>{hostname}</Code> has ZeroTier&nbsp; network ID{' '}
-        <Code>{ztNetworkId}</Code>.
+        The network at <Code>{hostname}</Code> has ZeroTier network ID{' '}
+        <NetworkId networkId={ztNetworkId} />.
       </Text>
       <NetworkIdJoiner networkId={ztNetworkId} authToken={authToken} />
     </>

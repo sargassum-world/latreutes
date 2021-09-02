@@ -250,22 +250,21 @@ function Peers({ authToken }: Props): JSX.Element {
   const renderedError = ErrorRenderer(status, error);
   if (renderedError !== undefined) {
     return (
-      <>
-        <Heading as="h1" size="2xl" py={4}>
+      <Box py={4}>
+        <Heading as="h1" size="xl" py={4}>
           Peers
         </Heading>
-        renderedError
-      </>
+        {renderedError}
+      </Box>
     );
   }
 
   if (peersResponse === undefined) {
     return (
       <>
-        <Heading as="h1" size="2xl" py={4}>
+        <Heading as="h1" size="xl" py={4}>
           Peers
         </Heading>
-        renderedError
         <Text>Error: response is undefined even though request succeeded.</Text>
       </>
     );

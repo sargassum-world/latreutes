@@ -39,6 +39,24 @@ export function splitNetworkId(networkId: string): NetworkSplitId {
   };
 }
 
+interface NetworkIdProps {
+  networkId: string;
+}
+export function NetworkId({ networkId }: NetworkIdProps): JSX.Element {
+  const { hostNodeId, networkNumber } = splitNetworkId(networkId);
+
+  return (
+    <>
+      <Code colorScheme="blue" pr={0}>
+        {hostNodeId}
+      </Code>
+      <Code colorScheme="teal" pl={0}>
+        {networkNumber}
+      </Code>
+    </>
+  );
+}
+
 // Components
 
 interface NetworkDetailsProps {

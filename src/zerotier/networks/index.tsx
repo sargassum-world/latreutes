@@ -14,6 +14,7 @@ import {
   ButtonGroup,
   Heading,
   Text,
+  Code,
   useDisclosure,
 } from '@chakra-ui/react';
 
@@ -23,7 +24,7 @@ import { ErrorRenderer } from '../service';
 
 import { NetworkStatus, useNetworksStatus } from './service';
 import JoinerForm from './joining';
-import Network from './network';
+import Network, { NetworkId } from './network';
 
 // Components
 
@@ -39,12 +40,22 @@ function NetworksList({ authToken }: Props): JSX.Element {
 
   const renderedError = ErrorRenderer(status, error);
   if (renderedError !== undefined) {
-    return renderedError;
+    <ContentContainer pad>
+      <Heading as="h1" size="xl" pt={4}>
+        Networks
+      </Heading>
+      {renderedError}
+    </ContentContainer>;
   }
 
   if (networksResponse === undefined) {
     return (
-      <Text>Error: response is undefined even though request succeeded.</Text>
+      <ContentContainer pad>
+        <Heading as="h1" size="xl" pt={4}>
+          Networks
+        </Heading>
+        <Text>Error: response is undefined even though request succeeded.</Text>
+      </ContentContainer>
     );
   }
 
@@ -63,7 +74,7 @@ function NetworksList({ authToken }: Props): JSX.Element {
     <ContentContainer pad>
       {!hasAnyNetworks && (
         <>
-          <Heading mb={6} size="xl">
+          <Heading mb={6} size="xl" pt={4}>
             Welcome!
           </Heading>
           <Text>
@@ -139,8 +150,10 @@ function Networks({ authToken }: Props): JSX.Element {
             <Text>
               You can join a network by providing the network&apos;s identifier
               as either a hostname or URL (such as&nbsp;
-              <Text as="samp">prakashlab.dedyn.io</Text>) or a ZeroTier network
-              ID (such as <Text as="samp">1c33c1ced015c144</Text>).
+              <Code>prakashlab.dedyn.io</Code>) or a ZeroTier network
+              ID (such as&nbsp;
+              <NetworkId networkId="1c33c1ced015c144" />
+              ).
             </Text>
             <JoinerForm onClose={onJoinClose} authToken={authToken} />
           </DrawerBody>

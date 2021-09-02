@@ -46,7 +46,7 @@ function Node({ authToken }: Props): JSX.Element {
 
   const renderedError = ErrorRenderer(status, error);
   if (renderedError !== undefined) {
-    return renderedError;
+    return <CenteredContainer>renderedError</CenteredContainer>;
   }
 
   if (nodeResponse === undefined) {
