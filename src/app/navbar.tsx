@@ -18,8 +18,9 @@ interface NavLinkProps {
   href: string;
   children: ReactNode;
   exact: boolean;
+  onClick(): void;
 }
-const NavLink = ({ children, href, exact }: NavLinkProps) => (
+const NavLink = ({ children, href, exact, onClick }: NavLinkProps) => (
   <Link
     px={2}
     py={2}
@@ -30,6 +31,7 @@ const NavLink = ({ children, href, exact }: NavLinkProps) => (
     to={href}
     as={RouterNavLink}
     exact={exact}
+    onClick={onClick}
   >
     {children}
   </Link>
@@ -42,12 +44,13 @@ interface MenuEntry {
 }
 interface NavLinksProps {
   links: MenuEntry[];
+  onClick(): void;
 }
-function NavLinks({ links }: NavLinksProps) {
+function NavLinks({ links, onClick }: NavLinksProps) {
   return (
     <>
       {links.map(({ href, name, exact }) => (
-        <NavLink key={name} href={href} exact={exact}>
+        <NavLink key={name} href={href} exact={exact} onClick={onClick}>
           {name}
         </NavLink>
       ))}
@@ -55,7 +58,9 @@ function NavLinks({ links }: NavLinksProps) {
   );
 }
 
-type Props = NavLinksProps;
+interface Props {
+  links: MenuEntry[];
+}
 function Navbar({ links }: Props): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { toggleColorMode } = useColorMode();
@@ -86,7 +91,7 @@ function Navbar({ links }: Props): JSX.Element {
           spacing={4}
           display={{ base: 'none', sm: 'flex' }}
         >
-          <NavLinks links={links} />
+          <NavLinks links={links} onClick={onClose} />
         </Stack>
         <Spacer />
         <IconButton
@@ -100,7 +105,7 @@ function Navbar({ links }: Props): JSX.Element {
       {isOpen ? (
         <Box pb={4} display={{ sm: 'none' }}>
           <Stack as="nav" spacing={4}>
-            <NavLinks links={links} />
+            <NavLinks links={links} onClick={onClose} />
             <Button aria-label="Toggle theme color" onClick={toggleColorMode}>
               Toggle Theme Color
             </Button>

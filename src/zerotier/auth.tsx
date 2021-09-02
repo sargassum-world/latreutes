@@ -4,6 +4,8 @@ import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check';
 import { Button, Text } from '@chakra-ui/react';
 
 import { AUTHTOKEN_FILENAME } from '../shared/config';
+import { CenteredContainer } from '../shared/layout';
+
 import { invalidateCache } from './service';
 
 // Components
@@ -69,7 +71,7 @@ function Auth({ configDirPath, tokenStatus }: Props): JSX.Element {
   const queryClient = useQueryClient();
 
   return (
-    <>
+    <CenteredContainer>
       <Text>
         <Button
           onClick={() => {
@@ -80,7 +82,7 @@ function Auth({ configDirPath, tokenStatus }: Props): JSX.Element {
         </Button>
       </Text>
       <StatusMessage configDirPath={configDirPath} tokenStatus={tokenStatus} />
-    </>
+    </CenteredContainer>
   );
 }
 
