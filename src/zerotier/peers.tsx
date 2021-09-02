@@ -1,9 +1,34 @@
 import React from 'react';
 import { UseQueryResult, useQuery } from 'react-query';
 import { Response } from '@tauri-apps/api/http';
-import { Box, Wrap, WrapItem, Heading, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Stack,
+  Wrap,
+  WrapItem,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Tag,
+  Heading,
+  Text,
+  Code,
+} from '@chakra-ui/react';
+
+import {
+  Card,
+  CardHeader,
+  CardToolbar,
+  CardBody,
+  CardFooter,
+} from '../shared/layout';
+import { useReverseResolver } from '../dns/lookup';
 
 import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service';
+import { useNetworksStatus } from './networks/service';
+import { splitNetworkId } from './networks/network';
 
 // Queries
 
@@ -46,63 +71,172 @@ interface PathProps {
   path: PathStatus;
 }
 function Path({ path }: PathProps) {
+  const { data: reverseRecords, status } = useReverseResolver(
+    path.address.split('/')[0]
+  );
+
   return (
-    <li>
-      {path.address}
-      {path.active ? '' : '(Inactive)'}
-      {path.expired ? '(Expired)' : ''}
-      {path.preferred ? '(Preferred)' : ''}
-      <br />
-      Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(
-        1
-      )}{' '}
-      seconds ago
-      <br />
-      Last received{' '}
-      {((new Date().getTime() - path.lastReceive) / 1000).toFixed(1)} seconds
-      ago
-    </li>
+    <Box py={2}>
+      <Text>
+        <Code colorScheme="purple">{path.address}</Code>&nbsp;
+        {!path.active && (
+          <Tag colorScheme="pink" variant="solid">
+            Inactive
+          </Tag>
+        )}
+        {path.expired && (
+          <Tag colorScheme="red" variant="solid">
+            Expired
+          </Tag>
+        )}
+        {path.preferred && (
+          <Tag colorScheme="green" variant="solid">
+            Preferred
+          </Tag>
+        )}
+      </Text>
+      {status === 'success' &&
+        reverseRecords !== undefined &&
+        reverseRecords.map((hostname) => <Code>{hostname}</Code>)}
+      <Text>
+        Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(1)}
+        &nbsp;s ago
+      </Text>
+      <Text>
+        Last received&nbsp;
+        {((new Date().getTime() - path.lastReceive) / 1000).toFixed(1)} seconds
+        ago
+      </Text>
+    </Box>
+  );
+}
+
+interface PeerNameProps {
+  peer: PeerStatus;
+}
+function PeerName({ peer }: PeerNameProps) {
+  return (
+    <Heading as="h3" size="md">
+      <Code colorScheme="blue" pr={0} size="md" mb={1} fontWeight={400}>
+        {peer.address}
+      </Code>
+    </Heading>
   );
 }
 
 interface PeerProps {
   peer: PeerStatus;
+  authToken: string;
 }
-function Peer({ peer }: PeerProps) {
+function ToolbarBadges({ peer, authToken }: PeerProps) {
+  const { data: networksResponse, status } = useNetworksStatus(authToken);
+
+  let isNetworkHost = false;
+  if (status === 'success' && networksResponse !== undefined) {
+    const networks = networksResponse.data;
+    const networkHosts = networks.map(
+      (network) => splitNetworkId(network.id).hostNodeId
+    );
+    isNetworkHost = networkHosts.includes(peer.address);
+  }
+
   return (
-    <div>
-      <Heading as="h3" size="md">
-        {peer.address}
-      </Heading>
-      <table>
-        <tr>
-          <th>Node ID</th>
-          <td>{peer.address}</td>
-        </tr>
-        <tr>
-          <th>Role</th>
-          <td>{peer.role}</td>
-        </tr>
-        <tr>
-          <th>Estimated Latency</th>
-          <td>{peer.latency >= 0 ? peer.latency : 'N/A'}</td>
-        </tr>
-        <tr>
-          <th>Paths</th>
-          <td>
-            {peer.paths.length === 0 ? (
-              'No paths found'
-            ) : (
-              <ul>
-                {peer.paths?.map((path) => (
-                  <Path path={path} />
-                ))}
-              </ul>
-            )}
-          </td>
-        </tr>
-      </table>
-    </div>
+    <>
+      {peer.role === 'ROOT' && (
+        <Tag colorScheme="green" variant="solid" size="md">
+          Root
+        </Tag>
+      )}
+      {peer.role === 'PLANET' && (
+        <Tag colorScheme="green" variant="solid" size="md">
+          Planet
+        </Tag>
+      )}
+      {peer.role === 'UPSTREAM' && (
+        <Tag colorScheme="green" variant="solid" size="md">
+          Upstream
+        </Tag>
+      )}
+      {peer.role === 'LEAF' && (
+        <>
+          <Tag colorScheme="green" variant="solid" size="md">
+            Leaf
+          </Tag>
+        </>
+      )}
+      {isNetworkHost && (
+        <>
+          &nbsp;
+          <Tag colorScheme="green" variant="solid" size="md">
+            Network Host
+          </Tag>
+        </>
+      )}
+    </>
+  );
+}
+function Peer({ peer, authToken }: PeerProps) {
+  return (
+    <Card width="100%">
+      <CardHeader>
+        <PeerName peer={peer} />
+      </CardHeader>
+      <CardToolbar>
+        <ToolbarBadges peer={peer} authToken={authToken} />
+      </CardToolbar>
+      <CardBody>
+        <Heading as="h4" size="sm" mt={2}>
+          ZeroTier Network ID
+        </Heading>
+        <Code colorScheme="blue" pr={0}>
+          {peer.address}
+        </Code>
+        <Heading as="h4" size="sm" mt={2}>
+          Estimated Latency
+        </Heading>
+        {peer.latency >= 0 ? (
+          `${peer.latency} ms`
+        ) : (
+          <Tag colorScheme="pink" variant="solid">
+            Unknown
+          </Tag>
+        )}
+        <Heading as="h4" size="sm" mt={2}>
+          Version
+        </Heading>
+        {peer.versionMajor >= 0 ? (
+          `${peer.versionMajor}.${peer.versionMinor}.${peer.versionRev}`
+        ) : (
+          <Tag colorScheme="pink" variant="solid">
+            Unknown
+          </Tag>
+        )}
+        <Accordion allowMultiple mt={4} mb={-6}>
+          <AccordionItem>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                Active Physical Paths
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+            <AccordionPanel>
+              {peer.paths.length > 0 ? (
+                <Stack spacing={0}>
+                  {peer.paths?.map((path) => (
+                    <Path path={path} />
+                  ))}
+                </Stack>
+              ) : (
+                <Tag colorScheme="pink" variant="solid">
+                  None
+                </Tag>
+              )}
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </CardBody>
+      <CardFooter />
+    </Card>
   );
 }
 
@@ -115,12 +249,25 @@ function Peers({ authToken }: Props): JSX.Element {
 
   const renderedError = ErrorRenderer(status, error);
   if (renderedError !== undefined) {
-    return renderedError;
+    return (
+      <>
+        <Heading as="h1" size="2xl" py={4}>
+          Peers
+        </Heading>
+        renderedError
+      </>
+    );
   }
 
   if (peersResponse === undefined) {
     return (
-      <Text>Error: response is undefined even though request succeeded.</Text>
+      <>
+        <Heading as="h1" size="2xl" py={4}>
+          Peers
+        </Heading>
+        renderedError
+        <Text>Error: response is undefined even though request succeeded.</Text>
+      </>
     );
   }
 
@@ -132,15 +279,15 @@ function Peers({ authToken }: Props): JSX.Element {
 
   return (
     <>
-      {rootServers.length > 0 && (
+      {leafPeers.length > 0 && (
         <Box py={4}>
           <Heading as="h2" size="xl" py={4}>
-            ZeroTier Root Servers
+            Peers
           </Heading>
           <Wrap spacing={8}>
-            {rootServers.map((peer: PeerStatus) => (
+            {leafPeers.map((peer: PeerStatus) => (
               <WrapItem width="28em">
-                <Peer peer={peer} />
+                <Peer peer={peer} authToken={authToken} />
               </WrapItem>
             ))}
           </Wrap>
@@ -149,12 +296,12 @@ function Peers({ authToken }: Props): JSX.Element {
       {rootServers.length > 0 && (
         <Box py={4}>
           <Heading as="h2" size="xl" py={4}>
-            Leaf Peers
+            Peer Introducers
           </Heading>
           <Wrap spacing={8}>
-            {leafPeers.map((peer: PeerStatus) => (
+            {rootServers.map((peer: PeerStatus) => (
               <WrapItem width="28em">
-                <Peer peer={peer} />
+                <Peer peer={peer} authToken={authToken} />
               </WrapItem>
             ))}
           </Wrap>

@@ -23,7 +23,7 @@ import {
   CardBody,
   CardFooter,
 } from '../../shared/layout';
-import useTxtResolver from '../../dns/lookup';
+import { useTxtResolver } from '../../dns/lookup';
 
 import { Route, NetworkStatus, useNetworkLeaver } from './service';
 import DNS_ZT_NETWORK_KEY from './dns';
@@ -32,7 +32,7 @@ interface NetworkSplitId {
   hostNodeId: string;
   networkNumber: string;
 }
-function splitNetworkId(networkId: string): NetworkSplitId {
+export function splitNetworkId(networkId: string): NetworkSplitId {
   return {
     hostNodeId: networkId.slice(0, 10),
     networkNumber: networkId.slice(10),
@@ -108,14 +108,20 @@ function ToolbarBadges({ network }: NetworkDetailsProps) {
         </Tag>
       )}
       {network.type === 'PUBLIC' && (
-        <Tag colorScheme="pink" variant="solid" size="md">
-          Public
-        </Tag>
+        <>
+          &nbsp;
+          <Tag colorScheme="pink" variant="solid" size="md">
+            Public
+          </Tag>
+        </>
       )}
-      {network.type === 'PUBLIC' && (
-        <Tag colorScheme="teal" variant="solid" size="md">
-          Bridge
-        </Tag>
+      {network.bridge && (
+        <>
+          &nbsp;
+          <Tag colorScheme="teal" variant="solid" size="md">
+            Bridge
+          </Tag>
+        </>
       )}
     </>
   );

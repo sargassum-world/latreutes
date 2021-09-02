@@ -27,10 +27,10 @@ import Network from './network';
 
 // Components
 
-interface NetworksListProps {
+interface Props {
   authToken: string;
 }
-function NetworksList({ authToken }: NetworksListProps): JSX.Element {
+function NetworksList({ authToken }: Props): JSX.Element {
   const {
     data: networksResponse,
     status,
@@ -104,10 +104,6 @@ function NetworksList({ authToken }: NetworksListProps): JSX.Element {
       )}
     </ContentContainer>
   );
-}
-
-interface Props {
-  authToken: string;
 }
 function Networks({ authToken }: Props): JSX.Element {
   const {

@@ -148,7 +148,16 @@ const theme = extendTheme({
     mono: 'Oxygen Mono',
   },
   colors: { black: '#12141c' },
+  initialColorMode: 'light',
+  useSystemColorMode: true,
   components: {
+    Link: {
+      variants: {
+        colored: {
+          color: 'teal',
+        },
+      },
+    },
     Code: {
       sizes: {
         xs: {

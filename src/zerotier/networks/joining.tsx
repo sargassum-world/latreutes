@@ -14,7 +14,7 @@ import {
   Code,
 } from '@chakra-ui/react';
 
-import useTxtResolver from '../../dns/lookup';
+import { useTxtResolver } from '../../dns/lookup';
 
 import { QUERY_REFETCH, useNetworkStatus, useNetworkJoiner } from './service';
 import DNS_ZT_NETWORK_KEY from './dns';
