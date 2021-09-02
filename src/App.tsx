@@ -8,6 +8,9 @@ import {
 } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
 import { CloseIcon } from '@chakra-ui/icons';
+import '@fontsource/atkinson-hyperlegible/400.css';
+import '@fontsource/atkinson-hyperlegible/700.css';
+import '@fontsource/oxygen-mono/400.css';
 
 import { useConfigPath, useAuthToken } from './shared/config';
 import { ContentContainer } from './shared/layout';
@@ -139,6 +142,11 @@ function MainWindow() {
 }
 
 const theme = extendTheme({
+  fonts: {
+    heading: 'Atkinson Hyperlegible',
+    body: 'Atkinson Hyperlegible',
+    mono: 'Oxygen Mono',
+  },
   colors: { black: '#12141c' },
   components: {
     Code: {

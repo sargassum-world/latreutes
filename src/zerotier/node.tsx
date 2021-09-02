@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseQueryResult, useQuery } from 'react-query';
 import { Response } from '@tauri-apps/api/http';
-import { Text } from '@chakra-ui/react';
+import { Text, Code } from '@chakra-ui/react';
 
 import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service';
 
@@ -61,7 +61,9 @@ function Node({ authToken }: Props): JSX.Element {
 
   return (
     <>
-      <Text>Node ID: {address}</Text>
+      <Text>
+        Node ID: <Code colorScheme="blue">{address}</Code>
+      </Text>
       <Text>Status: {statusMessage}</Text>
     </>
   );

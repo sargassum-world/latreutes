@@ -1901,6 +1901,16 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fontsource/atkinson-hyperlegible@^4.5.1":
+  version "4.5.1"
+  resolved "https://registry.yarnpkg.com/@fontsource/atkinson-hyperlegible/-/atkinson-hyperlegible-4.5.1.tgz#7d14141d4b3f2ad6b1bd9f785fa6961c3ad28a07"
+  integrity sha512-ohzzQVkjj9YBMZx3cmxDBPPjN1nbDU8tVbgHjD3ViDsto97ONxcegYeUA5Fa8bUpTHYhLZSRWYASSU0e96r3JQ==
+
+"@fontsource/oxygen-mono@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/oxygen-mono/-/oxygen-mono-4.5.0.tgz#227111a15f235f9b5a3c80188a0b4f4344c0133c"
+  integrity sha512-lJWuYK3Kie70zQxLGhxcyHnKVM/zEOPezc18dhplqkx7Yy7NPTcM916D0NuA1OiCTheLxrCIEjtOu0omqoQHjw==
+
 "@hapi/address@2.x.x":
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/@hapi/address/-/address-2.1.4.tgz#5d67ed43f3fd41a69d4b9ff7b56e7c0d1d0a81e5"

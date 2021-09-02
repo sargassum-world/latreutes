@@ -8,6 +8,8 @@
     "@chakra-ui/theme-tools": "^1.2.0",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@fontsource/atkinson-hyperlegible": "^4.5.1",
+    "@fontsource/oxygen-mono": "^4.5.0",
     "@tauri-apps/api": "^1.0.0-beta.6",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",

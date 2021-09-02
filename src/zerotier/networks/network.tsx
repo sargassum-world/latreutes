@@ -59,7 +59,7 @@ function NetworkName({ network }: NetworkDetailsProps) {
       );
       if (ztNetworkId === network.id) {
         return (
-          <Heading as="h3" size="md">
+          <Heading as="h3" size="md" mb={1}>
             {network.name}
           </Heading>
         );
@@ -69,19 +69,13 @@ function NetworkName({ network }: NetworkDetailsProps) {
 
   return (
     <Heading as="h3" size="md">
-      <Code colorScheme="blue" pr={0} size="md" mb={1}>
+      <Code colorScheme="blue" pr={0} size="md" mb={1} fontWeight={400}>
         {hostNodeId}
       </Code>
-      <Code colorScheme="teal" pl={0} size="md" mb={1}>
+      <Code colorScheme="teal" pl={0} size="md" mb={1} fontWeight={400}>
         {networkNumber}
       </Code>
-      {!!network.name && (
-        <>
-          <Text as="em" fontSize="sm">
-            &nbsp;{network.name}
-          </Text>
-        </>
-      )}
+      {!!network.name && <> {network.name}</>}
     </Heading>
   );
 }
@@ -89,37 +83,37 @@ function ToolbarBadges({ network }: NetworkDetailsProps) {
   return (
     <>
       {network.status === 'OK' && (
-        <Tag colorScheme="green" variant="solid">
+        <Tag colorScheme="green" variant="solid" size="md">
           Authorized
         </Tag>
       )}
       {network.status === 'REQUESTING_CONFIGURATION' && (
-        <Tag colorScheme="green" variant="solid">
+        <Tag colorScheme="green" variant="solid" size="md">
           Requesting Information
         </Tag>
       )}
       {network.status === 'ACCESS_DENIED' && (
-        <Tag colorScheme="red" variant="solid">
+        <Tag colorScheme="red" variant="solid" size="md">
           Access Denied
         </Tag>
       )}
       {network.status === 'NOT_FOUND' && (
-        <Tag colorScheme="red" variant="solid">
+        <Tag colorScheme="red" variant="solid" size="md">
           Not Found
         </Tag>
       )}
       {network.status === 'PORT_ERROR' && (
-        <Tag colorScheme="red" variant="solid">
+        <Tag colorScheme="red" variant="solid" size="md">
           Port Error {network.portError}
         </Tag>
       )}
       {network.type === 'PUBLIC' && (
-        <Tag colorScheme="pink" variant="solid">
+        <Tag colorScheme="pink" variant="solid" size="md">
           Public
         </Tag>
       )}
       {network.type === 'PUBLIC' && (
-        <Tag colorScheme="teal" variant="solid">
+        <Tag colorScheme="teal" variant="solid" size="md">
           Bridge
         </Tag>
       )}
@@ -261,7 +255,7 @@ function Network({ network, authToken }: NetworkProps): JSX.Element {
         <ToolbarBadges network={network} />
       </CardToolbar>
       <CardBody>
-        <Accordion allowMultiple>
+        <Accordion allowMultiple mt={-4} mb={-6} mx={-4}>
           <AccordionItem>
             <AccordionButton>
               <Box flex="1" textAlign="left">

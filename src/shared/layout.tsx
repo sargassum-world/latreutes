@@ -41,7 +41,13 @@ export function ContentContainer({
     padding = { base: 4, lg: 8 };
   }
   return (
-    <Flex flexGrow={1} p={padding} direction="column" overflow="auto">
+    <Flex
+      flexGrow={1}
+      px={padding}
+      pb={padding}
+      direction="column"
+      overflow="auto"
+    >
       {children}
     </Flex>
   );
@@ -106,11 +112,7 @@ export function CardBody({ children }: ContainerProps): JSX.Element {
 }
 export function CardFooter({ children }: OptionalContainerProps): JSX.Element {
   if (children === undefined) {
-    return (
-      <Box mb={{ base: -4, sm: -8 }} mx={{ base: -4, sm: -8 }} p={2}>
-        {children}
-      </Box>
-    );
+    return <Box mb={{ base: -4, sm: -8 }} mx={{ base: -4, sm: -8 }} p={4} />;
   }
 
   return (

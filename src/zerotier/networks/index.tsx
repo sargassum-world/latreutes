@@ -75,7 +75,7 @@ function NetworksList({ authToken }: NetworksListProps): JSX.Element {
         </>
       )}
       {hasConnectedNetworks && (
-        <Box py={4}>
+        <Box>
           <Heading as="h2" size="xl" py={4}>
             Connected Networks
           </Heading>
@@ -89,7 +89,7 @@ function NetworksList({ authToken }: NetworksListProps): JSX.Element {
         </Box>
       )}
       {hasOtherNetworks && (
-        <Box py={4}>
+        <Box>
           <Heading as="h2" size="xl" py={4}>
             Other Networks
           </Heading>
