@@ -24,11 +24,11 @@ import {
   CardBody,
   CardFooter,
 } from '../shared/layout';
-import { useReverseResolver } from '../dns/lookup';
+import { useReverseResolver } from '../shared/dns';
 
 import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service';
-import { useNetworksStatus } from './networks/service';
-import { splitNetworkId } from './networks/network';
+import { NetworkStatus, useNetworksStatus } from './networks/service';
+import { NetworkName, splitNetworkId } from './networks/network';
 
 // Queries
 
@@ -176,6 +176,16 @@ function ToolbarBadges({ peer, authToken }: PeerProps) {
   );
 }
 function Peer({ peer, authToken }: PeerProps) {
+  const { data: networksResponse, status } = useNetworksStatus(authToken);
+
+  let hostedNetworks: NetworkStatus[] = [];
+  if (status === 'success' && networksResponse !== undefined) {
+    const networks = networksResponse.data;
+    hostedNetworks = networks.filter(
+      (network) => peer.address === splitNetworkId(network.id).hostNodeId
+    );
+  }
+
   return (
     <Card width="100%">
       <CardHeader>
@@ -191,27 +201,51 @@ function Peer({ peer, authToken }: PeerProps) {
         <Code colorScheme="blue" pr={0}>
           {peer.address}
         </Code>
-        <Heading as="h4" size="sm" mt={2}>
-          Estimated Latency
-        </Heading>
-        {peer.latency >= 0 ? (
-          `${peer.latency} ms`
-        ) : (
-          <Tag colorScheme="pink" variant="solid">
-            Unknown
-          </Tag>
-        )}
-        <Heading as="h4" size="sm" mt={2}>
-          Version
-        </Heading>
-        {peer.versionMajor >= 0 ? (
-          `${peer.versionMajor}.${peer.versionMinor}.${peer.versionRev}`
-        ) : (
-          <Tag colorScheme="pink" variant="solid">
-            Unknown
-          </Tag>
-        )}
         <Accordion allowMultiple mt={4} mb={-6}>
+          <AccordionItem>
+            <AccordionButton>
+              <Box flex="1" textAlign="left">
+                Details
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+            <AccordionPanel>
+              <Heading as="h4" size="sm" mt={2}>
+                Estimated Latency
+              </Heading>
+              {peer.latency >= 0 ? (
+                `${peer.latency} ms`
+              ) : (
+                <Tag colorScheme="pink" variant="solid">
+                  Unknown
+                </Tag>
+              )}
+              <Heading as="h4" size="sm" mt={2}>
+                Version
+              </Heading>
+              {peer.versionMajor >= 0 ? (
+                `${peer.versionMajor}.${peer.versionMinor}.${peer.versionRev}`
+              ) : (
+                <Tag colorScheme="pink" variant="solid">
+                  Unknown
+                </Tag>
+              )}
+              <Heading as="h4" size="sm" mt={2}>
+                Hosted Networks
+              </Heading>
+              {hostedNetworks.length > 0 ? (
+                hostedNetworks.map((network) => (
+                  <Text>
+                    <NetworkName network={network} />
+                  </Text>
+                ))
+              ) : (
+                <Tag colorScheme="pink" variant="solid">
+                  Unknown
+                </Tag>
+              )}
+            </AccordionPanel>
+          </AccordionItem>
           <AccordionItem>
             <AccordionButton>
               <Box flex="1" textAlign="left">

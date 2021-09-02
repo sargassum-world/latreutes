@@ -150,8 +150,8 @@ function Networks({ authToken }: Props): JSX.Element {
             <Text>
               You can join a network by providing the network&apos;s identifier
               as either a hostname or URL (such as&nbsp;
-              <Code>prakashlab.dedyn.io</Code>) or a ZeroTier network
-              ID (such as&nbsp;
+              <Code>prakashlab.dedyn.io</Code>) or a ZeroTier network ID (such
+              as&nbsp;
               <NetworkId networkId="1c33c1ced015c144" />
               ).
             </Text>

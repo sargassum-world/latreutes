@@ -23,7 +23,7 @@ import {
   CardBody,
   CardFooter,
 } from '../../shared/layout';
-import { useTxtResolver } from '../../dns/lookup';
+import { useTxtResolver } from '../../shared/dns';
 
 import { Route, NetworkStatus, useNetworkLeaver } from './service';
 import DNS_ZT_NETWORK_KEY from './dns';
@@ -59,13 +59,12 @@ export function NetworkId({ networkId }: NetworkIdProps): JSX.Element {
 
 // Components
 
-interface NetworkDetailsProps {
-  network: NetworkStatus;
-}
-function NetworkName({ network }: NetworkDetailsProps) {
-  const { hostNodeId, networkNumber } = splitNetworkId(network.id);
-  const { data: txtRecords, status } = useTxtResolver(network.name);
-
+export function checkNetworkHostname(
+  networkName: string,
+  networkId: string,
+  txtRecords: string[] | undefined,
+  status: string
+): boolean {
   if (status === 'success' && txtRecords !== undefined) {
     const ztNetworkIdRecordPrefix = `${DNS_ZT_NETWORK_KEY}=`;
     const ztNetworkIdRecords = txtRecords.filter((record) =>
@@ -75,14 +74,50 @@ function NetworkName({ network }: NetworkDetailsProps) {
       const ztNetworkId = ztNetworkIdRecords[0].slice(
         ztNetworkIdRecordPrefix.length
       );
-      if (ztNetworkId === network.id) {
-        return (
-          <Heading as="h3" size="md" mb={1}>
-            {network.name}
-          </Heading>
-        );
+      if (ztNetworkId === networkId) {
+        return true;
       }
     }
+  }
+
+  return false;
+}
+
+interface NetworkDetailsProps {
+  network: NetworkStatus;
+}
+export function NetworkName({ network }: NetworkDetailsProps): JSX.Element {
+  const { hostNodeId, networkNumber } = splitNetworkId(network.id);
+  const { data: txtRecords, status } = useTxtResolver(network.name);
+
+  if (checkNetworkHostname(network.name, network.id, txtRecords, status)) {
+    return <Code>{network.name}</Code>;
+  }
+
+  return (
+    <>
+      <Code colorScheme="blue" pr={0}>
+        {hostNodeId}
+      </Code>
+      <Code colorScheme="teal" pl={0}>
+        {networkNumber}
+      </Code>
+      {!!network.name && <> {network.name}</>}
+    </>
+  );
+}
+function NetworkNameHeading({ network }: NetworkDetailsProps) {
+  const { hostNodeId, networkNumber } = splitNetworkId(network.id);
+  const { data: txtRecords, status } = useTxtResolver(network.name);
+
+  if (checkNetworkHostname(network.name, network.id, txtRecords, status)) {
+    return (
+      <Heading as="h3" size="md" mb={1}>
+        <Code size="md" fontWeight={400}>
+          {network.name}
+        </Code>
+      </Heading>
+    );
   }
 
   return (
@@ -146,6 +181,13 @@ function ToolbarBadges({ network }: NetworkDetailsProps) {
 }
 function BasicDetails({ network }: NetworkDetailsProps) {
   const { hostNodeId, networkNumber } = splitNetworkId(network.id);
+  const { data: txtRecords, status } = useTxtResolver(network.name);
+  const isHostname = checkNetworkHostname(
+    network.name,
+    network.id,
+    txtRecords,
+    status
+  );
 
   return (
     <>
@@ -153,7 +195,11 @@ function BasicDetails({ network }: NetworkDetailsProps) {
         Declared Name
       </Heading>
       {network.name.length > 0 ? (
-        <Code>{network.name}</Code>
+        <>
+          {network.name}
+          &nbsp;
+          {isHostname ? ' (Confirmed by DNS)' : ''}
+        </>
       ) : (
         <Tag colorScheme="pink" variant="solid">
           {network.status === 'OK' ? 'None' : 'Unknown'}
@@ -273,7 +319,7 @@ function Network({ network, authToken }: NetworkProps): JSX.Element {
   return (
     <Card width="100%">
       <CardHeader>
-        <NetworkName network={network} />
+        <NetworkNameHeading network={network} />
       </CardHeader>
       <CardToolbar>
         <ToolbarBadges network={network} />
