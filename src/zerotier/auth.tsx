@@ -1,10 +1,11 @@
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check';
-import { Button, Text } from '@chakra-ui/react';
+import { Button, Heading, Text, Code } from '@chakra-ui/react';
 
 import { AUTHTOKEN_FILENAME } from '../shared/config';
-import { CenteredContainer } from '../shared/layout';
+
+import { InfoCard } from '../shared/layout';
 
 import { invalidateCache } from './service';
 
@@ -30,13 +31,17 @@ function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
 
   if (configDirPath === undefined) {
     return (
-      <Text>
-        Unable to determine where the authtoken file should be stored!
-        <br />
-        Are you trying to run the application in a web browser?
-        <br />
-        If so, you should be launching the desktop application instead.
-      </Text>
+      <>
+        <Text>
+          Unable to determine where the <Code>authtoken.secret</Code> file
+          should be found! Are you trying to run this program in a web browser?
+          If so, you should launch the desktop application instead.
+        </Text>
+        <Text>
+          If you are running this program in development mode, the desktop
+          application window should launch soon.
+        </Text>
+      </>
     );
   }
 
@@ -52,11 +57,24 @@ function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
       return <Text>Loaded auth token.</Text>;
     case 'error':
       return (
-        <Text>
-          {`authtoken not found. Please copy it from (probably) ${ztAuthTokenPath} to ${tokenPath}.`}
-          <br />
-          You will need administrator permissions to copy that file.
-        </Text>
+        <>
+          <Text>
+            This program could not find the <Code>authtoken.secret</Code> file!
+            That file is needed for this program to interact with the ZeroTier
+            program.
+          </Text>
+          <Text>
+            You should be able to find the file at{' '}
+            <Code>{ztAuthTokenPath}</Code>.
+          </Text>
+          <Text>
+            Please copy it to <Code>{tokenPath}</Code>.
+          </Text>
+          <Text>
+            You will need administrator permissions on this device in order to
+            copy the file.
+          </Text>
+        </>
       );
     default:
       return <></>;
@@ -67,23 +85,28 @@ interface Props {
   configDirPath: string | undefined;
   tokenStatus: string;
 }
-function Auth({ configDirPath, tokenStatus }: Props): JSX.Element {
+function AuthInfoCard({ configDirPath, tokenStatus }: Props): JSX.Element {
   const queryClient = useQueryClient();
 
   return (
-    <CenteredContainer>
+    <InfoCard width="100%">
+      <Heading as="h2" size="lg">
+        ZeroTier Auth Token File Error
+      </Heading>
+      <StatusMessage configDirPath={configDirPath} tokenStatus={tokenStatus} />
       <Text>
         <Button
           onClick={() => {
             invalidateCache(queryClient);
           }}
+          colorScheme="teal"
+          mt={2}
         >
-          Reload
+          Try Again
         </Button>
       </Text>
-      <StatusMessage configDirPath={configDirPath} tokenStatus={tokenStatus} />
-    </CenteredContainer>
+    </InfoCard>
   );
 }
 
-export default Auth;
+export default AuthInfoCard;

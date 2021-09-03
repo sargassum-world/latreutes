@@ -1,9 +1,10 @@
 import React from 'react';
 import { UseQueryResult, useQuery } from 'react-query';
 import { Response } from '@tauri-apps/api/http';
-import { Heading, Text, Code } from '@chakra-ui/react';
+import { Heading, Tag, Text, Code } from '@chakra-ui/react';
 
-import { CenteredContainer } from '../shared/layout';
+import { useVersion } from '../shared/config';
+import { InfoCard } from '../shared/layout';
 
 import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service';
 
@@ -12,8 +13,8 @@ import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service';
 interface NodeStatus {
   address: string;
   publicIdentity: string;
-  worldId: number;
-  worldTimestamp: number;
+  planetWorldId: number;
+  planetWorldTimestamp: number;
   online: boolean;
   tcpFallbackActive: boolean;
   relayPolicy: string;
@@ -41,12 +42,13 @@ export const useNodeStatus = (
 interface Props {
   authToken: string;
 }
-function Node({ authToken }: Props): JSX.Element {
+function NodeInfoCard({ authToken }: Props): JSX.Element {
   const { data: nodeResponse, status, error } = useNodeStatus(authToken);
+  const { data: version } = useVersion();
 
   const renderedError = ErrorRenderer(status, error);
   if (renderedError !== undefined) {
-    return <CenteredContainer>renderedError</CenteredContainer>;
+    return renderedError;
   }
 
   if (nodeResponse === undefined) {
@@ -55,23 +57,45 @@ function Node({ authToken }: Props): JSX.Element {
     );
   }
 
-  const { address, online, tcpFallbackActive: onFallback } = nodeResponse.data;
-  let statusMessage = 'Offline';
-  if (online) {
-    statusMessage = onFallback ? 'Slow' : 'Online';
-  }
-
+  const node = nodeResponse.data;
   return (
-    <CenteredContainer>
-      <Heading as="h2" size="xl" py={4}>
-        Device Information
+    <InfoCard width="100%">
+      <Heading as="h2" size="lg">
+        This Device
+      </Heading>
+      <Heading as="h3" size="sm" mt={2}>
+        ZeroTier Address
       </Heading>
       <Text>
-        Node ID: <Code colorScheme="blue">{address}</Code>
+        <Code colorScheme="blue">{node.address}</Code>
       </Text>
-      <Text>Status: {statusMessage}</Text>
-    </CenteredContainer>
+      <Heading as="h3" size="sm" mt={2}>
+        Connection Status
+      </Heading>
+      <Text>
+        {node.online && !node.tcpFallbackActive && (
+          <Tag colorScheme="green" variant="solid">
+            Connected
+          </Tag>
+        )}
+        {node.online && node.tcpFallbackActive && (
+          <Tag colorScheme="pink" variant="solid">
+            On Slow Relay
+          </Tag>
+        )}
+        {!node.online && (
+          <Tag colorScheme="red" variant="solid">
+            Not Connected
+          </Tag>
+        )}
+      </Text>
+      <Heading as="h3" size="sm" mt={2}>
+        Software Versions
+      </Heading>
+      <Text>ZeroTier: {node.version}</Text>
+      {version !== undefined && <Text>Latreutes: {version}</Text>}
+    </InfoCard>
   );
 }
 
-export default Node;
+export default NodeInfoCard;

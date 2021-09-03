@@ -13,12 +13,10 @@ import '@fontsource/atkinson-hyperlegible/700.css';
 import '@fontsource/oxygen-mono/400.css';
 
 import { useConfigPath, useAuthToken } from './shared/config';
-import { ContentContainer } from './shared/layout';
+import { ContentContainer, CenteredContainer } from './shared/layout';
 
-import Auth from './zerotier/auth';
-import Node from './zerotier/node';
-import Networks from './zerotier/networks';
-import Peers from './zerotier/peers';
+import NetworksPage from './zerotier/networks';
+import PeersPage from './zerotier/peers';
 
 import Navbar from './app/navbar';
 import HomePage from './app/main/home-page';
@@ -67,22 +65,20 @@ function MainContent({
     <Switch>
       <Route exact path="/">
         <ContentContainer pad>
-          <HomePage />
+          <CenteredContainer>
+            <HomePage
+              configDirPath={configDirPath}
+              authToken={authToken}
+              authTokenStatus={authTokenStatus}
+            />
+          </CenteredContainer>
         </ContentContainer>
       </Route>
-      <Route path="/auth">
-        <ContentContainer>
-          <Auth configDirPath={configDirPath} tokenStatus={authTokenStatus} />
-        </ContentContainer>
+      <Route exact path="/networks">
+        <AuthenticatedPage Component={NetworksPage} authToken={authToken} />
       </Route>
-      <Route path="/node">
-        <AuthenticatedPage Component={Node} pad authToken={authToken} />
-      </Route>
-      <Route path="/networks">
-        <AuthenticatedPage Component={Networks} authToken={authToken} />
-      </Route>
-      <Route path="/peers">
-        <AuthenticatedPage Component={Peers} pad authToken={authToken} />
+      <Route exact path="/peers">
+        <AuthenticatedPage Component={PeersPage} pad authToken={authToken} />
       </Route>
     </Switch>
   );
@@ -117,16 +113,12 @@ function MainWindow() {
   }
 
   const baseMenuItems = [{ name: 'Home', href: '/', exact: true }];
-  const unauthenticatedMenuItems = [
-    { name: 'Auth', href: '/auth', exact: false },
-  ];
   const authenticatedMenuItems = [
-    { name: 'Info', href: '/node', exact: false },
     { name: 'Networks', href: '/networks', exact: false },
     { name: 'Peers', href: '/peers', exact: false },
   ];
   const menuItems = authTokenMissing
-    ? [...baseMenuItems, ...unauthenticatedMenuItems]
+    ? baseMenuItems
     : [...baseMenuItems, ...authenticatedMenuItems];
 
   return (

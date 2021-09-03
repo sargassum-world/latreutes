@@ -1,4 +1,5 @@
 import { UseQueryResult, useQuery } from 'react-query';
+import { getVersion } from '@tauri-apps/api/app';
 import { configDir, sep } from '@tauri-apps/api/path';
 import { FsOptions, readTextFile } from '@tauri-apps/api/fs';
 
@@ -16,6 +17,14 @@ async function readFile(path: string, options?: FsOptions) {
 }
 
 // Queries
+
+// App Version
+const QUERY_KEY_VERSION = [APPLICATION_NAMESPACE, 'version'];
+export const useVersion = (): UseQueryResult<string> =>
+  useQuery(QUERY_KEY_VERSION, getVersion, {
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
 
 // Config Directory
 const QUERY_KEY_CONFIG_PATH = [...QUERY_KEY_CONFIG, 'path'];

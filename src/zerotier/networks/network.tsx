@@ -17,7 +17,7 @@ import {
 import { CloseIcon } from '@chakra-ui/icons';
 
 import {
-  Card,
+  EntityCard,
   CardHeader,
   CardToolbar,
   CardBody,
@@ -29,12 +29,12 @@ import { Route, NetworkStatus, useNetworkLeaver } from './service';
 import DNS_ZT_NETWORK_KEY from './dns';
 
 interface NetworkSplitId {
-  hostNodeId: string;
+  hostAddress: string;
   networkNumber: string;
 }
 export function splitNetworkId(networkId: string): NetworkSplitId {
   return {
-    hostNodeId: networkId.slice(0, 10),
+    hostAddress: networkId.slice(0, 10),
     networkNumber: networkId.slice(10),
   };
 }
@@ -43,12 +43,12 @@ interface NetworkIdProps {
   networkId: string;
 }
 export function NetworkId({ networkId }: NetworkIdProps): JSX.Element {
-  const { hostNodeId, networkNumber } = splitNetworkId(networkId);
+  const { hostAddress, networkNumber } = splitNetworkId(networkId);
 
   return (
     <>
       <Code colorScheme="blue" pr={0}>
-        {hostNodeId}
+        {hostAddress}
       </Code>
       <Code colorScheme="teal" pl={0}>
         {networkNumber}
@@ -87,7 +87,7 @@ interface NetworkDetailsProps {
   network: NetworkStatus;
 }
 export function NetworkName({ network }: NetworkDetailsProps): JSX.Element {
-  const { hostNodeId, networkNumber } = splitNetworkId(network.id);
+  const { hostAddress, networkNumber } = splitNetworkId(network.id);
   const { data: txtRecords, status } = useTxtResolver(network.name);
 
   if (checkNetworkHostname(network.name, network.id, txtRecords, status)) {
@@ -97,7 +97,7 @@ export function NetworkName({ network }: NetworkDetailsProps): JSX.Element {
   return (
     <>
       <Code colorScheme="blue" pr={0}>
-        {hostNodeId}
+        {hostAddress}
       </Code>
       <Code colorScheme="teal" pl={0}>
         {networkNumber}
@@ -107,7 +107,7 @@ export function NetworkName({ network }: NetworkDetailsProps): JSX.Element {
   );
 }
 function NetworkNameHeading({ network }: NetworkDetailsProps) {
-  const { hostNodeId, networkNumber } = splitNetworkId(network.id);
+  const { hostAddress, networkNumber } = splitNetworkId(network.id);
   const { data: txtRecords, status } = useTxtResolver(network.name);
 
   if (checkNetworkHostname(network.name, network.id, txtRecords, status)) {
@@ -123,7 +123,7 @@ function NetworkNameHeading({ network }: NetworkDetailsProps) {
   return (
     <Heading as="h3" size="md" fontWeight={400}>
       <Code colorScheme="blue" pr={0} size="md" mb={1}>
-        {hostNodeId}
+        {hostAddress}
       </Code>
       <Code colorScheme="teal" pl={0} size="md" mb={1}>
         {networkNumber}
@@ -162,7 +162,7 @@ function ToolbarBadges({ network }: NetworkDetailsProps) {
       )}
       {network.type === 'PUBLIC' && (
         <>
-          &nbsp;
+          {' '}
           <Tag colorScheme="pink" variant="solid" size="md">
             Public
           </Tag>
@@ -170,7 +170,7 @@ function ToolbarBadges({ network }: NetworkDetailsProps) {
       )}
       {network.bridge && (
         <>
-          &nbsp;
+          {' '}
           <Tag colorScheme="teal" variant="solid" size="md">
             Bridge
           </Tag>
@@ -180,7 +180,7 @@ function ToolbarBadges({ network }: NetworkDetailsProps) {
   );
 }
 function BasicDetails({ network }: NetworkDetailsProps) {
-  const { hostNodeId, networkNumber } = splitNetworkId(network.id);
+  const { hostAddress, networkNumber } = splitNetworkId(network.id);
   const { data: txtRecords, status } = useTxtResolver(network.name);
   const isHostname = checkNetworkHostname(
     network.name,
@@ -214,7 +214,7 @@ function BasicDetails({ network }: NetworkDetailsProps) {
         ZeroTier Network ID
       </Heading>
       <Code colorScheme="blue" pr={0}>
-        {hostNodeId}
+        {hostAddress}
       </Code>
       <Code colorScheme="teal" pl={0}>
         {networkNumber}
@@ -269,7 +269,7 @@ function AdvancedDetails({ network }: NetworkDetailsProps) {
         Virtual Network Device
       </Heading>
       <Text>
-        Name:&nbsp;
+        Name:{' '}
         {network.portDeviceName.length > 0 ? (
           <Code>{network.portDeviceName}</Code>
         ) : (
@@ -279,7 +279,7 @@ function AdvancedDetails({ network }: NetworkDetailsProps) {
         )}
       </Text>
       <Text>
-        MAC Address:&nbsp;
+        MAC Address:{' '}
         {network.mac.length > 0 ? (
           <Code>{network.mac}</Code>
         ) : (
@@ -315,14 +315,16 @@ function Settings({ network, authToken }: NetworkProps) {
         size="sm"
         colorScheme="teal"
       >
-        Disconnect From Network
+        {network.status === 'OK'
+          ? 'Disconnect From Network'
+          : "Don't Join Network"}
       </Button>
     </>
   );
 }
 function Network({ network, authToken }: NetworkProps): JSX.Element {
   return (
-    <Card width="100%">
+    <EntityCard width="100%">
       <CardHeader>
         <NetworkNameHeading network={network} />
       </CardHeader>
@@ -367,7 +369,7 @@ function Network({ network, authToken }: NetworkProps): JSX.Element {
         </Accordion>
       </CardBody>
       <CardFooter />
-    </Card>
+    </EntityCard>
   );
 }
 

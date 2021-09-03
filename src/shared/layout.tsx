@@ -61,7 +61,21 @@ ContentContainer.defaultProps = {
 interface CardProps extends ContainerProps {
   width?: string | number;
 }
-export function Card({ children, width }: CardProps): JSX.Element {
+export function InfoCard({ children, width }: CardProps): JSX.Element {
+  return (
+    <Box
+      background={useColorModeValue('gray.100', 'gray.900')}
+      p={{ base: 4, sm: 8 }}
+      width={width}
+    >
+      {children}
+    </Box>
+  );
+}
+InfoCard.defaultProps = {
+  width: undefined,
+};
+export function EntityCard({ children, width }: CardProps): JSX.Element {
   return (
     <Box
       background={useColorModeValue('gray.100', 'gray.900')}
@@ -74,7 +88,7 @@ export function Card({ children, width }: CardProps): JSX.Element {
     </Box>
   );
 }
-Card.defaultProps = {
+EntityCard.defaultProps = {
   width: undefined,
 };
 export function CardHeader({ children }: ContainerProps): JSX.Element {

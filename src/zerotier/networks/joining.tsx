@@ -46,9 +46,16 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
   // we want it to reset!
   if (joined) {
     return (
-      <Text>
-        Attempted to join <NetworkId networkId={networkId} />!
-      </Text>
+      <>
+        <Text>
+          Attempted to join <NetworkId networkId={networkId} />!
+        </Text>
+        <Text>
+          For security reasons, when you try to join a network you&apos;ll
+          usually have to be authorized by the network&apos;s host before you
+          can actually access the network.
+        </Text>
+      </>
     );
   }
 
@@ -57,8 +64,7 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
     if (network.id === networkId) {
       return (
         <Text>
-          This device has already joined the network with ZeroTier network
-          ID&nbsp;
+          This device has already joined the network with ZeroTier network ID{' '}
           <NetworkId networkId={networkId} />.
         </Text>
       );
@@ -69,8 +75,7 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
   setJoined(true);
   return (
     <Text>
-      Joining&nbsp;
-      <NetworkId networkId={networkId} />
+      Joining <NetworkId networkId={networkId} />
       ...
     </Text>
   );
@@ -176,9 +181,9 @@ function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
         break;
     }
     return (
-      <Stack pt={4}>
+      <Stack>
         {joiner}
-        <ButtonGroup colorScheme="teal">
+        <ButtonGroup colorScheme="teal" mt={8}>
           <Button
             onClick={() => {
               setSubmitted(false);
@@ -236,7 +241,14 @@ function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
         setSubmitted(true);
       }}
     >
-      <Stack pt={4} spacing={4}>
+      <Stack spacing={4}>
+        <Text>
+          You can join a network by providing the network&apos;s identifier as
+          either a hostname or URL (such as{' '}
+          <Code variant="solid">prakashlab.dedyn.io</Code>) or a ZeroTier
+          network ID (such as <NetworkId networkId="1c33c1ced015c144" />
+          ).
+        </Text>
         <FormControl id="identifier" isRequired>
           <FormLabel>Identifier Type</FormLabel>
           <RadioGroup
@@ -266,6 +278,11 @@ function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
             placeholder={identifierPlaceholder}
           />
         </FormControl>
+        <Text>
+          You should only join a network if you trust that it has appropriate
+          firewall settings and membership policies to help keep your device
+          secure, and/or if your own device has secure firewall settings.
+        </Text>
         <Box>
           <Button type="submit" colorScheme="teal">
             Join

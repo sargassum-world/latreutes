@@ -1,3 +1,3 @@
-import { Networks } from './networks';
+import { NetworksPage } from './networks';
 
-export default Networks;
+export default NetworksPage;

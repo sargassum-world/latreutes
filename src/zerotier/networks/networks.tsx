@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Box,
   Flex,
+  Stack,
   Wrap,
   WrapItem,
   Drawer,
@@ -14,17 +15,20 @@ import {
   ButtonGroup,
   Heading,
   Text,
-  Code,
   useDisclosure,
 } from '@chakra-ui/react';
 
-import { SubmenuContainer, ContentContainer } from '../../shared/layout';
+import {
+  SubmenuContainer,
+  ContentContainer,
+  InfoCard,
+} from '../../shared/layout';
 
 import { ErrorRenderer } from '../service';
 
 import { NetworkStatus, useNetworksStatus } from './service';
 import JoinerForm from './joining';
-import Network, { NetworkId } from './network';
+import Network from './network';
 
 // Components
 
@@ -76,17 +80,23 @@ function NetworksList({ authToken }: Props): JSX.Element {
   return (
     <ContentContainer pad>
       {!hasAnyNetworks && (
-        <>
-          <Heading mb={6} size="xl" pt={4}>
-            Welcome!
-          </Heading>
-          <Text>
-            This device is not yet aware of any networks! You can try to join a
-            network by pressing the &quot;Join a Network&quot; button above, or
-            you can host your own network by pressing the &quot;Host a
-            Network&quot; button above.
-          </Text>
-        </>
+        <Wrap spacing={8} mt={4}>
+          <WrapItem width="24em">
+            <InfoCard width="100%">
+              <Stack spacing={2}>
+                <Heading as="h1" size="xl">
+                  Welcome!
+                </Heading>
+                <Text>
+                  This device is not yet aware of any ZeroTier virtual networks.
+                  You can join a network by pressing the &quot;Join a
+                  Network&quot; button above, or you can host your own network
+                  by pressing the &quot;Host a Network&quot; button above.
+                </Text>
+              </Stack>
+            </InfoCard>
+          </WrapItem>
+        </Wrap>
       )}
       {hasAuthorizedNetworks && (
         <Box>
@@ -126,8 +136,8 @@ function NetworksList({ authToken }: Props): JSX.Element {
           </Heading>
           <Text mb={4}>
             This device is trying to connect as a peer on the following
-            networks, but the network, if it exists, is not allowing the device
-            to connect:
+            networks, but the network &ndash; if it exists &ndash; has not yet
+            allowed the device to connect:
           </Text>
           <Wrap spacing={8}>
             {unauthorizedNetworks.map((network: NetworkStatus) => (
@@ -141,7 +151,7 @@ function NetworksList({ authToken }: Props): JSX.Element {
     </ContentContainer>
   );
 }
-export function Networks({ authToken }: Props): JSX.Element {
+export function NetworksPage({ authToken }: Props): JSX.Element {
   const {
     isOpen: isJoinOpen,
     onOpen: onJoinOpen,
@@ -172,14 +182,6 @@ export function Networks({ authToken }: Props): JSX.Element {
           <DrawerCloseButton />
           <DrawerHeader>Join a Network</DrawerHeader>
           <DrawerBody>
-            <Text>
-              You can join a network by providing the network&apos;s identifier
-              as either a hostname or URL (such as&nbsp;
-              <Code variant="solid">prakashlab.dedyn.io</Code>) or a ZeroTier
-              network ID (such as&nbsp;
-              <NetworkId networkId="1c33c1ced015c144" />
-              ).
-            </Text>
             <JoinerForm onClose={onJoinClose} authToken={authToken} />
           </DrawerBody>
         </DrawerContent>
@@ -204,4 +206,4 @@ export function Networks({ authToken }: Props): JSX.Element {
   );
 }
 
-export default Networks;
+export default NetworksPage;

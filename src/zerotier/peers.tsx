@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 
 import {
-  Card,
+  EntityCard,
   CardHeader,
   CardToolbar,
   CardBody,
@@ -78,7 +78,7 @@ function Path({ path }: PathProps) {
   return (
     <Box py={2}>
       <Text>
-        <Code colorScheme="purple">{path.address}</Code>&nbsp;
+        <Code colorScheme="purple">{path.address}</Code>{' '}
         {!path.active && (
           <Tag colorScheme="pink" variant="solid">
             Inactive
@@ -101,11 +101,11 @@ function Path({ path }: PathProps) {
           <Code variant="solid">{hostname}</Code>
         ))}
       <Text>
-        Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(1)}
-        &nbsp;s ago
+        Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(1)} s
+        ago
       </Text>
       <Text>
-        Last received&nbsp;
+        Last received{' '}
         {((new Date().getTime() - path.lastReceive) / 1000).toFixed(1)} seconds
         ago
       </Text>
@@ -137,7 +137,7 @@ function ToolbarBadges({ peer, authToken }: PeerProps) {
   if (status === 'success' && networksResponse !== undefined) {
     const networks = networksResponse.data;
     const networkHosts = networks.map(
-      (network) => splitNetworkId(network.id).hostNodeId
+      (network) => splitNetworkId(network.id).hostAddress
     );
     isNetworkHost = networkHosts.includes(peer.address);
   }
@@ -168,7 +168,7 @@ function ToolbarBadges({ peer, authToken }: PeerProps) {
       )}
       {isNetworkHost && (
         <>
-          &nbsp;
+          {' '}
           <Tag colorScheme="green" variant="solid" size="md">
             Network Host
           </Tag>
@@ -184,12 +184,12 @@ function Peer({ peer, authToken }: PeerProps) {
   if (status === 'success' && networksResponse !== undefined) {
     const networks = networksResponse.data;
     hostedNetworks = networks.filter(
-      (network) => peer.address === splitNetworkId(network.id).hostNodeId
+      (network) => peer.address === splitNetworkId(network.id).hostAddress
     );
   }
 
   return (
-    <Card width="100%">
+    <EntityCard width="100%">
       <CardHeader>
         <PeerName peer={peer} />
       </CardHeader>
@@ -197,13 +197,7 @@ function Peer({ peer, authToken }: PeerProps) {
         <ToolbarBadges peer={peer} authToken={authToken} />
       </CardToolbar>
       <CardBody>
-        <Heading as="h4" size="sm" mt={2}>
-          ZeroTier Network ID
-        </Heading>
-        <Code colorScheme="blue" pr={0}>
-          {peer.address}
-        </Code>
-        <Accordion allowMultiple mt={4} mb={-6} mx={-4}>
+        <Accordion allowMultiple mt={-4} mb={-6} mx={-4}>
           <AccordionItem>
             <AccordionButton>
               <Box flex="1" textAlign="left">
@@ -212,6 +206,12 @@ function Peer({ peer, authToken }: PeerProps) {
               <AccordionIcon />
             </AccordionButton>
             <AccordionPanel>
+              <Heading as="h4" size="sm" mt={2}>
+                ZeroTier Address
+              </Heading>
+              <Code colorScheme="blue" pr={0}>
+                {peer.address}
+              </Code>
               <Heading as="h4" size="sm" mt={2}>
                 Estimated Latency
               </Heading>
@@ -272,7 +272,7 @@ function Peer({ peer, authToken }: PeerProps) {
         </Accordion>
       </CardBody>
       <CardFooter />
-    </Card>
+    </EntityCard>
   );
 }
 
@@ -280,7 +280,7 @@ interface Props {
   authToken: string;
 }
 
-function Peers({ authToken }: Props): JSX.Element {
+function PeersPage({ authToken }: Props): JSX.Element {
   const { data: peersResponse, status, error } = usePeersStatus(authToken);
 
   const renderedError = ErrorRenderer(status, error);
@@ -320,8 +320,8 @@ function Peers({ authToken }: Props): JSX.Element {
             Peers
           </Heading>
           <Text mb={4}>
-            This device has the following peers, which may be network hosts,
-            other devices, virtual machines, and/or virtual software containers:
+            This device has the following peers, which may be network hosts, or
+            other devices:
           </Text>
           <Wrap spacing={8}>
             {leafPeers.map((peer: PeerStatus) => (
@@ -354,4 +354,4 @@ function Peers({ authToken }: Props): JSX.Element {
   );
 }
 
-export default Peers;
+export default PeersPage;
