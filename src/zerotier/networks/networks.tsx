@@ -40,12 +40,14 @@ function NetworksList({ authToken }: Props): JSX.Element {
 
   const renderedError = ErrorRenderer(status, error);
   if (renderedError !== undefined) {
-    <ContentContainer pad>
-      <Heading as="h1" size="xl" pt={4}>
-        Networks
-      </Heading>
-      {renderedError}
-    </ContentContainer>;
+    return (
+      <ContentContainer pad>
+        <Heading as="h1" size="xl" pt={4}>
+          Networks
+        </Heading>
+        {renderedError}
+      </ContentContainer>
+    );
   }
 
   if (networksResponse === undefined) {
@@ -61,14 +63,15 @@ function NetworksList({ authToken }: Props): JSX.Element {
 
   const networks = networksResponse.data;
   const hasAnyNetworks = networks.length > 0;
-  const connectedNetworks = networks.filter(
+  const authorizedNetworks = networks.filter(
     (network: NetworkStatus) => network.status === 'OK'
   );
-  const hasConnectedNetworks = connectedNetworks.length > 0;
-  const otherNetworks = networks.filter(
+  const hasAuthorizedNetworks = authorizedNetworks.length > 0;
+  const hasDisconnectedNetworks = false;
+  const unauthorizedNetworks = networks.filter(
     (network: NetworkStatus) => network.status !== 'OK'
   );
-  const hasOtherNetworks = otherNetworks.length > 0;
+  const hasUnauthorizedNetworks = unauthorizedNetworks.length > 0;
 
   return (
     <ContentContainer pad>
@@ -78,20 +81,24 @@ function NetworksList({ authToken }: Props): JSX.Element {
             Welcome!
           </Heading>
           <Text>
-            This device is not part of any networks! You can join a network by
-            pressing the &quot;Join a Network&quot; button above, or you can
-            host your own network by pressing the &quot;Host a Network&quot;
-            button above.
+            This device is not yet aware of any networks! You can try to join a
+            network by pressing the &quot;Join a Network&quot; button above, or
+            you can host your own network by pressing the &quot;Host a
+            Network&quot; button above.
           </Text>
         </>
       )}
-      {hasConnectedNetworks && (
+      {hasAuthorizedNetworks && (
         <Box>
           <Heading as="h2" size="xl" py={4}>
-            Connected Networks
+            Authorized Networks
           </Heading>
+          <Text mb={4}>
+            This device is authorized by the following networks to connect as a
+            peer, and it is configured to connect to them:
+          </Text>
           <Wrap spacing={8}>
-            {connectedNetworks.map((network: NetworkStatus) => (
+            {authorizedNetworks.map((network: NetworkStatus) => (
               <WrapItem width="26em">
                 <Network network={network} authToken={authToken} />
               </WrapItem>
@@ -99,13 +106,31 @@ function NetworksList({ authToken }: Props): JSX.Element {
           </Wrap>
         </Box>
       )}
-      {hasOtherNetworks && (
+      {hasDisconnectedNetworks && (
         <Box>
           <Heading as="h2" size="xl" py={4}>
-            Other Networks
+            Disconnected Networks
           </Heading>
+          <Text mb={4}>
+            This device was connected (or had tried to connect) to the following
+            networks, but either you or someone else on this device disconnected
+            this device from the network; the information displayed below may be
+            out-of-date:
+          </Text>
+        </Box>
+      )}
+      {hasUnauthorizedNetworks && (
+        <Box>
+          <Heading as="h2" size="xl" py={4}>
+            Unauthorized Networks
+          </Heading>
+          <Text mb={4}>
+            This device is trying to connect as a peer on the following
+            networks, but the network, if it exists, is not allowing the device
+            to connect:
+          </Text>
           <Wrap spacing={8}>
-            {otherNetworks.map((network: NetworkStatus) => (
+            {unauthorizedNetworks.map((network: NetworkStatus) => (
               <WrapItem width="26em">
                 <Network network={network} authToken={authToken} />
               </WrapItem>
@@ -116,7 +141,7 @@ function NetworksList({ authToken }: Props): JSX.Element {
     </ContentContainer>
   );
 }
-function Networks({ authToken }: Props): JSX.Element {
+export function Networks({ authToken }: Props): JSX.Element {
   const {
     isOpen: isJoinOpen,
     onOpen: onJoinOpen,
@@ -150,8 +175,8 @@ function Networks({ authToken }: Props): JSX.Element {
             <Text>
               You can join a network by providing the network&apos;s identifier
               as either a hostname or URL (such as&nbsp;
-              <Code>prakashlab.dedyn.io</Code>) or a ZeroTier network ID (such
-              as&nbsp;
+              <Code variant="solid">prakashlab.dedyn.io</Code>) or a ZeroTier
+              network ID (such as&nbsp;
               <NetworkId networkId="1c33c1ced015c144" />
               ).
             </Text>

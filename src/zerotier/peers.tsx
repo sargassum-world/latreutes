@@ -97,7 +97,9 @@ function Path({ path }: PathProps) {
       </Text>
       {status === 'success' &&
         reverseRecords !== undefined &&
-        reverseRecords.map((hostname) => <Code>{hostname}</Code>)}
+        reverseRecords.map((hostname) => (
+          <Code variant="solid">{hostname}</Code>
+        ))}
       <Text>
         Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(1)}
         &nbsp;s ago
@@ -201,7 +203,7 @@ function Peer({ peer, authToken }: PeerProps) {
         <Code colorScheme="blue" pr={0}>
           {peer.address}
         </Code>
-        <Accordion allowMultiple mt={4} mb={-6}>
+        <Accordion allowMultiple mt={4} mb={-6} mx={-4}>
           <AccordionItem>
             <AccordionButton>
               <Box flex="1" textAlign="left">
@@ -317,6 +319,10 @@ function Peers({ authToken }: Props): JSX.Element {
           <Heading as="h2" size="xl" py={4}>
             Peers
           </Heading>
+          <Text mb={4}>
+            This device has the following peers, which may be network hosts,
+            other devices, virtual machines, and/or virtual software containers:
+          </Text>
           <Wrap spacing={8}>
             {leafPeers.map((peer: PeerStatus) => (
               <WrapItem width="28em">
@@ -331,6 +337,10 @@ function Peers({ authToken }: Props): JSX.Element {
           <Heading as="h2" size="xl" py={4}>
             Peer Introducers
           </Heading>
+          <Text mb={4}>
+            This device can locate other peers by being mutually introduced
+            through one of the following special peers:
+          </Text>
           <Wrap spacing={8}>
             {rootServers.map((peer: PeerStatus) => (
               <WrapItem width="28em">

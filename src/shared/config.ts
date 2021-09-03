@@ -1,6 +1,6 @@
 import { UseQueryResult, useQuery } from 'react-query';
-import { appDir } from '@tauri-apps/api/path';
-import { BaseDirectory, FsOptions, readTextFile } from '@tauri-apps/api/fs';
+import { configDir, sep } from '@tauri-apps/api/path';
+import { FsOptions, readTextFile } from '@tauri-apps/api/fs';
 
 export const APPLICATION_NAMESPACE = 'latreutes';
 export const QUERY_KEY_CONFIG = [APPLICATION_NAMESPACE, 'config'];
@@ -19,8 +19,14 @@ async function readFile(path: string, options?: FsOptions) {
 
 // Config Directory
 const QUERY_KEY_CONFIG_PATH = [...QUERY_KEY_CONFIG, 'path'];
+export const CONFIG_PARENT = 'sargassum';
+export async function getConfigPath(): Promise<string> {
+  const configBasePath = await configDir();
+  const configSubpath = `${CONFIG_PARENT}${sep}${APPLICATION_NAMESPACE}`;
+  return `${configBasePath}${configSubpath}${sep}`;
+}
 export const useConfigPath = (): UseQueryResult<string> =>
-  useQuery(QUERY_KEY_CONFIG_PATH, appDir, {
+  useQuery(QUERY_KEY_CONFIG_PATH, getConfigPath, {
     staleTime: Infinity,
     cacheTime: Infinity,
   });
@@ -33,7 +39,11 @@ const QUERY_STALE_AUTHTOKEN = 10; // s
 export const useAuthToken = (configDirPath?: string): UseQueryResult<string> =>
   useQuery(
     QUERY_KEY_AUTHTOKEN,
-    async () => readFile(AUTHTOKEN_FILENAME, { dir: BaseDirectory.App }),
+    async () => {
+      const configPath = await getConfigPath();
+      const filePath = `${configPath}${AUTHTOKEN_FILENAME}`;
+      return readFile(filePath);
+    },
     {
       enabled: !!configDirPath,
       retry: false,

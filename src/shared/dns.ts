@@ -12,7 +12,7 @@ export function txtResolver(hostname: string) {
     try {
       return await invoke<string[]>('dns_lookup_txt', { hostname });
     } catch (e) {
-      throw new Error('Could not look up TXT records.');
+      throw new Error(`Could not look up TXT records for ${hostname}.`);
     }
   };
 }
@@ -32,7 +32,7 @@ export function reverseResolver(ipAddr: string) {
     try {
       return await invoke<string[]>('dns_lookup_reverse', { ipAddr });
     } catch (e) {
-      throw new Error('Could not perform reverse lookup.');
+      throw new Error(`Could not perform reverse lookup of ${ipAddr}.`);
     }
   };
 }

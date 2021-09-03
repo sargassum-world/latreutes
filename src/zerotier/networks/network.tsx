@@ -91,7 +91,7 @@ export function NetworkName({ network }: NetworkDetailsProps): JSX.Element {
   const { data: txtRecords, status } = useTxtResolver(network.name);
 
   if (checkNetworkHostname(network.name, network.id, txtRecords, status)) {
-    return <Code>{network.name}</Code>;
+    return <Code variant="solid">{network.name}</Code>;
   }
 
   return (
@@ -112,8 +112,8 @@ function NetworkNameHeading({ network }: NetworkDetailsProps) {
 
   if (checkNetworkHostname(network.name, network.id, txtRecords, status)) {
     return (
-      <Heading as="h3" size="md" mb={1}>
-        <Code size="md" fontWeight={400}>
+      <Heading as="h3" size="md" mb={1} fontWeight={400}>
+        <Code size="md" variant="solid">
           {network.name}
         </Code>
       </Heading>
@@ -121,11 +121,11 @@ function NetworkNameHeading({ network }: NetworkDetailsProps) {
   }
 
   return (
-    <Heading as="h3" size="md">
-      <Code colorScheme="blue" pr={0} size="md" mb={1} fontWeight={400}>
+    <Heading as="h3" size="md" fontWeight={400}>
+      <Code colorScheme="blue" pr={0} size="md" mb={1}>
         {hostNodeId}
       </Code>
-      <Code colorScheme="teal" pl={0} size="md" mb={1} fontWeight={400}>
+      <Code colorScheme="teal" pl={0} size="md" mb={1}>
         {networkNumber}
       </Code>
       {!!network.name && <> {network.name}</>}
@@ -196,9 +196,14 @@ function BasicDetails({ network }: NetworkDetailsProps) {
       </Heading>
       {network.name.length > 0 ? (
         <>
-          {network.name}
-          &nbsp;
-          {isHostname ? ' (Confirmed by DNS)' : ''}
+          {network.name}{' '}
+          {isHostname ? (
+            <Tag colorScheme="green" variant="solid">
+              Confirmed Hostname
+            </Tag>
+          ) : (
+            ''
+          )}
         </>
       ) : (
         <Tag colorScheme="pink" variant="solid">
