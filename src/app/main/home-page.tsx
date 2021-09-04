@@ -3,11 +3,15 @@ import { NavLink as RouterNavLink } from 'react-router-dom';
 import { Stack, Wrap, WrapItem, Heading, Link, Text } from '@chakra-ui/react';
 
 import { InfoCard } from '../../shared/layout';
+import ApiInfoCard, { ApiStatus, useApiStatus } from '../../zerotier/api';
 import AuthInfoCard from '../../zerotier/auth';
-import NodeInfoCard from '../../zerotier/node';
+import NodeInfoCard, { useNodeStatus } from '../../zerotier/node';
 import { useNetworksStatus } from '../../zerotier/networks/service';
 
-function WelcomeInfoCard(): JSX.Element {
+interface WelcomeInfoProps {
+  hasNodeInfo: boolean;
+}
+function WelcomeInfoCard({ hasNodeInfo }: WelcomeInfoProps) {
   return (
     <InfoCard width="100%">
       <Stack spacing={2}>
@@ -25,13 +29,15 @@ function WelcomeInfoCard(): JSX.Element {
           configuration needed to make your device easy and safe to access over
           the public internet.
         </Text>
-        <Text>
-          To get started, please click on the{' '}
-          <Link to="/networks" as={RouterNavLink} variant="colored">
-            Networks
-          </Link>{' '}
-          button in the navigation menu.
-        </Text>
+        {hasNodeInfo && (
+          <Text>
+            To get started, please click on the{' '}
+            <Link to="/networks" as={RouterNavLink} variant="colored">
+              Networks
+            </Link>{' '}
+            button in the navigation menu.
+          </Text>
+        )}
       </Stack>
     </InfoCard>
   );
@@ -47,35 +53,49 @@ function HomePage({
   authToken,
   authTokenStatus,
 }: Props): JSX.Element {
+  const { data: apiStatusResponse } = useApiStatus();
+  const { status: nodeInfoStatus } = useNodeStatus(authToken);
   const { data: networksResponse, status } = useNetworksStatus(
     authToken !== undefined ? authToken : ''
   );
+
+  const hasApi = apiStatusResponse === ApiStatus.success;
 
   const hasNoNetworks =
     status === 'success' &&
     networksResponse !== undefined &&
     networksResponse.data.length === 0;
 
+  const showWelcome =
+    !hasApi ||
+    authToken === undefined ||
+    nodeInfoStatus !== 'success' ||
+    hasNoNetworks;
+
   return (
-    <Wrap py={4} spacing={4}>
-      {authToken === undefined && (
-        <WrapItem width="50em">
+    <Wrap pt={{ base: 2, lg: 4 }} spacing={{ base: 4, lg: 8 }}>
+      {showWelcome && (
+        <WrapItem width="36em">
+          <WelcomeInfoCard hasNodeInfo={nodeInfoStatus === 'success'} />
+        </WrapItem>
+      )}
+      {!hasApi && (
+        <WrapItem width="36em">
+          <ApiInfoCard />
+        </WrapItem>
+      )}
+      {hasApi && (authToken === undefined || nodeInfoStatus !== 'success') && (
+        <WrapItem width="36em">
           <AuthInfoCard
             configDirPath={configDirPath}
+            authToken={authToken}
             tokenStatus={authTokenStatus}
           />
         </WrapItem>
       )}
-      {hasNoNetworks && (
-        <WrapItem width="24em">
-          <WelcomeInfoCard />
-        </WrapItem>
-      )}
-      {authToken !== undefined && (
-        <WrapItem width="24em">
-          <NodeInfoCard authToken={authToken} />
-        </WrapItem>
-      )}
+      <WrapItem width="24em">
+        <NodeInfoCard authToken={authToken !== undefined ? authToken : ''} />
+      </WrapItem>
     </Wrap>
   );
 }

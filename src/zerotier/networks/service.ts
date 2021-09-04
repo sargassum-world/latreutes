@@ -44,16 +44,17 @@ export interface NetworkStatus {
 }
 
 const QUERY_KEY = [...QUERY_KEY_ZT, 'networks'];
-export const QUERY_REFETCH = 0.5; // s
+export const QUERY_REFETCH = 1.0; // s
 const ROUTE = ['network'];
 export const useNetworksStatus = (
-  authToken: string,
+  authToken: string | undefined,
   refetchInterval: number | false = QUERY_REFETCH * 1000
 ): UseQueryResult<Response<NetworkStatus[]>, Error> =>
   useQuery(
     QUERY_KEY,
     fetcher<NetworkStatus[]>(ROUTE, 'GET', authToken, false),
     {
+      enabled: !!authToken,
       retry: false,
       refetchInterval,
       cacheTime: Infinity,
@@ -61,7 +62,7 @@ export const useNetworksStatus = (
   );
 export const useNetworkStatus = (
   networkId: string,
-  authToken: string,
+  authToken: string | undefined,
   refetchInterval: number | false = QUERY_REFETCH * 1000,
   cacheTime = Infinity
 ): UseQueryResult<Response<NetworkStatus>, Error> =>
@@ -69,6 +70,7 @@ export const useNetworkStatus = (
     [...QUERY_KEY, networkId],
     fetcher<NetworkStatus>([...ROUTE, networkId], 'GET', authToken),
     {
+      enabled: !!authToken,
       retry: false,
       refetchInterval,
       cacheTime,

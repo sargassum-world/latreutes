@@ -1,4 +1,4 @@
-import { UseQueryResult, useQuery } from 'react-query';
+import { QueryClient, UseQueryResult, useQuery } from 'react-query';
 import { getVersion } from '@tauri-apps/api/app';
 import { configDir, sep } from '@tauri-apps/api/path';
 import { FsOptions, readTextFile } from '@tauri-apps/api/fs';
@@ -44,19 +44,23 @@ export const useConfigPath = (): UseQueryResult<string> =>
 export const AUTHTOKEN_FILENAME = 'authtoken.secret';
 const QUERY_KEY_ZT = [...QUERY_KEY_CONFIG, 'zt'];
 const QUERY_KEY_AUTHTOKEN = [...QUERY_KEY_ZT, 'authtoken'];
-const QUERY_STALE_AUTHTOKEN = 10; // s
 export const useAuthToken = (configDirPath?: string): UseQueryResult<string> =>
   useQuery(
     QUERY_KEY_AUTHTOKEN,
     async () => {
       const configPath = await getConfigPath();
       const filePath = `${configPath}${AUTHTOKEN_FILENAME}`;
-      return readFile(filePath);
+      const fileContents = await readFile(filePath);
+      return fileContents.trim();
     },
     {
       enabled: !!configDirPath,
       retry: false,
-      staleTime: QUERY_STALE_AUTHTOKEN * 1000,
+      refetchOnWindowFocus: false,
+      staleTime: Infinity,
       cacheTime: Infinity,
     }
   );
+export const invalidateAuthTokenCache = (queryClient: QueryClient): void => {
+  queryClient.invalidateQueries(QUERY_KEY_AUTHTOKEN, { refetchInactive: true });
+};

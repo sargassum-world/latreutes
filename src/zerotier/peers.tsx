@@ -57,9 +57,10 @@ const QUERY_KEY = [...QUERY_KEY_ZT, 'peers'];
 const QUERY_REFETCH = 0.5; // s
 const ROUTE = ['peer'];
 export const usePeersStatus = (
-  authToken: string
+  authToken: string | undefined
 ): UseQueryResult<Response<PeerStatus[]>, Error> =>
   useQuery(QUERY_KEY, fetcher<PeerStatus[]>(ROUTE, 'GET', authToken), {
+    enabled: !!authToken,
     retry: false,
     refetchInterval: QUERY_REFETCH * 1000,
     cacheTime: Infinity,
@@ -286,8 +287,8 @@ function PeersPage({ authToken }: Props): JSX.Element {
   const renderedError = ErrorRenderer(status, error);
   if (renderedError !== undefined) {
     return (
-      <Box py={4}>
-        <Heading as="h1" size="xl" py={4}>
+      <Box>
+        <Heading as="h1" size="xl" pb={2}>
           Peers
         </Heading>
         {renderedError}
@@ -297,12 +298,12 @@ function PeersPage({ authToken }: Props): JSX.Element {
 
   if (peersResponse === undefined) {
     return (
-      <>
-        <Heading as="h1" size="xl" py={4}>
+      <Box>
+        <Heading as="h1" size="xl" pb={2}>
           Peers
         </Heading>
         <Text>Error: response is undefined even though request succeeded.</Text>
-      </>
+      </Box>
     );
   }
 
@@ -315,8 +316,8 @@ function PeersPage({ authToken }: Props): JSX.Element {
   return (
     <>
       {leafPeers.length > 0 && (
-        <Box py={4}>
-          <Heading as="h2" size="xl" py={4}>
+        <Box pt={2} pb={6}>
+          <Heading as="h2" size="xl" pb={2}>
             Peers
           </Heading>
           <Text mb={4}>
@@ -333,8 +334,8 @@ function PeersPage({ authToken }: Props): JSX.Element {
         </Box>
       )}
       {rootServers.length > 0 && (
-        <Box py={4}>
-          <Heading as="h2" size="xl" py={4}>
+        <Box pt={2} pb={6}>
+          <Heading as="h2" size="xl" pb={2}>
             Peer Introducers
           </Heading>
           <Text mb={4}>

@@ -281,7 +281,7 @@ function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
         <Text>
           You should only join a network if you trust that it has appropriate
           firewall settings and membership policies to help keep your device
-          secure, and/or if your own device has secure firewall settings.
+          secure, and/or if your own device has secure local firewall settings.
         </Text>
         <Box>
           <Button type="submit" colorScheme="teal">

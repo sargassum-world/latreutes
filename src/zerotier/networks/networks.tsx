@@ -33,7 +33,7 @@ import Network from './network';
 // Components
 
 interface Props {
-  authToken: string;
+  authToken: string | undefined;
 }
 function NetworksList({ authToken }: Props): JSX.Element {
   const {
@@ -41,6 +41,17 @@ function NetworksList({ authToken }: Props): JSX.Element {
     status,
     error,
   } = useNetworksStatus(authToken);
+
+  if (authToken === undefined) {
+    return (
+      <ContentContainer pad>
+        <Heading as="h1" size="xl" pt={4}>
+          Networks
+        </Heading>
+        <Text>Error: ZeroTier auth token is missing!</Text>
+      </ContentContainer>
+    );
+  }
 
   const renderedError = ErrorRenderer(status, error);
   if (renderedError !== undefined) {
@@ -99,8 +110,8 @@ function NetworksList({ authToken }: Props): JSX.Element {
         </Wrap>
       )}
       {hasAuthorizedNetworks && (
-        <Box>
-          <Heading as="h2" size="xl" py={4}>
+        <Box pt={2} pb={6}>
+          <Heading as="h2" size="xl" pb={2}>
             Authorized Networks
           </Heading>
           <Text mb={4}>
@@ -117,8 +128,8 @@ function NetworksList({ authToken }: Props): JSX.Element {
         </Box>
       )}
       {hasDisconnectedNetworks && (
-        <Box>
-          <Heading as="h2" size="xl" py={4}>
+        <Box pt={2} pb={6}>
+          <Heading as="h2" size="xl" pb={2}>
             Disconnected Networks
           </Heading>
           <Text mb={4}>
@@ -130,8 +141,8 @@ function NetworksList({ authToken }: Props): JSX.Element {
         </Box>
       )}
       {hasUnauthorizedNetworks && (
-        <Box>
-          <Heading as="h2" size="xl" py={4}>
+        <Box pt={2} pb={6}>
+          <Heading as="h2" size="xl" pb={2}>
             Unauthorized Networks
           </Heading>
           <Text mb={4}>
@@ -182,7 +193,11 @@ export function NetworksPage({ authToken }: Props): JSX.Element {
           <DrawerCloseButton />
           <DrawerHeader>Join a Network</DrawerHeader>
           <DrawerBody>
-            <JoinerForm onClose={onJoinClose} authToken={authToken} />
+            {authToken === undefined ? (
+              <Text>Error: ZeroTier auth token is missing!</Text>
+            ) : (
+              <JoinerForm onClose={onJoinClose} authToken={authToken} />
+            )}
           </DrawerBody>
         </DrawerContent>
       </Drawer>

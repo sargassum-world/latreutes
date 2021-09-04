@@ -1,26 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import {
-  ChakraProvider,
-  Flex,
-  IconButton,
-  extendTheme,
-} from '@chakra-ui/react';
+import { ChakraProvider, Flex, extendTheme } from '@chakra-ui/react';
 import { mode } from '@chakra-ui/theme-tools';
-import { CloseIcon } from '@chakra-ui/icons';
 import '@fontsource/atkinson-hyperlegible/400.css';
 import '@fontsource/atkinson-hyperlegible/700.css';
 import '@fontsource/oxygen-mono/400.css';
 
 import { useConfigPath, useAuthToken } from './shared/config';
-import { ContentContainer, CenteredContainer } from './shared/layout';
+import { ContentContainer } from './shared/layout';
 
+import { useNodeStatus } from './zerotier/node';
 import NetworksPage from './zerotier/networks';
 import PeersPage from './zerotier/peers';
 
 import Navbar from './app/navbar';
 import HomePage from './app/main/home-page';
-import LandingPage from './app/main/landing-page';
 import ErrorPage from './app/main/error-page';
 
 interface AuthenticatedPageProps {
@@ -55,24 +49,35 @@ interface MainContentProps {
   configDirPath: string | undefined;
   authToken: string | undefined;
   authTokenStatus: string;
+  hasNodeInfo: boolean;
 }
 function MainContent({
   configDirPath,
   authToken,
   authTokenStatus,
+  hasNodeInfo,
 }: MainContentProps) {
+  const homePage = (
+    <ContentContainer pad>
+      <HomePage
+        configDirPath={configDirPath}
+        authToken={authToken}
+        authTokenStatus={authTokenStatus}
+      />
+    </ContentContainer>
+  );
+  if (authTokenStatus !== 'success' || !hasNodeInfo) {
+    return (
+      <Switch>
+        <Route path="/">{homePage}</Route>
+      </Switch>
+    );
+  }
+
   return (
     <Switch>
       <Route exact path="/">
-        <ContentContainer pad>
-          <CenteredContainer>
-            <HomePage
-              configDirPath={configDirPath}
-              authToken={authToken}
-              authTokenStatus={authTokenStatus}
-            />
-          </CenteredContainer>
-        </ContentContainer>
+        {homePage}
       </Route>
       <Route exact path="/networks">
         <AuthenticatedPage Component={NetworksPage} authToken={authToken} />
@@ -88,38 +93,21 @@ function MainWindow() {
   const { data: configDirPath } = useConfigPath();
   const { data: authToken, status: authTokenStatus } =
     useAuthToken(configDirPath);
-  const [showLanding, setShowLanding] = useState(true);
   const authTokenMissing =
     authTokenStatus === 'error' || authToken === undefined;
+  const { data: nodeInfoResponse, status: nodeInfoStatus } = useNodeStatus(
+    authTokenMissing ? '' : authToken
+  );
 
-  if (showLanding && authTokenMissing) {
-    return (
-      <Flex direction={{ base: 'column', lg: 'row' }} height="100vh">
-        <Navbar links={[]} />
-        <ContentContainer pad>
-          <LandingPage />
-        </ContentContainer>
-        <Flex alignItems="center" justifyContent="center">
-          <Flex direction="column" p={12}>
-            <IconButton
-              onClick={() => setShowLanding(false)}
-              aria-label="Dismiss"
-              icon={<CloseIcon />}
-            />
-          </Flex>
-        </Flex>
-      </Flex>
-    );
-  }
-
-  const baseMenuItems = [{ name: 'Home', href: '/', exact: true }];
   const authenticatedMenuItems = [
+    { name: 'Home', href: '/', exact: true },
     { name: 'Networks', href: '/networks', exact: false },
     { name: 'Peers', href: '/peers', exact: false },
   ];
-  const menuItems = authTokenMissing
-    ? baseMenuItems
-    : [...baseMenuItems, ...authenticatedMenuItems];
+  const hasNodeInfo =
+    nodeInfoResponse !== undefined && nodeInfoStatus === 'success';
+  const menuItems =
+    authTokenMissing || !hasNodeInfo ? [] : authenticatedMenuItems;
 
   return (
     <Flex direction={{ base: 'column', lg: 'row' }} height="100vh">
@@ -128,6 +116,7 @@ function MainWindow() {
         configDirPath={configDirPath}
         authToken={authToken}
         authTokenStatus={authTokenStatus}
+        hasNodeInfo={hasNodeInfo}
       />
     </Flex>
   );

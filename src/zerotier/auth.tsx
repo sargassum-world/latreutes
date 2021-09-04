@@ -1,47 +1,54 @@
 import React from 'react';
 import { useQueryClient } from 'react-query';
 import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check';
-import { Button, Heading, Text, Code } from '@chakra-ui/react';
+import {
+  Stack,
+  Button,
+  Heading,
+  Text,
+  Code,
+  OrderedList,
+  ListItem,
+} from '@chakra-ui/react';
 
-import { AUTHTOKEN_FILENAME } from '../shared/config';
+import { AUTHTOKEN_FILENAME, invalidateAuthTokenCache } from '../shared/config';
+import useShellOpener from '../shared/shell';
 
 import { InfoCard } from '../shared/layout';
 
-import { invalidateCache } from './service';
+import { SERVICE_PORT_ZT, invalidateCache } from './service';
+import { useNodeStatus } from './node';
 
 // Components
 
 interface StatusMessageProps {
   configDirPath: string | undefined;
+  authToken: string | undefined;
   tokenStatus: string;
 }
 
-function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
-  // TODO: display instructions if the directory is missing (i.e. ZeroTier was not installed)
-  // or if the directory exists but the authtoken is missing (i.e. a new authtoken must provisioned)
-  // TODO: confirm whether the path is correct by checking whether the file exists at that path
-  // (this also allows checking if the path is actually at the BSD path)
-  let ztAuthTokenPath = '/var/lib/zerotier-one/authtoken.secret';
+function StatusMessage({
+  configDirPath,
+  authToken,
+  tokenStatus,
+}: StatusMessageProps) {
+  const { status: nodeStatus } = useNodeStatus(authToken);
+
+  let ztOneConfigPath = '/var/lib/zerotier-one/';
   if (isMacOS()) {
-    ztAuthTokenPath =
-      '/Library/Application Support/ZeroTier/One/authtoken.secret';
+    ztOneConfigPath = '/Library/Application Support/ZeroTier/One/';
   } else if (isWindows()) {
-    ztAuthTokenPath = '\\ProgramData\\ZeroTier\\One\\authtoken.secret';
+    ztOneConfigPath = '\\ProgramData\\ZeroTier\\One\\';
   }
+  const shellOpener = useShellOpener();
 
   if (configDirPath === undefined) {
     return (
-      <>
-        <Text>
-          Unable to determine where the <Code>authtoken.secret</Code> file
-          should be found! Are you trying to run this program in a web browser?
-          If so, you should launch the desktop application instead.
-        </Text>
-        <Text>
-          If you are running this program in development mode, the desktop
-          application window should launch soon.
-        </Text>
-      </>
+      <Text>
+        This program is unable to determine where the{' '}
+        <Code>authtoken.secret</Code> file should be found! This error is not
+        supposed to happen.
+      </Text>
     );
   }
 
@@ -54,27 +61,88 @@ function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
       }
       return <Text>Loading auth token...</Text>;
     case 'success':
-      return <Text>Loaded auth token.</Text>;
+      if (nodeStatus === 'success') {
+        return (
+          <Stack spacing={2}>
+            <Text>Loaded auth token.</Text>
+          </Stack>
+        );
+      }
+      // TODO: try removing the last char from the authtoken; if it works, just
+      // use that.
+
+      return (
+        <Stack spacing={2}>
+          <Text>
+            In order for this program to work, your computer needs to talk to
+            the ZeroTier service on port {SERVICE_PORT_ZT}, which should be
+            secured by the auth token in the <Code>authtoken.secret</Code> file.
+            This program was able to open a copy of{' '}
+            <Code>authtoken.secret</Code> in
+            <br />
+            <Code>{configDirPath}</Code>
+            <br />
+            but port {SERVICE_PORT_ZT} didn&apos;t respond as expected with the
+            ZeroTier auth token. There are two likely reasons for this:
+            <OrderedList>
+              <ListItem>
+                The copy of <Code>authtoken.secret</Code> at
+                <Code>{configDirPath}</Code>
+                is different from the copy the ZeroTier service has.
+              </ListItem>
+              <ListItem>
+                The ZeroTier service is not running on port {SERVICE_PORT_ZT},
+                and instead some other program is running on it.
+              </ListItem>
+            </OrderedList>
+          </Text>
+        </Stack>
+      );
     case 'error':
       return (
-        <>
+        <Stack spacing={2}>
           <Text>
-            This program could not find the <Code>authtoken.secret</Code> file!
-            That file is needed for this program to interact with the ZeroTier
-            program.
+            In order for this program to talk to the ZeroTier service running on
+            your computer, you&apos;ll need to make a copy of ZeroTier&apos;s{' '}
+            <Code>authtoken.secret</Code> file so that this program can access
+            the copy. You&apos;ll need administrator permissions on this device
+            in order to open or copy the file.
           </Text>
           <Text>
-            You should be able to find the file at{' '}
-            <Code>{ztAuthTokenPath}</Code>.
+            You can probably find the file at:
+            <br />
+            <Button
+              variant="ghost"
+              p={0}
+              fontWeight={400}
+              userSelect="auto"
+              onClick={() => shellOpener.mutate(ztOneConfigPath)}
+            >
+              <Code>{ztOneConfigPath}authtoken.secret</Code>
+            </Button>
           </Text>
           <Text>
-            Please copy it to <Code>{tokenPath}</Code>.
+            Please copy it into:
+            <br />
+            <Button
+              variant="ghost"
+              p={0}
+              fontWeight={400}
+              userSelect="auto"
+              onClick={() => shellOpener.mutate(configDirPath)}
+            >
+              <Code>{configDirPath}</Code>
+            </Button>
+            <br />
+            and make sure you can open the copied file with a text editor.
           </Text>
           <Text>
-            You will need administrator permissions on this device in order to
-            copy the file.
+            Note that anyone who can open the <Code>authtoken.secret</Code> file
+            will be able to join, leave, create, and delete ZeroTier networks on
+            your device, either by directly running ZeroTier commands or by
+            running this program.
           </Text>
-        </>
+        </Stack>
       );
     default:
       return <></>;
@@ -83,20 +151,30 @@ function StatusMessage({ configDirPath, tokenStatus }: StatusMessageProps) {
 
 interface Props {
   configDirPath: string | undefined;
+  authToken: string | undefined;
   tokenStatus: string;
 }
-function AuthInfoCard({ configDirPath, tokenStatus }: Props): JSX.Element {
+function AuthInfoCard({
+  configDirPath,
+  authToken,
+  tokenStatus,
+}: Props): JSX.Element {
   const queryClient = useQueryClient();
 
   return (
     <InfoCard width="100%">
       <Heading as="h2" size="lg">
-        ZeroTier Auth Token File Error
+        Set Up the ZeroTier Auth Token
       </Heading>
-      <StatusMessage configDirPath={configDirPath} tokenStatus={tokenStatus} />
+      <StatusMessage
+        configDirPath={configDirPath}
+        authToken={authToken}
+        tokenStatus={tokenStatus}
+      />
       <Text>
         <Button
           onClick={() => {
+            invalidateAuthTokenCache(queryClient);
             invalidateCache(queryClient);
           }}
           colorScheme="teal"

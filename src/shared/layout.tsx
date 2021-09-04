@@ -37,13 +37,16 @@ export function ContentContainer({
   children,
 }: ContentContainerProps): JSX.Element {
   let padding = {};
+  let paddingTop = {};
   if (pad) {
     padding = { base: 4, lg: 8 };
+    paddingTop = { base: 2, lg: 4 };
   }
   return (
     <Flex
       flexGrow={1}
       px={padding}
+      pt={paddingTop}
       pb={padding}
       direction="column"
       overflow="auto"
@@ -67,6 +70,7 @@ export function InfoCard({ children, width }: CardProps): JSX.Element {
       background={useColorModeValue('gray.100', 'gray.900')}
       p={{ base: 4, sm: 8 }}
       width={width}
+      overflow="auto"
     >
       {children}
     </Box>
@@ -81,7 +85,7 @@ export function EntityCard({ children, width }: CardProps): JSX.Element {
       background={useColorModeValue('gray.100', 'gray.900')}
       p={{ base: 4, sm: 8 }}
       rounded="xl"
-      overflow="hidden"
+      overflow="auto"
       width={width}
     >
       {children}

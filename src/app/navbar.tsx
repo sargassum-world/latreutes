@@ -78,13 +78,15 @@ function Navbar({ links }: Props): JSX.Element {
         alignItems="center"
         justifyContent="space-between"
       >
-        <IconButton
-          size="md"
-          icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-          aria-label="Open Menu"
-          display={{ sm: 'none' }}
-          onClick={isOpen ? onClose : onOpen}
-        />
+        {links.length > 0 && (
+          <IconButton
+            size="md"
+            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+            aria-label="Open Menu"
+            display={{ sm: 'none' }}
+            onClick={isOpen ? onClose : onOpen}
+          />
+        )}
         <Stack
           direction={{ base: 'row', lg: 'column' }}
           as="nav"
@@ -98,11 +100,10 @@ function Navbar({ links }: Props): JSX.Element {
           aria-label="Toggle theme color"
           icon={<SunIcon />}
           onClick={toggleColorMode}
-          display={{ base: 'none', sm: 'block' }}
         />
       </Flex>
 
-      {isOpen ? (
+      {isOpen && links.length > 0 ? (
         <Box pb={4} display={{ sm: 'none' }}>
           <Stack as="nav" spacing={4}>
             <NavLinks links={links} onClick={onClose} />

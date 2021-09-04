@@ -6,7 +6,8 @@ import { Heading, Tag, Text, Code } from '@chakra-ui/react';
 import { useVersion } from '../shared/config';
 import { InfoCard } from '../shared/layout';
 
-import { QUERY_KEY_ZT, fetcher, ErrorRenderer } from './service';
+import { QUERY_KEY_ZT, fetcher } from './service';
+import { ApiStatus, useApiStatus } from './api';
 
 // Queries
 
@@ -25,39 +26,34 @@ interface NodeStatus {
   clock: number;
 }
 
-const QUERY_KEY = [...QUERY_KEY_ZT, 'node'];
+export const QUERY_KEY = [...QUERY_KEY_ZT, 'node'];
 const QUERY_REFETCH = 1; // s
-const ROUTE = ['status'];
+export const ROUTE = ['status'];
 export const useNodeStatus = (
-  authToken: string
+  authToken: string | undefined,
+  emptyError = true
 ): UseQueryResult<Response<NodeStatus>, Error> =>
-  useQuery(QUERY_KEY, fetcher<NodeStatus>(ROUTE, 'GET', authToken), {
-    retry: false,
-    refetchInterval: QUERY_REFETCH * 1000,
-    cacheTime: Infinity,
-  });
+  useQuery(
+    QUERY_KEY,
+    fetcher<NodeStatus>(ROUTE, 'GET', authToken, emptyError),
+    {
+      enabled: !!authToken,
+      retry: false,
+      refetchInterval: QUERY_REFETCH * 1000,
+      cacheTime: Infinity,
+    }
+  );
 
 // Components
 
 interface Props {
   authToken: string;
 }
-function NodeInfoCard({ authToken }: Props): JSX.Element {
-  const { data: nodeResponse, status, error } = useNodeStatus(authToken);
+function ZeroTierInfoCard({ authToken }: Props) {
+  const { data: nodeResponse } = useNodeStatus(authToken);
   const { data: version } = useVersion();
+  const node = nodeResponse !== undefined ? nodeResponse.data : undefined;
 
-  const renderedError = ErrorRenderer(status, error);
-  if (renderedError !== undefined) {
-    return renderedError;
-  }
-
-  if (nodeResponse === undefined) {
-    return (
-      <Text>Error: response is undefined even though request succeeded.</Text>
-    );
-  }
-
-  const node = nodeResponse.data;
   return (
     <InfoCard width="100%">
       <Heading as="h2" size="lg">
@@ -67,23 +63,29 @@ function NodeInfoCard({ authToken }: Props): JSX.Element {
         ZeroTier Address
       </Heading>
       <Text>
-        <Code colorScheme="blue">{node.address}</Code>
+        {node === undefined ? (
+          <Tag colorScheme="red" variant="solid">
+            Unknown
+          </Tag>
+        ) : (
+          <Code colorScheme="blue">{node.address}</Code>
+        )}
       </Text>
       <Heading as="h3" size="sm" mt={2}>
         Connection Status
       </Heading>
       <Text>
-        {node.online && !node.tcpFallbackActive && (
+        {node !== undefined && node.online && !node.tcpFallbackActive && (
           <Tag colorScheme="green" variant="solid">
             Connected
           </Tag>
         )}
-        {node.online && node.tcpFallbackActive && (
+        {node !== undefined && node.online && node.tcpFallbackActive && (
           <Tag colorScheme="pink" variant="solid">
             On Slow Relay
           </Tag>
         )}
-        {!node.online && (
+        {(node === undefined || !node.online) && (
           <Tag colorScheme="red" variant="solid">
             Not Connected
           </Tag>
@@ -92,8 +94,75 @@ function NodeInfoCard({ authToken }: Props): JSX.Element {
       <Heading as="h3" size="sm" mt={2}>
         Software Versions
       </Heading>
-      <Text>ZeroTier: {node.version}</Text>
-      {version !== undefined && <Text>Latreutes: {version}</Text>}
+      <Text>
+        ZeroTier:{' '}
+        {node === undefined ? (
+          <Tag colorScheme="red" variant="solid" mb={1}>
+            Unknown
+          </Tag>
+        ) : (
+          <>{node.version}</>
+        )}
+      </Text>
+      <Text>
+        Latreutes:{' '}
+        {version === undefined ? (
+          <Tag colorScheme="red" variant="solid">
+            Unknown
+          </Tag>
+        ) : (
+          <>{version}</>
+        )}
+      </Text>
+    </InfoCard>
+  );
+}
+function NodeInfoCard({ authToken }: Props): JSX.Element {
+  const { data: apiStatus } = useApiStatus();
+  const { data: version } = useVersion();
+
+  if (version === undefined) {
+    return (
+      <InfoCard width="100%">
+        <Heading as="h2" size="lg">
+          Oops!
+        </Heading>
+        <Text>
+          It looks like you&apos;re trying to run this program in a web browser.
+          If so, you should run the desktop application version of this program
+          instead &ndash; this program does not work in the browser.
+        </Text>
+        <Text>
+          If you are running this program in development mode (e.g. using the{' '}
+          <Code>yarn tauri dev</Code> command), the desktop application window
+          should launch soon.
+        </Text>
+      </InfoCard>
+    );
+  }
+
+  if (apiStatus === ApiStatus.success) {
+    return <ZeroTierInfoCard authToken={authToken} />;
+  }
+
+  return (
+    <InfoCard width="100%">
+      <Heading as="h2" size="lg">
+        This Device
+      </Heading>
+      <Heading as="h3" size="sm" mt={2}>
+        Software Version
+      </Heading>
+      <Text>
+        Latreutes:{' '}
+        {version === undefined ? (
+          <Tag colorScheme="red" variant="solid">
+            Unknown
+          </Tag>
+        ) : (
+          <>{version}</>
+        )}
+      </Text>
     </InfoCard>
   );
 }
