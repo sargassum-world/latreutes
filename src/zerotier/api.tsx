@@ -17,6 +17,7 @@ export enum ApiStatus {
 }
 
 export const QUERY_KEY = [...QUERY_KEY_ZT, 'api'];
+const QUERY_REFETCH = 1; // s
 export const ROUTE = ['status'];
 export const useApiStatus = (): UseQueryResult<ApiStatus, Error> =>
   useQuery(
@@ -46,7 +47,7 @@ export const useApiStatus = (): UseQueryResult<ApiStatus, Error> =>
     {
       retry: false,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      refetchInterval: QUERY_REFETCH * 1000,
       cacheTime: Infinity,
     }
   );

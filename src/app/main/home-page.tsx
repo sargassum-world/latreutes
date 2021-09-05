@@ -1,7 +1,16 @@
 import React from 'react';
 import { NavLink as RouterNavLink } from 'react-router-dom';
-import { Stack, Wrap, WrapItem, Heading, Link, Text } from '@chakra-ui/react';
+import {
+  Stack,
+  Wrap,
+  WrapItem,
+  Heading,
+  Link,
+  Text,
+  Code,
+} from '@chakra-ui/react';
 
+import { useVersion } from '../../shared/config';
 import { InfoCard } from '../../shared/layout';
 import ApiInfoCard, { ApiStatus, useApiStatus } from '../../zerotier/api';
 import AuthInfoCard from '../../zerotier/auth';
@@ -43,6 +52,26 @@ function WelcomeInfoCard({ hasNodeInfo }: WelcomeInfoProps) {
   );
 }
 
+function BrowserRunInfoCard() {
+  return (
+    <InfoCard width="100%">
+      <Heading as="h2" size="lg">
+        Oops!
+      </Heading>
+      <Text>
+        It looks like you&apos;re trying to run this program in a web browser.
+        If so, you should run the desktop application version of this program
+        instead &ndash; this program does not work in the browser.
+      </Text>
+      <Text>
+        If you are running this program in development mode (e.g. using the{' '}
+        <Code>yarn tauri dev</Code> command), the desktop application window
+        should launch soon.
+      </Text>
+    </InfoCard>
+  );
+}
+
 interface Props {
   configDirPath: string | undefined;
   authToken: string | undefined;
@@ -53,19 +82,19 @@ function HomePage({
   authToken,
   authTokenStatus,
 }: Props): JSX.Element {
+  const { data: version } = useVersion();
   const { data: apiStatusResponse } = useApiStatus();
   const { status: nodeInfoStatus } = useNodeStatus(authToken);
   const { data: networksResponse, status } = useNetworksStatus(
     authToken !== undefined ? authToken : ''
   );
 
+  const hasVersion = version !== undefined;
   const hasApi = apiStatusResponse === ApiStatus.success;
-
   const hasNoNetworks =
     status === 'success' &&
     networksResponse !== undefined &&
     networksResponse.data.length === 0;
-
   const showWelcome =
     !hasApi ||
     authToken === undefined ||
@@ -79,20 +108,27 @@ function HomePage({
           <WelcomeInfoCard hasNodeInfo={nodeInfoStatus === 'success'} />
         </WrapItem>
       )}
-      {!hasApi && (
+      {!hasVersion && (
+        <WrapItem width="36em">
+          <BrowserRunInfoCard />
+        </WrapItem>
+      )}
+      {hasVersion && !hasApi && (
         <WrapItem width="36em">
           <ApiInfoCard />
         </WrapItem>
       )}
-      {hasApi && (authToken === undefined || nodeInfoStatus !== 'success') && (
-        <WrapItem width="36em">
-          <AuthInfoCard
-            configDirPath={configDirPath}
-            authToken={authToken}
-            tokenStatus={authTokenStatus}
-          />
-        </WrapItem>
-      )}
+      {hasVersion &&
+        hasApi &&
+        (authToken === undefined || nodeInfoStatus !== 'success') && (
+          <WrapItem width="36em">
+            <AuthInfoCard
+              configDirPath={configDirPath}
+              authToken={authToken}
+              tokenStatus={authTokenStatus}
+            />
+          </WrapItem>
+        )}
       <WrapItem width="24em">
         <NodeInfoCard authToken={authToken !== undefined ? authToken : ''} />
       </WrapItem>

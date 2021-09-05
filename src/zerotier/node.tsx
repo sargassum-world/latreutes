@@ -121,26 +121,6 @@ function NodeInfoCard({ authToken }: Props): JSX.Element {
   const { data: apiStatus } = useApiStatus();
   const { data: version } = useVersion();
 
-  if (version === undefined) {
-    return (
-      <InfoCard width="100%">
-        <Heading as="h2" size="lg">
-          Oops!
-        </Heading>
-        <Text>
-          It looks like you&apos;re trying to run this program in a web browser.
-          If so, you should run the desktop application version of this program
-          instead &ndash; this program does not work in the browser.
-        </Text>
-        <Text>
-          If you are running this program in development mode (e.g. using the{' '}
-          <Code>yarn tauri dev</Code> command), the desktop application window
-          should launch soon.
-        </Text>
-      </InfoCard>
-    );
-  }
-
   if (apiStatus === ApiStatus.success) {
     return <ZeroTierInfoCard authToken={authToken} />;
   }
