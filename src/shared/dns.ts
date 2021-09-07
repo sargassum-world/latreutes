@@ -1,5 +1,7 @@
 import { UseQueryResult, useQuery } from 'react-query';
 import { invoke } from '@tauri-apps/api/tauri';
+import isFQDN from 'validator/es/lib/isFQDN';
+import isIP from 'validator/es/lib/isIP';
 
 export const QUERY_KEY_DNS = ['latreutes', 'dns'];
 const QUERY_KEY = [...QUERY_KEY_DNS, 'lookup'];
@@ -20,6 +22,7 @@ export const useTxtResolver = (
   hostname: string
 ): UseQueryResult<string[], Error> =>
   useQuery([...QUERY_KEY_TXT, hostname], txtResolver(hostname), {
+    enabled: !!hostname && isFQDN(hostname),
     retry: false,
     staleTime: QUERY_STALE * 1000,
     cacheTime: Infinity,
@@ -40,6 +43,7 @@ export const useReverseResolver = (
   ipAddr: string
 ): UseQueryResult<string[], Error> =>
   useQuery([...QUERY_KEY_REVERSE, ipAddr], reverseResolver(ipAddr), {
+    enabled: !!ipAddr && isIP(ipAddr),
     retry: false,
     staleTime: QUERY_STALE * 1000,
     cacheTime: Infinity,
