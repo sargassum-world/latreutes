@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useQueryClient } from 'react-query';
+import { Formik, Form, Field, FieldProps } from 'formik';
+import isFQDN from 'validator/es/lib/isFQDN';
 import {
   Box,
   Stack,
@@ -7,6 +9,7 @@ import {
   ButtonGroup,
   FormControl,
   FormLabel,
+  FormErrorMessage,
   Radio,
   RadioGroup,
   Input,
@@ -155,51 +158,143 @@ function HostnameJoiner({ hostname, authToken }: HostnameJoinerProps) {
   );
 }
 
-interface JoinerFormProps {
-  onClose(): void;
-  authToken: string;
-}
 enum IdentifierType {
   hostname = 'hostname',
   networkId = 'networkId',
 }
-function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
-  const [identifier, setIdentifier] = useState('');
-  const [identifierType, setIdentifierType] = useState(IdentifierType.hostname);
-  const [submitted, setSubmitted] = useState(false);
-
-  if (identifier && submitted) {
-    let joiner;
-    switch (identifierType) {
-      case IdentifierType.hostname:
-        joiner = <HostnameJoiner hostname={identifier} authToken={authToken} />;
-        break;
-      default:
-        joiner = (
-          <NetworkIdJoiner networkId={identifier} authToken={authToken} />
-        );
-        break;
-    }
-    return (
-      <Stack>
-        {joiner}
-        <ButtonGroup colorScheme="teal" mt={8}>
-          <Button
-            onClick={() => {
-              setSubmitted(false);
-            }}
-          >
-            Join Another Network
-          </Button>
-          <Button onClick={onClose}>Close</Button>
-        </ButtonGroup>
-      </Stack>
-    );
+interface GenericJoinerProps {
+  identifierType: IdentifierType;
+  identifier: string;
+  authToken: string;
+  submitted: boolean;
+  setSubmitted: (submitted: boolean) => void;
+  onClose(): void;
+}
+function Joiner({
+  identifierType,
+  identifier,
+  authToken,
+  submitted,
+  setSubmitted,
+  onClose,
+}: GenericJoinerProps) {
+  if (!identifier || !submitted) {
+    return <></>;
   }
 
+  return (
+    <>
+      {identifierType === IdentifierType.hostname && (
+        <HostnameJoiner hostname={identifier} authToken={authToken} />
+      )}
+      {identifierType === IdentifierType.networkId && (
+        <NetworkIdJoiner networkId={identifier} authToken={authToken} />
+      )}
+      <ButtonGroup colorScheme="teal" mt={8}>
+        <Button
+          onClick={() => {
+            setSubmitted(false);
+          }}
+        >
+          Join Another Network
+        </Button>
+        <Button onClick={onClose}>Close</Button>
+      </ButtonGroup>
+    </>
+  );
+}
+
+interface IdentifierTypeSelectorProps {
+  type: IdentifierType;
+  setType: (type: IdentifierType) => void;
+}
+function IdentifierTypeSelector({
+  type,
+  setType,
+}: IdentifierTypeSelectorProps) {
+  return (
+    <Field name="identifierType">
+      {({ field, form }: FieldProps) => (
+        <FormControl
+          isInvalid={
+            form.touched.identifierType && !!form.errors.identifierType
+          }
+        >
+          <FormLabel htmlFor="identifierType">Identifier Type</FormLabel>
+          <RadioGroup
+            {...field}
+            value={type}
+            onChange={(value) => {
+              switch (value) {
+                case 'hostname':
+                  setType(IdentifierType.hostname);
+                  break;
+                default:
+                  setType(IdentifierType.networkId);
+                  break;
+              }
+            }}
+          >
+            <Stack direction="row">
+              <Radio value="hostname">Hostname</Radio>
+              <Radio value="networkId">Network ID</Radio>
+            </Stack>
+          </RadioGroup>
+          <FormErrorMessage>{form.errors.identifierType}</FormErrorMessage>
+        </FormControl>
+      )}
+    </Field>
+  );
+}
+
+const identifierValidator =
+  (identifierType: IdentifierType) => (identifier: string) => {
+    const networkIdRegex = /^[a-z\d]{16}$/i;
+    switch (identifierType) {
+      case IdentifierType.hostname: {
+        if (!identifier) {
+          return 'Required';
+        }
+
+        let submittedHostname = '';
+        try {
+          submittedHostname = new URL(identifier).hostname;
+        } catch {
+          submittedHostname = identifier;
+        }
+
+        if (
+          isFQDN(submittedHostname, {
+            require_tld: false,
+            allow_trailing_dot: true,
+          })
+        ) {
+          return '';
+        }
+
+        return 'This looks like neither a valid hostname nor a valid URL';
+      }
+      case IdentifierType.networkId:
+        if (!identifier) {
+          return 'Required';
+        }
+
+        if (!networkIdRegex.test(identifier)) {
+          return 'A ZeroTier Network ID must consist of 16 characters, each of which should be a number from 0 to 9 or a letter from "a" to "f"';
+        }
+        break;
+      default:
+        return 'Invalid identifier type!';
+    }
+    return '';
+  };
+interface IdentifierInputProps {
+  type: IdentifierType;
+}
+function IdentifierInput({ type }: IdentifierInputProps) {
   let identifierTitle = 'Identifier';
   let identifierPlaceholder = 'Identifier for the network';
-  switch (identifierType) {
+  switch (type) {
     case IdentifierType.hostname:
       identifierTitle = 'Network Hostname';
       identifierPlaceholder = 'Hostname for the network';
@@ -213,83 +308,101 @@ function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
   }
 
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        const target = e.target as typeof e.target & {
-          identifier: { value: string };
-        };
-        const {
-          identifier: { value: submittedIdentifier },
-        } = target;
-        switch (identifierType) {
-          case IdentifierType.hostname: {
-            let submittedHostname = '';
-            try {
-              submittedHostname = new URL(submittedIdentifier).hostname;
-            } catch {
-              submittedHostname = submittedIdentifier;
-            }
-            setIdentifier(submittedHostname);
-            break;
-          }
-          default: {
-            setIdentifier(submittedIdentifier);
-            break;
-          }
-        }
-        setSubmitted(true);
-      }}
-    >
-      <Stack spacing={4}>
-        <Text>
-          You can join a network by providing the network&apos;s identifier as
-          either a hostname or URL (such as{' '}
-          <Code variant="solid">prakashlab.dedyn.io</Code>) or a ZeroTier
-          network ID (such as <NetworkId networkId="1c33c1ced015c144" />
-          ).
-        </Text>
-        <FormControl id="identifier" isRequired>
-          <FormLabel>Identifier Type</FormLabel>
-          <RadioGroup
-            onChange={(value) => {
-              switch (value) {
-                case 'hostname':
-                  setIdentifierType(IdentifierType.hostname);
-                  break;
-                default:
-                  setIdentifierType(IdentifierType.networkId);
-                  break;
-              }
-            }}
-            value={identifierType}
-          >
-            <Stack direction="row">
-              <Radio value="hostname">Hostname</Radio>
-              <Radio value="networkId">Network ID</Radio>
-            </Stack>
-          </RadioGroup>
-        </FormControl>
-        <FormControl id="identifier" isRequired>
-          <FormLabel>{identifierTitle}</FormLabel>
+    <Field name="identifier" validate={identifierValidator(type)}>
+      {({ field, form }: FieldProps) => (
+        <FormControl
+          isInvalid={form.touched.identifier && !!form.errors.identifier}
+        >
+          <FormLabel htmlFor="identifier">{identifierTitle}</FormLabel>
           <Input
-            type="text"
-            name="identifier"
+            {...field}
+            id="identifier"
             placeholder={identifierPlaceholder}
           />
+          <FormErrorMessage>{form.errors.identifier}</FormErrorMessage>
         </FormControl>
-        <Text>
-          You should only join a network if you trust that it has appropriate
-          firewall settings and membership policies to help keep your device
-          secure, and/or if your own device has secure local firewall settings.
-        </Text>
-        <Box>
-          <Button type="submit" colorScheme="teal">
-            Join
-          </Button>
+      )}
+    </Field>
+  );
+}
+
+interface JoinerFormProps {
+  onClose(): void;
+  authToken: string;
+}
+function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
+  const [identifier, setIdentifier] = useState('');
+  const [identifierType, setIdentifierType] = useState(IdentifierType.hostname);
+  const [submitted, setSubmitted] = useState(false);
+
+  return (
+    <Stack>
+      <Formik
+        initialValues={{
+          identifierType: IdentifierType.hostname,
+          identifier: '',
+        }}
+        onSubmit={(values, actions) => {
+          switch (values.identifierType) {
+            case IdentifierType.hostname: {
+              let submittedHostname = '';
+              try {
+                submittedHostname = new URL(values.identifier).hostname;
+              } catch {
+                submittedHostname = values.identifier;
+              }
+              setIdentifier(submittedHostname);
+              break;
+            }
+            default: {
+              setIdentifier(values.identifier);
+              break;
+            }
+          }
+          setSubmitted(true);
+          actions.setSubmitting(false);
+        }}
+        validateOnChange={false}
+      >
+        <Box display={identifier && submitted ? 'none' : 'block'}>
+          <Form>
+            <Stack spacing={4}>
+              <Text>
+                You can join a network by providing the network&apos;s
+                identifier as either a hostname or URL (such as{' '}
+                <Code variant="solid">prakashlab.dedyn.io</Code>) or a ZeroTier
+                network ID (such as <NetworkId networkId="1c33c1ced015c144" />
+                ).
+              </Text>
+              <IdentifierTypeSelector
+                type={identifierType}
+                setType={setIdentifierType}
+              />
+              <IdentifierInput type={identifierType} />
+              <Text>
+                You should only join a network if its administrators are
+                accountable to you in setting the network&apos;s security and
+                membership policies to help keep your device secure, and if your
+                own device has secure local firewall settings.
+              </Text>
+              <Box>
+                <Button type="submit" colorScheme="teal">
+                  Join
+                </Button>
+              </Box>
+            </Stack>
+          </Form>
         </Box>
-      </Stack>
-    </form>
+      </Formik>
+      <Joiner
+        identifierType={identifierType}
+        identifier={identifier}
+        authToken={authToken}
+        submitted={submitted}
+        setSubmitted={setSubmitted}
+        onClose={onClose}
+      />
+    </Stack>
   );
 }
 

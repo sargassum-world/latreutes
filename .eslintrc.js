@@ -36,6 +36,7 @@ module.exports = {
         semi: true,
         trailingCommas: 'all'
       },
-    ]
+    ],
+    'react/jsx-props-no-spreading': 'off'
   },
 };
