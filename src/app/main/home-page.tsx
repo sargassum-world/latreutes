@@ -33,10 +33,9 @@ function WelcomeInfoCard({ hasNodeInfo }: WelcomeInfoProps) {
         </Text>
         <Text>
           ZeroTier virtual networks help you connect programs running on your
-          device directly and securely to programs on other devices anywhere in
-          the world, without requiring you to do the complex network
-          configuration needed to make your device easy and safe to access over
-          the public internet.
+          device directly to programs on other devices of your choosing,
+          anywhere in the world, with a simpler and safer setup process than
+          making your device accessible over the public internet.
         </Text>
         {hasNodeInfo && (
           <Text>
@@ -66,7 +65,7 @@ function BrowserRunInfoCard() {
       <Text>
         If you are running this program in development mode (e.g. using the{' '}
         <Code>yarn tauri dev</Code> command), the desktop application window
-        should launch soon.
+        should automatically launch soon.
       </Text>
     </InfoCard>
   );
