@@ -98,8 +98,8 @@ function Path({ path }: PathProps) {
       </Text>
       {status === 'success' &&
         reverseRecords !== undefined &&
-        reverseRecords.map((hostname) => (
-          <Code variant="solid">{hostname}</Code>
+        reverseRecords.map((domainName) => (
+          <Code variant="solid">{domainName}</Code>
         ))}
       <Text>
         Last sent {((new Date().getTime() - path.lastSend) / 1000).toFixed(1)} s

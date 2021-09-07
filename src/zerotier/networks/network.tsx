@@ -59,7 +59,7 @@ export function NetworkId({ networkId }: NetworkIdProps): JSX.Element {
 
 // Components
 
-export function checkNetworkHostname(
+export function checkNetworkDomainName(
   networkName: string,
   networkId: string,
   txtRecords: string[] | undefined,
@@ -90,7 +90,7 @@ export function NetworkName({ network }: NetworkDetailsProps): JSX.Element {
   const { hostAddress, networkNumber } = splitNetworkId(network.id);
   const { data: txtRecords, status } = useTxtResolver(network.name);
 
-  if (checkNetworkHostname(network.name, network.id, txtRecords, status)) {
+  if (checkNetworkDomainName(network.name, network.id, txtRecords, status)) {
     return <Code variant="solid">{network.name}</Code>;
   }
 
@@ -110,7 +110,7 @@ function NetworkNameHeading({ network }: NetworkDetailsProps) {
   const { hostAddress, networkNumber } = splitNetworkId(network.id);
   const { data: txtRecords, status } = useTxtResolver(network.name);
 
-  if (checkNetworkHostname(network.name, network.id, txtRecords, status)) {
+  if (checkNetworkDomainName(network.name, network.id, txtRecords, status)) {
     return (
       <Heading as="h3" size="md" mb={1} fontWeight={400}>
         <Code size="md" variant="solid">
@@ -182,7 +182,7 @@ function ToolbarBadges({ network }: NetworkDetailsProps) {
 function BasicDetails({ network }: NetworkDetailsProps) {
   const { hostAddress, networkNumber } = splitNetworkId(network.id);
   const { data: txtRecords, status } = useTxtResolver(network.name);
-  const isHostname = checkNetworkHostname(
+  const isDomainName = checkNetworkDomainName(
     network.name,
     network.id,
     txtRecords,
@@ -197,9 +197,9 @@ function BasicDetails({ network }: NetworkDetailsProps) {
       {network.name.length > 0 ? (
         <>
           {network.name}{' '}
-          {isHostname ? (
+          {isDomainName ? (
             <Tag colorScheme="green" variant="solid">
-              Confirmed Hostname
+              Confirmed Domain Name
             </Tag>
           ) : (
             ''

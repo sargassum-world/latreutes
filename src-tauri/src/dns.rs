@@ -4,9 +4,9 @@ use trust_dns_resolver::{config::*};
 use tauri::command;
 
 #[command]
-pub fn dns_lookup_txt(hostname: String) -> Result<Vec<String>, String> {
+pub fn dns_lookup_txt(domain_name: String) -> Result<Vec<String>, String> {
   let resolver = Resolver::new(ResolverConfig::default(), ResolverOpts::default()).unwrap();
-  let txt_response = resolver.txt_lookup(hostname);
+  let txt_response = resolver.txt_lookup(domain_name);
   match txt_response {
     Err(_) => {
         Err("Could not find any TXT records!".into())

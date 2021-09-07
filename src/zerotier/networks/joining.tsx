@@ -84,14 +84,14 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
   );
 }
 
-interface HostnameJoinerProps {
-  hostname: string;
+interface DomainNameJoinerProps {
+  domainName: string;
   authToken: string;
 }
-function HostnameJoiner({ hostname, authToken }: HostnameJoinerProps) {
-  const { data: txtRecords, status } = useTxtResolver(hostname);
+function DomainNameJoiner({ domainName, authToken }: DomainNameJoinerProps) {
+  const { data: txtRecords, status } = useTxtResolver(domainName);
 
-  if (!hostname) {
+  if (!domainName) {
     return <></>;
   }
 
@@ -102,10 +102,11 @@ function HostnameJoiner({ hostname, authToken }: HostnameJoinerProps) {
     case 'error':
       return (
         <Text>
-          Error: Could not find any records at the provided hostname.
+          Error: Could not find any records at the provided domain name.
           <br />
-          Did you enter a valid hostname? Are you connected to the internet, or
-          at least to the server which stores the records for the hostname?
+          Did you enter a valid domain name? Are you connected to the internet,
+          or at least to the server which stores the records for the domain
+          name?
         </Text>
       );
     default:
@@ -121,17 +122,17 @@ function HostnameJoiner({ hostname, authToken }: HostnameJoinerProps) {
   if (ztNetworkIdRecords.length === 0) {
     return (
       <Text>
-        Error: could not find any ZeroTier Network IDs published at the
-        hostname!
+        Error: could not find any ZeroTier Network IDs published at the domain
+        name!
         <br />
-        Did you enter a valid hostname?
+        Did you enter a valid domain name?
       </Text>
     );
   }
   if (ztNetworkIdRecords.length > 1) {
     return (
       <Text>
-        Error: multiple ZeroTier Network IDs are published at the hostname!
+        Error: multiple ZeroTier Network IDs are published at the domain name!
       </Text>
     );
   }
@@ -141,8 +142,9 @@ function HostnameJoiner({ hostname, authToken }: HostnameJoinerProps) {
   if (ztNetworkId.length === 0) {
     return (
       <Text>
-        Error: the ZeroTier Network ID published at the hostname is empty! Did
-        the operator of the hostname incorrectly configure their public records?
+        Error: the ZeroTier Network ID published at the domain name is empty!
+        Did the operator of the domain name incorrectly configure their public
+        records?
       </Text>
     );
   }
@@ -150,7 +152,7 @@ function HostnameJoiner({ hostname, authToken }: HostnameJoinerProps) {
   return (
     <>
       <Text>
-        The network at <Code>{hostname}</Code> has ZeroTier network ID{' '}
+        The network at <Code>{domainName}</Code> has ZeroTier network ID{' '}
         <NetworkId networkId={ztNetworkId} />.
       </Text>
       <NetworkIdJoiner networkId={ztNetworkId} authToken={authToken} />
@@ -159,7 +161,7 @@ function HostnameJoiner({ hostname, authToken }: HostnameJoinerProps) {
 }
 
 enum IdentifierType {
-  hostname = 'hostname',
+  domainName = 'domainName',
   networkId = 'networkId',
 }
 interface GenericJoinerProps {
@@ -184,8 +186,8 @@ function Joiner({
 
   return (
     <>
-      {identifierType === IdentifierType.hostname && (
-        <HostnameJoiner hostname={identifier} authToken={authToken} />
+      {identifierType === IdentifierType.domainName && (
+        <DomainNameJoiner domainName={identifier} authToken={authToken} />
       )}
       {identifierType === IdentifierType.networkId && (
         <NetworkIdJoiner networkId={identifier} authToken={authToken} />
@@ -226,8 +228,8 @@ function IdentifierTypeSelector({
             value={type}
             onChange={(value) => {
               switch (value) {
-                case 'hostname':
-                  setType(IdentifierType.hostname);
+                case 'domainName':
+                  setType(IdentifierType.domainName);
                   break;
                 default:
                   setType(IdentifierType.networkId);
@@ -236,7 +238,7 @@ function IdentifierTypeSelector({
             }}
           >
             <Stack direction="row">
-              <Radio value="hostname">Hostname</Radio>
+              <Radio value="domainName">Domain Name</Radio>
               <Radio value="networkId">Network ID</Radio>
             </Stack>
           </RadioGroup>
@@ -251,20 +253,20 @@ const identifierValidator =
   (identifierType: IdentifierType) => (identifier: string) => {
     const networkIdRegex = /^[a-z\d]{16}$/i;
     switch (identifierType) {
-      case IdentifierType.hostname: {
+      case IdentifierType.domainName: {
         if (!identifier) {
           return 'Required';
         }
 
-        let submittedHostname = '';
+        let submittedDomainName = '';
         try {
-          submittedHostname = new URL(identifier).hostname;
+          submittedDomainName = new URL(identifier).hostname;
         } catch {
-          submittedHostname = identifier;
+          submittedDomainName = identifier;
         }
 
         if (
-          isFQDN(submittedHostname, {
+          isFQDN(submittedDomainName, {
             require_tld: false,
             allow_trailing_dot: true,
           })
@@ -272,7 +274,7 @@ const identifierValidator =
           return '';
         }
 
-        return 'This looks like neither a valid hostname nor a valid URL';
+        return 'This looks like neither a valid domain name nor a valid URL';
       }
       case IdentifierType.networkId:
         if (!identifier) {
@@ -295,9 +297,9 @@ function IdentifierInput({ type }: IdentifierInputProps) {
   let identifierTitle = 'Identifier';
   let identifierPlaceholder = 'Identifier for the network';
   switch (type) {
-    case IdentifierType.hostname:
-      identifierTitle = 'Network Hostname';
-      identifierPlaceholder = 'Hostname for the network';
+    case IdentifierType.domainName:
+      identifierTitle = 'Network Domain Name';
+      identifierPlaceholder = 'Domain name for the network';
       break;
     case IdentifierType.networkId:
       identifierTitle = 'ZeroTier Network ID';
@@ -332,26 +334,28 @@ interface JoinerFormProps {
 }
 function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
   const [identifier, setIdentifier] = useState('');
-  const [identifierType, setIdentifierType] = useState(IdentifierType.hostname);
+  const [identifierType, setIdentifierType] = useState(
+    IdentifierType.domainName
+  );
   const [submitted, setSubmitted] = useState(false);
 
   return (
     <Stack>
       <Formik
         initialValues={{
-          identifierType: IdentifierType.hostname,
+          identifierType: IdentifierType.domainName,
           identifier: '',
         }}
         onSubmit={(values, actions) => {
           switch (values.identifierType) {
-            case IdentifierType.hostname: {
-              let submittedHostname = '';
+            case IdentifierType.domainName: {
+              let submittedDomainName = '';
               try {
-                submittedHostname = new URL(values.identifier).hostname;
+                submittedDomainName = new URL(values.identifier).hostname;
               } catch {
-                submittedHostname = values.identifier;
+                submittedDomainName = values.identifier;
               }
-              setIdentifier(submittedHostname);
+              setIdentifier(submittedDomainName);
               break;
             }
             default: {
@@ -369,7 +373,7 @@ function JoinerForm({ onClose, authToken }: JoinerFormProps): JSX.Element {
             <Stack spacing={4}>
               <Text>
                 You can join a network by providing the network&apos;s
-                identifier as either a hostname or URL (such as{' '}
+                identifier as either a domain name or URL (such as{' '}
                 <Code variant="solid">prakashlab.dedyn.io</Code>) or a ZeroTier
                 network ID (such as <NetworkId networkId="1c33c1ced015c144" />
                 ).

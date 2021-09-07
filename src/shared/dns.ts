@@ -9,20 +9,20 @@ const QUERY_STALE = 30; // s
 
 // TXT record lookup
 const QUERY_KEY_TXT = [...QUERY_KEY, 'txt'];
-export function txtResolver(hostname: string) {
+export function txtResolver(domainName: string) {
   return async (): Promise<string[]> => {
     try {
-      return await invoke<string[]>('dns_lookup_txt', { hostname });
+      return await invoke<string[]>('dns_lookup_txt', { domainName });
     } catch (e) {
-      throw new Error(`Could not look up TXT records for ${hostname}.`);
+      throw new Error(`Could not look up TXT records for ${domainName}.`);
     }
   };
 }
 export const useTxtResolver = (
-  hostname: string
+  domainName: string
 ): UseQueryResult<string[], Error> =>
-  useQuery([...QUERY_KEY_TXT, hostname], txtResolver(hostname), {
-    enabled: !!hostname && isFQDN(hostname),
+  useQuery([...QUERY_KEY_TXT, domainName], txtResolver(domainName), {
+    enabled: !!domainName && isFQDN(domainName),
     retry: false,
     staleTime: QUERY_STALE * 1000,
     cacheTime: Infinity,
