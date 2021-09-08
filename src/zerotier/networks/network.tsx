@@ -132,7 +132,7 @@ function NetworkNameHeading({ network }: NetworkDetailsProps) {
     </Heading>
   );
 }
-function ToolbarBadges({ network }: NetworkDetailsProps) {
+export function StatusBadges({ network }: NetworkDetailsProps): JSX.Element {
   return (
     <>
       {network.status === 'OK' && (
@@ -329,7 +329,7 @@ function Network({ network, authToken }: NetworkProps): JSX.Element {
         <NetworkNameHeading network={network} />
       </CardHeader>
       <CardToolbar>
-        <ToolbarBadges network={network} />
+        <StatusBadges network={network} />
       </CardToolbar>
       <CardBody>
         <Accordion allowMultiple mt={-4} mb={-6} mx={-4}>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useQueryClient } from 'react-query';
 import { Formik, Form, Field, FieldProps } from 'formik';
 import isFQDN from 'validator/es/lib/isFQDN';
+import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check';
 import {
   Box,
   Stack,
@@ -15,23 +16,127 @@ import {
   Input,
   Text,
   Code,
+  Tag,
 } from '@chakra-ui/react';
 
 import { useTxtResolver } from '../../shared/dns';
+import useShellOpener from '../../shared/shell';
 
-import { QUERY_REFETCH, useNetworkStatus, useNetworkJoiner } from './service';
-import { NetworkId } from './network';
+import {
+  QUERY_REFETCH,
+  useNetworkStatus,
+  useNetworkJoiner,
+  useNetworkLeaver,
+} from './service';
+import { NetworkId, StatusBadges, checkNetworkDomainName } from './network';
 import DNS_ZT_NETWORK_KEY from './dns';
 
 // Components
 
+interface NetworkNameNoticeProps {
+  name: string;
+  networkId: string;
+  expectedName?: string;
+}
+function NetworkNameNotice({
+  name,
+  networkId,
+  expectedName,
+}: NetworkNameNoticeProps) {
+  const { data: txtRecords, status } = useTxtResolver(name);
+  const isDomainName = checkNetworkDomainName(
+    name,
+    networkId,
+    txtRecords,
+    status
+  );
+
+  if (!name) {
+    return (
+      <Text>
+        This network does not have a self-declared name. If you expected the
+        network to have a name, this may be the wrong network and you should
+        disconnect from it in order to keep your device secure.
+      </Text>
+    );
+  }
+
+  if (expectedName === undefined || name !== expectedName) {
+    if (isDomainName) {
+      return (
+        <Text>
+          This network is actually named <Code variant="solid">{name}</Code>,
+          which is confirmed as a domain name pointing to this network. If you
+          expected the network to have a different name, this may be the wrong
+          network and you should disconnect from it in order to keep your device
+          secure.
+        </Text>
+      );
+    }
+
+    return (
+      <Text>
+        This network declares its name as <Tag variant="subtle">{name}</Tag>. If
+        you expected the network to have a different name, this may be the wrong
+        network and you should disconnect from it in order to keep your device
+        secure.
+      </Text>
+    );
+  }
+
+  return <></>;
+}
+NetworkNameNotice.defaultProps = {
+  expectedName: undefined,
+};
+
+function PortErrorNotice() {
+  const shellOpener = useShellOpener();
+
+  return (
+    <Text>
+      ZeroTier seems to have a driver problem. Please refer to the
+      <Button
+        variant="ghost"
+        p={0}
+        fontWeight={400}
+        userSelect="auto"
+        onClick={() => {
+          if (isMacOS()) {
+            shellOpener.mutate(
+              'https://zerotier.atlassian.net/wiki/spaces/SD/pages/7241787/PORT+ERROR+on+Mac'
+            );
+          } else if (isWindows()) {
+            shellOpener.mutate(
+              'https://zerotier.atlassian.net/wiki/spaces/SD/pages/35455014/PORT+ERROR+on+Windows'
+            );
+          } else {
+            shellOpener.mutate(
+              'https://zerotier.atlassian.net/wiki/spaces/SD/pages/29065282/Command+Line+Interface+zerotier-cli'
+            );
+          }
+        }}
+      >
+        ZeroTier Knowledge Base
+      </Button>{' '}
+      to troubleshoot this problem.
+    </Text>
+  );
+}
+
 interface NetworkIdJoinerProps {
   networkId: string;
   authToken: string;
+  expectedName?: string;
 }
-function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
+function NetworkIdJoiner({
+  networkId,
+  authToken,
+  expectedName,
+}: NetworkIdJoinerProps) {
   const queryClient = useQueryClient();
   const networkJoiner = useNetworkJoiner(authToken, queryClient);
+  const networkLeaver = useNetworkLeaver(networkId, authToken, queryClient);
   const [joined, setJoined] = useState(false);
   const { data: networkResponse, isLoading } = useNetworkStatus(
     networkId,
@@ -48,16 +153,61 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
   // being destroyed and created again, then joined will not reset, even though
   // we want it to reset!
   if (joined) {
+    if (networkResponse === undefined) {
+      return (
+        <Text>
+          Joining <NetworkId networkId={networkId} />
+          ...
+        </Text>
+      );
+    }
+
+    const network = networkResponse.data;
+
     return (
       <>
         <Text>
           Attempted to join <NetworkId networkId={networkId} />!
         </Text>
-        <Text>
-          For security reasons, when you try to join a network you&apos;ll
-          usually have to be authorized by the network&apos;s host before you
-          can actually access the network.
-        </Text>
+        <Box>
+          <StatusBadges network={network} />
+        </Box>
+        {network.status === 'OK' && (
+          <NetworkNameNotice
+            name={network.name}
+            networkId={network.id}
+            expectedName={expectedName}
+          />
+        )}
+        {network.status === 'ACCESS_DENIED' && (
+          <Text>
+            For security reasons, when you try to join this network you&apos;ll
+            have to be authorized by the network&apos;s host before you can
+            actually access it.
+          </Text>
+        )}
+        {network.status === 'NOT_FOUND' && (
+          <Text>
+            It looks like this network doesn&apos;t exist! Is the network ID
+            correct?
+          </Text>
+        )}
+        {network.status === 'PORT_ERROR' && <PortErrorNotice />}
+        {network.type === 'PUBLIC' && (
+          <Text>
+            Warning: this is a public network, which means you should be
+            especially careful about your device&apos;s network security
+            settings. Be careful not to expose vulnerable services or
+            accidentally share private files via open network shares or HTTP
+            servers. Make sure your operating system, applications, and services
+            are fully up to date.
+          </Text>
+        )}
+        <Box>
+          <Button onClick={() => networkLeaver.mutate()} colorScheme="teal">
+            Disconnect from Network
+          </Button>
+        </Box>
       </>
     );
   }
@@ -67,8 +217,8 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
     if (network.id === networkId) {
       return (
         <Text>
-          This device has already joined the network with ZeroTier network ID{' '}
-          <NetworkId networkId={networkId} />.
+          This device has already tried to join the network with ZeroTier{' '}
+          network ID <NetworkId networkId={networkId} />.
         </Text>
       );
     }
@@ -77,12 +227,22 @@ function NetworkIdJoiner({ networkId, authToken }: NetworkIdJoinerProps) {
   networkJoiner.mutate(networkId);
   setJoined(true);
   return (
-    <Text>
-      Joining <NetworkId networkId={networkId} />
-      ...
-    </Text>
+    <>
+      <Text>
+        Joining <NetworkId networkId={networkId} />
+        ...
+      </Text>
+      <Box>
+        <Button onClick={() => networkLeaver.mutate()} colorScheme="teal">
+          Cancel
+        </Button>
+      </Box>
+    </>
   );
 }
+NetworkIdJoiner.defaultProps = {
+  expectedName: undefined,
+};
 
 interface DomainNameJoinerProps {
   domainName: string;
@@ -155,7 +315,11 @@ function DomainNameJoiner({ domainName, authToken }: DomainNameJoinerProps) {
         The network at <Code>{domainName}</Code> has ZeroTier network ID{' '}
         <NetworkId networkId={ztNetworkId} />.
       </Text>
-      <NetworkIdJoiner networkId={ztNetworkId} authToken={authToken} />
+      <NetworkIdJoiner
+        networkId={ztNetworkId}
+        authToken={authToken}
+        expectedName={domainName}
+      />
     </>
   );
 }
@@ -200,7 +364,7 @@ function Joiner({
         >
           Join Another Network
         </Button>
-        <Button onClick={onClose}>Close</Button>
+        <Button onClick={onClose}>Close This Panel</Button>
       </ButtonGroup>
     </>
   );
