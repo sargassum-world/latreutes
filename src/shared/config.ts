@@ -1,7 +1,13 @@
-import { QueryClient, UseQueryResult, useQuery } from 'react-query';
+import {
+  QueryClient,
+  UseQueryResult,
+  UseMutationResult,
+  useQuery,
+  useMutation,
+} from 'react-query';
 import { getVersion } from '@tauri-apps/api/app';
 import { configDir, sep } from '@tauri-apps/api/path';
-import { FsOptions, readTextFile } from '@tauri-apps/api/fs';
+import { FsOptions, readTextFile, createDir } from '@tauri-apps/api/fs';
 
 export const APPLICATION_NAMESPACE = 'latreutes';
 export const QUERY_KEY_CONFIG = [APPLICATION_NAMESPACE, 'config'];
@@ -38,6 +44,11 @@ export const useConfigPath = (): UseQueryResult<string> =>
   useQuery(QUERY_KEY_CONFIG_PATH, getConfigPath, {
     staleTime: Infinity,
     cacheTime: Infinity,
+  });
+export const useConfigDirMaker = (): UseMutationResult<void, unknown, void> =>
+  useMutation(async () => {
+    const configPath = await getConfigPath();
+    await createDir(configPath, { recursive: true });
   });
 
 // ZeroTier Auth Token

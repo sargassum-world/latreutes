@@ -11,8 +11,12 @@ import {
   ListItem,
 } from '@chakra-ui/react';
 
-import { AUTHTOKEN_FILENAME, invalidateAuthTokenCache } from '../shared/config';
-import useShellOpener from '../shared/shell';
+import {
+  AUTHTOKEN_FILENAME,
+  invalidateAuthTokenCache,
+  useConfigDirMaker,
+} from '../shared/config';
+import { useShellOpener, useSuCopier } from '../shared/shell';
 
 import { InfoCard } from '../shared/layout';
 
@@ -32,15 +36,24 @@ function StatusMessage({
   authToken,
   tokenStatus,
 }: StatusMessageProps) {
+  const queryClient = useQueryClient();
   const { status: nodeStatus } = useNodeStatus(authToken);
 
+  const configDirMaker = useConfigDirMaker();
   let ztOneConfigPath = '/var/lib/zerotier-one/';
+  let os = 'linux';
   if (isMacOS()) {
     ztOneConfigPath = '/Library/Application Support/ZeroTier/One/';
+    os = 'macOS';
   } else if (isWindows()) {
     ztOneConfigPath = '\\ProgramData\\ZeroTier\\One\\';
+    os = 'windows';
   }
   const shellOpener = useShellOpener();
+  const suCopier = useSuCopier(() => {
+    invalidateAuthTokenCache(queryClient);
+    invalidateCache(queryClient);
+  });
 
   if (configDirPath === undefined) {
     return (
@@ -68,8 +81,6 @@ function StatusMessage({
           </Stack>
         );
       }
-      // TODO: try removing the last char from the authtoken; if it works, just
-      // use that.
 
       return (
         <Stack spacing={2}>
@@ -116,7 +127,10 @@ function StatusMessage({
               p={0}
               fontWeight={400}
               userSelect="auto"
-              onClick={() => shellOpener.mutate(ztOneConfigPath)}
+              onClick={() => {
+                configDirMaker.mutate();
+                shellOpener.mutate(ztOneConfigPath);
+              }}
             >
               <Code>{ztOneConfigPath}authtoken.secret</Code>
             </Button>
@@ -136,6 +150,33 @@ function StatusMessage({
             <br />
             and make sure you can open the copied file with a text editor.
           </Text>
+          {os === 'linux' && (
+            <Text>
+              The easiest way to copy the file while ensuring that the copied
+              file has the correct permission is to run the following command in
+              the terminal:
+              <br />
+              <Code>
+                sudo cat {ztOneConfigPath}authtoken.secret &gt; {configDirPath}
+                authtoken.secret
+              </Code>
+              <br />
+              You may be able to run that command simply by pressing this
+              button:
+              <br />
+              <Button
+                colorScheme="teal"
+                onClick={() => {
+                  suCopier.mutate({
+                    source: `${ztOneConfigPath}authtoken.secret`,
+                    dest: `${configDirPath}authtoken.secret`,
+                  });
+                }}
+              >
+                Copy ZeroTier file
+              </Button>
+            </Text>
+          )}
           <Text>
             Note that anyone who can open the <Code>authtoken.secret</Code> file
             will be able to join, leave, create, and delete ZeroTier networks on

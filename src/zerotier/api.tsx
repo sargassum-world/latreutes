@@ -4,7 +4,7 @@ import { fetch } from '@tauri-apps/api/http';
 import { Stack, Button, Heading, Text, Code } from '@chakra-ui/react';
 
 import { InfoCard } from '../shared/layout';
-import useShellOpener from '../shared/shell';
+import { useShellOpener } from '../shared/shell';
 
 import { QUERY_KEY_ZT, SERVICE_URL_ZT, invalidateCache } from './service';
 

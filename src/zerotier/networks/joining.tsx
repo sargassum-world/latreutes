@@ -20,7 +20,7 @@ import {
 } from '@chakra-ui/react';
 
 import { useTxtResolver } from '../../shared/dns';
-import useShellOpener from '../../shared/shell';
+import { useShellOpener } from '../../shared/shell';
 
 import {
   QUERY_REFETCH,
