@@ -127,10 +127,7 @@ function StatusMessage({
               p={0}
               fontWeight={400}
               userSelect="auto"
-              onClick={() => {
-                configDirMaker.mutate();
-                shellOpener.mutate(ztOneConfigPath);
-              }}
+              onClick={() => shellOpener.mutate(ztOneConfigPath)}
             >
               <Code>{ztOneConfigPath}authtoken.secret</Code>
             </Button>
@@ -143,7 +140,10 @@ function StatusMessage({
               p={0}
               fontWeight={400}
               userSelect="auto"
-              onClick={() => shellOpener.mutate(configDirPath)}
+              onClick={() => {
+                configDirMaker.mutate();
+                shellOpener.mutate(configDirPath);
+              }}
             >
               <Code>{configDirPath}</Code>
             </Button>
@@ -167,6 +167,7 @@ function StatusMessage({
               <Button
                 colorScheme="teal"
                 onClick={() => {
+                  configDirMaker.mutate();
                   suCopier.mutate({
                     source: `${ztOneConfigPath}authtoken.secret`,
                     dest: `${configDirPath}authtoken.secret`,

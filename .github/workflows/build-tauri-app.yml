@@ -142,14 +142,9 @@ jobs:
           export CPPFLAGS="-DPNG_ARM_NEON_OPT=0"
           yarn
           echo "Troubleshoot"
-          ls "${HOME}/.cargo/bin"
-          cargo install tauri-cli
-          which cargo-tauri
-          cargo-tauri --version
-          cargo-tauri info
-          yarn tauri build --version
+          cargo tauri info
           echo "Run bundle build"
-          yarn tauri build --debug
+          cargo tauri build
     - name: Upload the build artifacts
       uses: actions/upload-artifact@v2
       with:
