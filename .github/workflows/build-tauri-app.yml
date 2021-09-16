@@ -119,7 +119,7 @@ jobs:
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           echo "Install Node.js"
-          nvm install node --latest-npm
+          nvm install lts/erbium --latest-npm
           nvm use node
           echo "Install Yarn"
           npm install --global yarn
@@ -141,14 +141,15 @@ jobs:
           # and https://github.com/imagemin/optipng-bin/issues/97
           export CPPFLAGS="-DPNG_ARM_NEON_OPT=0"
           yarn
-          echo "Troubleshoot"
           cargo tauri info
           echo "Run bundle build"
-          cargo tauri build
+          # Note: right now tauri's appimage.sh is hardcoded to build AppImages
+          # against x86_64, so we can't build AppImage bundles for ARM.
+          cargo tauri build --bundle deb
     - name: Upload the build artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: bundle-${{ matrix.arch }}-${{ matrix.distro }}
+        name: latreutes-bundle-${{ matrix.arch }}-${{ matrix.distro }}
         path: |
           src-tauri/target/release/bundle/*
           !src-tauri/target/release/bundle/appimage/latreutes.AppDir/
