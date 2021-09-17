@@ -25,8 +25,8 @@
       "externalBin": [],
       "copyright": "Copyright Sargassum Project contributors",
       "category": "Utility",
-      "shortDescription": "Desktop client for browsing and connecting to Sargassum networks.",
-      "longDescription": "This application provides a more user-friendly way of discovering and joining ZeroTier networks, using DNS-based hostnames as well as public registries of networks.",
+      "shortDescription": "Desktop application for browsing and connecting to ZeroTier and Sargassum networks.",
+      "longDescription": "This application provides a more user-friendly way of discovering and joining ZeroTier networks, by allowing networks to be joined via a DNS-based domain name.",
       "deb": {
         "depends": [],
         "useBootstrapper": false
