@@ -1,6 +1,6 @@
 {
   "package": {
-    "productName": "latreutes",
+    "productName": "Latreutes",
     "version": "0.1.0"
   },
   "build": {
@@ -13,7 +13,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "eco.sargassum.latreutes",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -23,10 +23,10 @@
       ],
       "resources": [],
       "externalBin": [],
-      "copyright": "",
-      "category": "DeveloperTool",
-      "shortDescription": "",
-      "longDescription": "",
+      "copyright": "Copyright Sargassum Project contributors",
+      "category": "Utility",
+      "shortDescription": "Desktop application for browsing and connecting to ZeroTier and Sargassum networks.",
+      "longDescription": "This application provides a more user-friendly way of discovering and joining ZeroTier networks, by allowing networks to be joined via a DNS-based domain name.",
       "deb": {
         "depends": [],
         "useBootstrapper": false
@@ -49,19 +49,32 @@
       "active": false
     },
     "allowlist": {
-      "all": true
+      "fs": {
+        "readTextFile": true
+      },
+      "http": {
+        "all": true
+      },
+      "path": {
+        "all": true
+      },
+      "shell": {
+        "all": true
+      }
     },
     "windows": [
       {
         "title": "Latreutes",
-        "width": 800,
+        "width": 600,
         "height": 600,
+        "minWidth": 400,
+        "minHeight": 400,
         "resizable": true,
         "fullscreen": false
       }
     ],
     "security": {
-      "csp": "default-src blob: data: filesystem: ws: wss: http: https: tauri: 'unsafe-eval' 'unsafe-inline' 'self' img-src: 'self'"
+      "csp": "default-src http: https: tauri: 'self' script-src: 'unsafe-inline' img-src: 'self'"
     }
   }
 }

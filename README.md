@@ -1,8 +1,8 @@
 # latreutes
 
-Desktop client for browsing and connecting to Sargassum networks.
+Desktop application for browsing and connecting to ZeroTier and Sargassum networks.
 
-Named after [_Latreutes fucorum_](https://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=TSN&search_value=96870#null) (the slender Sargassum shrimp), a crustacean inhabitant of the Sargasso Sea, this cross-platform application is a prototype for a more user-friendly way of discovering and joining ZeroTier networks, with public registries.
+Named after [_Latreutes fucorum_](https://www.itis.gov/servlet/SingleRpt/SingleRpt?search_topic=TSN&search_value=96870#null) (the slender Sargassum shrimp), a crustacean inhabitant of the Sargasso Sea, this cross-platform application is a prototype for a more user-friendly way of discovering and joining ZeroTier networks, by allowing networks to be joined via a DNS-based domain name.
 
 ## License
 
