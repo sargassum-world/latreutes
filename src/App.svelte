@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { Router, Route } from 'svelte-routing';
+  import { Router } from 'svelte-routing';
   import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query';
 
-  import Navbar from './app/Navbar.svelte';
+  import MainWindow from './app/MainWindow.svelte';
 
   // Used for SSR; falsy value is ignored by Router
   export let url = '';
@@ -16,20 +16,6 @@
 
 <QueryClientProvider client={queryClient}>
   <Router url="{url}">
-    <Navbar />
-    <Route path="/">
-      <section class="section">
-        <div class="container">
-          <h1 class="title">
-            Home
-          </h1>
-          <p class="subtitle">
-            Latreutes is an application!
-          </p>
-        </div>
-      </section>
-    </Route>
-    <Route path="networks">Networks page!</Route>
-    <Route path="peers">Peers page!</Route>
+    <MainWindow />
   </Router>
 </QueryClientProvider>

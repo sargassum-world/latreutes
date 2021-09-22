@@ -1,20 +1,22 @@
 import {
   QueryClient,
-  UseQueryResult,
-  UseMutationResult,
+  UseQueryStoreResult,
+  MutationStoreResult,
   useQuery,
   useMutation,
-} from 'react-query';
+} from '@sveltestack/svelte-query';
 import { Response } from '@tauri-apps/api/http';
 
-import { QUERY_KEY_ZT, fetcher, invalidateCache } from '../service';
+import { QUERY_KEY_ZT, fetcher, invalidateCache } from './service';
+
+// Types
 
 export interface Route {
   target: string;
   via: string | null;
 }
 
-type Status =
+export type Status =
   | 'REQUESTING_CONFIGURATION'
   | 'OK'
   | 'ACCESS_DENIED'
@@ -22,12 +24,14 @@ type Status =
   | 'PORT_ERROR'
   | 'CLIENT_TOO_OLD';
 
-export interface NetworkStatus {
+export type Type = 'PUBLIC' | 'PRIVATE';
+
+interface NetworkInfo {
   id: string;
   mac: string;
   name: string;
   status: Status;
-  type: string;
+  type: Type;
   mtu: number;
   dhcp: boolean;
   bridge: boolean;
@@ -43,32 +47,23 @@ export interface NetworkStatus {
   allowDNS: boolean;
 }
 
-const QUERY_KEY = [...QUERY_KEY_ZT, 'networks'];
-export const QUERY_REFETCH = 1.0; // s
-const ROUTE = ['network'];
-export const useNetworksStatus = (
-  authToken: string | undefined,
-  refetchInterval: number | false = QUERY_REFETCH * 1000,
-): UseQueryResult<Response<NetworkStatus[]>, Error> =>
-  useQuery(
-    QUERY_KEY,
-    fetcher<NetworkStatus[]>(ROUTE, 'GET', authToken, false),
-    {
-      enabled: !!authToken,
-      retry: false,
-      refetchInterval,
-      cacheTime: Infinity,
-    },
-  );
-export const useNetworkStatus = (
+// Parameters
+
+const QUERY_KEY_BASE = [...QUERY_KEY_ZT, 'network'];
+const QUERY_REFETCH = 1.0; // s
+const API_ROUTE_BASE = ['network'];
+
+// Queries
+
+export const useNetworkInfo = (
   networkId: string,
   authToken: string | undefined,
   refetchInterval: number | false = QUERY_REFETCH * 1000,
   cacheTime = Infinity,
-): UseQueryResult<Response<NetworkStatus>, Error> =>
+): UseQueryStoreResult<Response<NetworkInfo>, Error, Response<NetworkInfo>, string[]> =>
   useQuery(
-    [...QUERY_KEY, networkId],
-    fetcher<NetworkStatus>([...ROUTE, networkId], 'GET', authToken),
+    [...QUERY_KEY_BASE, networkId],
+    fetcher<NetworkInfo>([...API_ROUTE_BASE, networkId], 'GET', authToken),
     {
       enabled: !!authToken,
       retry: false,
@@ -76,26 +71,30 @@ export const useNetworkStatus = (
       cacheTime,
     },
   );
+
+// Mutations
+
 export const useNetworkJoiner = (
   authToken: string,
   queryClient: QueryClient,
-): UseMutationResult<Response<NetworkStatus>, unknown, string> =>
+): MutationStoreResult<Response<NetworkInfo>, unknown, string> =>
   useMutation(
     (networkId: string) =>
-      fetcher<NetworkStatus>([...ROUTE, networkId], 'POST', authToken)(),
+      fetcher<NetworkInfo>([...API_ROUTE_BASE, networkId], 'POST', authToken)(),
     {
       onSuccess: () => {
         invalidateCache(queryClient);
       },
     },
   );
+
 export const useNetworkLeaver = (
   networkId: string,
   authToken: string,
   queryClient: QueryClient,
-): UseMutationResult<Response<NetworkStatus>, unknown, void> =>
+): MutationStoreResult<Response<NetworkInfo>, unknown, void> =>
   useMutation(
-    fetcher<NetworkStatus>([...ROUTE, networkId], 'DELETE', authToken),
+    fetcher<NetworkInfo>([...API_ROUTE_BASE, networkId], 'DELETE', authToken),
     {
       onSuccess: () => {
         invalidateCache(queryClient);
