@@ -1,22 +1,35 @@
 <script lang="ts">
-	export let name: string;
+  import { Router, Route } from 'svelte-routing';
+  import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query';
+
+  import Navbar from './app/Navbar.svelte';
+
+  // Used for SSR; falsy value is ignored by Router
+  export let url = '';
+
+  const queryClient = new QueryClient();
 </script>
 
-<main>
-	<h1>Hello {name}!!</h1>
-</main>
+<svelte:head>
+<style src="scss-entrypoint.scss"></style>
+</svelte:head>
 
-<style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
-</style>
+<QueryClientProvider client={queryClient}>
+  <Router url="{url}">
+    <Navbar />
+    <Route path="/">
+      <section class="section">
+        <div class="container">
+          <h1 class="title">
+            Home
+          </h1>
+          <p class="subtitle">
+            Latreutes is an application!
+          </p>
+        </div>
+      </section>
+    </Route>
+    <Route path="networks">Networks page!</Route>
+    <Route path="peers">Peers page!</Route>
+  </Router>
+</QueryClientProvider>

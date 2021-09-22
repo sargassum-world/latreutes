@@ -20,6 +20,7 @@
     "@tsconfig/svelte": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
+    "bulma": "^0.9.3",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-svelte3": "^3.2.1",
@@ -39,7 +40,9 @@
   "dependencies": {
     "@fontsource/atkinson-hyperlegible": "^4.5.1",
     "@fontsource/oxygen-mono": "^4.5.0",
+    "@sveltestack/svelte-query": "^1.4.1",
     "@tauri-apps/api": "^1.0.0-beta.8",
+    "node-sass": "^6.0.1",
     "sirv-cli": "^1.0.0",
     "svelte-routing": "^1.6.0"
   }

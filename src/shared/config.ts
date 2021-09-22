@@ -1,10 +1,10 @@
 import {
   QueryClient,
-  UseQueryResult,
-  UseMutationResult,
+  UseQueryStoreResult,
+  MutationStoreResult,
   useQuery,
   useMutation,
-} from 'react-query';
+} from '@sveltestack/svelte-query';
 import { getVersion } from '@tauri-apps/api/app';
 import { configDir, sep } from '@tauri-apps/api/path';
 import { FsOptions, readTextFile, createDir } from '@tauri-apps/api/fs';
@@ -26,7 +26,7 @@ async function readFile(path: string, options?: FsOptions) {
 
 // App Version
 const QUERY_KEY_VERSION = [APPLICATION_NAMESPACE, 'version'];
-export const useVersion = (): UseQueryResult<string> =>
+export const useVersion = (): UseQueryStoreResult<string, unknown, string, string[]> =>
   useQuery(QUERY_KEY_VERSION, getVersion, {
     staleTime: Infinity,
     cacheTime: Infinity,
@@ -40,12 +40,12 @@ export async function getConfigPath(): Promise<string> {
   const configSubpath = `${CONFIG_PARENT}${sep}${APPLICATION_NAMESPACE}`;
   return `${configBasePath}${configSubpath}${sep}`;
 }
-export const useConfigPath = (): UseQueryResult<string> =>
+export const useConfigPath = (): UseQueryStoreResult<string, unknown, string, string[]> =>
   useQuery(QUERY_KEY_CONFIG_PATH, getConfigPath, {
     staleTime: Infinity,
     cacheTime: Infinity,
   });
-export const useConfigDirMaker = (): UseMutationResult<void, unknown, void> =>
+export const useConfigDirMaker = (): MutationStoreResult<void, unknown, void> =>
   useMutation(async () => {
     const configPath = await getConfigPath();
     await createDir(configPath, { recursive: true });
@@ -55,7 +55,7 @@ export const useConfigDirMaker = (): UseMutationResult<void, unknown, void> =>
 export const AUTHTOKEN_FILENAME = 'authtoken.secret';
 const QUERY_KEY_ZT = [...QUERY_KEY_CONFIG, 'zt'];
 const QUERY_KEY_AUTHTOKEN = [...QUERY_KEY_ZT, 'authtoken'];
-export const useAuthToken = (configDirPath?: string): UseQueryResult<string> =>
+export const useAuthToken = (configDirPath?: string): UseQueryStoreResult<string, unknown, string, string[]> =>
   useQuery(
     QUERY_KEY_AUTHTOKEN,
     async () => {
@@ -73,5 +73,5 @@ export const useAuthToken = (configDirPath?: string): UseQueryResult<string> =>
     },
   );
 export const invalidateAuthTokenCache = (queryClient: QueryClient): void => {
-  queryClient.invalidateQueries(QUERY_KEY_AUTHTOKEN, { refetchInactive: true });
+  void queryClient.invalidateQueries(QUERY_KEY_AUTHTOKEN, { refetchInactive: true });
 };
