@@ -70,7 +70,7 @@ export const useAuthToken = (configDirPath?: string): UseQueryResult<string> =>
       refetchOnWindowFocus: false,
       staleTime: Infinity,
       cacheTime: Infinity,
-    }
+    },
   );
 export const invalidateAuthTokenCache = (queryClient: QueryClient): void => {
   queryClient.invalidateQueries(QUERY_KEY_AUTHTOKEN, { refetchInactive: true });

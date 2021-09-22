@@ -19,7 +19,7 @@ export function txtResolver(domainName: string) {
   };
 }
 export const useTxtResolver = (
-  domainName: string
+  domainName: string,
 ): UseQueryResult<string[], Error> =>
   useQuery([...QUERY_KEY_TXT, domainName], txtResolver(domainName), {
     enabled: !!domainName && isFQDN(domainName),
@@ -40,7 +40,7 @@ export function reverseResolver(ipAddr: string) {
   };
 }
 export const useReverseResolver = (
-  ipAddr: string
+  ipAddr: string,
 ): UseQueryResult<string[], Error> =>
   useQuery([...QUERY_KEY_REVERSE, ipAddr], reverseResolver(ipAddr), {
     enabled: !!ipAddr && isIP(ipAddr),

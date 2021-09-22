@@ -10,7 +10,7 @@ interface CopyArgs {
   dest: string;
 }
 export const useSuCopier = (
-  onSuccess: () => void
+  onSuccess: () => void,
 ): UseMutationResult<void, unknown, CopyArgs> =>
   useMutation(
     async ({ source, dest }: CopyArgs) => {
@@ -26,5 +26,5 @@ export const useSuCopier = (
     },
     {
       onSuccess,
-    }
+    },
   );

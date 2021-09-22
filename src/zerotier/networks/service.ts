@@ -48,7 +48,7 @@ export const QUERY_REFETCH = 1.0; // s
 const ROUTE = ['network'];
 export const useNetworksStatus = (
   authToken: string | undefined,
-  refetchInterval: number | false = QUERY_REFETCH * 1000
+  refetchInterval: number | false = QUERY_REFETCH * 1000,
 ): UseQueryResult<Response<NetworkStatus[]>, Error> =>
   useQuery(
     QUERY_KEY,
@@ -58,13 +58,13 @@ export const useNetworksStatus = (
       retry: false,
       refetchInterval,
       cacheTime: Infinity,
-    }
+    },
   );
 export const useNetworkStatus = (
   networkId: string,
   authToken: string | undefined,
   refetchInterval: number | false = QUERY_REFETCH * 1000,
-  cacheTime = Infinity
+  cacheTime = Infinity,
 ): UseQueryResult<Response<NetworkStatus>, Error> =>
   useQuery(
     [...QUERY_KEY, networkId],
@@ -74,11 +74,11 @@ export const useNetworkStatus = (
       retry: false,
       refetchInterval,
       cacheTime,
-    }
+    },
   );
 export const useNetworkJoiner = (
   authToken: string,
-  queryClient: QueryClient
+  queryClient: QueryClient,
 ): UseMutationResult<Response<NetworkStatus>, unknown, string> =>
   useMutation(
     (networkId: string) =>
@@ -87,12 +87,12 @@ export const useNetworkJoiner = (
       onSuccess: () => {
         invalidateCache(queryClient);
       },
-    }
+    },
   );
 export const useNetworkLeaver = (
   networkId: string,
   authToken: string,
-  queryClient: QueryClient
+  queryClient: QueryClient,
 ): UseMutationResult<Response<NetworkStatus>, unknown, void> =>
   useMutation(
     fetcher<NetworkStatus>([...ROUTE, networkId], 'DELETE', authToken),
@@ -100,5 +100,5 @@ export const useNetworkLeaver = (
       onSuccess: () => {
         invalidateCache(queryClient);
       },
-    }
+    },
   );
