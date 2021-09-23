@@ -8,25 +8,39 @@
 
   import Navbar from './Navbar.svelte';
 
+  export let theme;
+  export let toggleTheme;
+
   const configPathRes = useConfigPath();
   $: authTokenRes = useAuthToken($configPathRes.data);
-  $: nodeInfoRes = useNodeInfo($authTokenRes.missing ? '' : $authTokenRes.data)
-  $: authTokenMissing = $authTokenRes.status === 'error' || $authTokenRes.data === undefined;
-  $: hasNodeInfo = $nodeInfoRes.status === 'success' && $nodeInfoRes.data !== undefined;
+  $: nodeInfoRes = useNodeInfo($authTokenRes.missing ? '' : $authTokenRes.data);
+  $: authTokenMissing =
+    $authTokenRes.status === 'error' || $authTokenRes.data === undefined;
+  $: hasNodeInfo =
+    $nodeInfoRes.status === 'success' && $nodeInfoRes.data !== undefined;
   $: connectedToZeroTier = !authTokenMissing && hasNodeInfo;
-
 </script>
 
-<Navbar {connectedToZeroTier} />
+<Navbar {connectedToZeroTier} {theme} {toggleTheme} />
 <Route path="/">
   <section class="section">
     <div class="container">
-      <h1 class="title">
-        Home
-      </h1>
-      <p class="subtitle">
-        Latreutes is an application!
-      </p>
+      <h1 class="title">Home</h1>
+      <div class="content">
+        <p class="subtitle">Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+        <p>Latreutes is an application!</p>
+      </div>
     </div>
   </section>
 </Route>

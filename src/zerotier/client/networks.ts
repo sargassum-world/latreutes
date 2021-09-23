@@ -1,7 +1,7 @@
 import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
 
 import { QUERY_KEY_ZT, fetcher } from './service';
-import { Status } from './network'
+import { Status } from './network';
 
 // Types
 
@@ -25,8 +25,15 @@ export const useNetworkSummaries = (
   useQuery(
     QUERY_KEY,
     async (): Promise<NetworkSummary[]> => {
-      const result = await fetcher<NetworkSummary[]>(API_ROUTE, 'GET', authToken, false)();
-      return result.data.map(({ id, status }): NetworkSummary => ({ id, status }));
+      const result = await fetcher<NetworkSummary[]>(
+        API_ROUTE,
+        'GET',
+        authToken,
+        false,
+      )();
+      return result.data.map(
+        ({ id, status }): NetworkSummary => ({ id, status }),
+      );
     },
     {
       enabled: !!authToken,

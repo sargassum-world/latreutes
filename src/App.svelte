@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Router } from 'svelte-routing';
   import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query';
+  import DarkMode from 'svelte-dark-mode';
 
   import MainWindow from './app/MainWindow.svelte';
 
@@ -8,14 +9,31 @@
   export let url = '';
 
   const queryClient = new QueryClient();
+
+  let theme;
+  $: document.body.className = theme;
+
+  function toggleTheme() {
+    if (theme === 'dark') {
+      theme = 'light';
+      return;
+    }
+
+    theme = 'dark';
+  }
 </script>
 
 <svelte:head>
-<style src="scss-entrypoint.scss"></style>
+  {#if theme === 'dark'}
+    <style src="bulma-dark.scss"></style>
+  {:else}
+    <style src="bulma-light.scss"></style>
+  {/if}
 </svelte:head>
 
+<DarkMode bind:theme />
 <QueryClientProvider client={queryClient}>
-  <Router url="{url}">
-    <MainWindow />
+  <Router {url}>
+    <MainWindow {theme} {toggleTheme} />
   </Router>
 </QueryClientProvider>

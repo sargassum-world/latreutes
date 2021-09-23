@@ -19,12 +19,17 @@ const API_ROUTE = ['peer'];
 // Queries
 
 export const usePeerSummaries = (
-  authToken: string | undefined
+  authToken: string | undefined,
 ): UseQueryStoreResult<PeerSummary[], Error, PeerSummary[], string[]> =>
   useQuery(
     QUERY_KEY,
-    async(): Promise<PeerSummary[]> => {
-      const result = await fetcher<PeerSummary[]>(API_ROUTE, 'GET', authToken, false)();
+    async (): Promise<PeerSummary[]> => {
+      const result = await fetcher<PeerSummary[]>(
+        API_ROUTE,
+        'GET',
+        authToken,
+        false,
+      )();
       return result.data.map(({ address, role }) => ({ address, role }));
     },
     {

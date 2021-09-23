@@ -5,11 +5,7 @@ import { QUERY_KEY_ZT, fetcher } from './service';
 
 // Types
 
-export type Role = 
-  | 'LEAF'
-  | 'UPSTREAM'
-  | 'ROOT'
-  | 'PLANET'
+export type Role = 'LEAF' | 'UPSTREAM' | 'ROOT' | 'PLANET';
 
 interface PathInfo {
   address: string;
@@ -42,8 +38,13 @@ const API_ROUTE_BASE = ['peer'];
 
 export const usePeerInfo = (
   peerId: string,
-  authToken: string | undefined
-): UseQueryStoreResult<Response<PeerInfo>, Error, Response<PeerInfo>, string[]> =>
+  authToken: string | undefined,
+): UseQueryStoreResult<
+  Response<PeerInfo>,
+  Error,
+  Response<PeerInfo>,
+  string[]
+> =>
   useQuery(
     [...QUERY_KEY_BASE, peerId],
     fetcher<PeerInfo>([...API_ROUTE_BASE, peerId], 'GET', authToken),
@@ -52,5 +53,5 @@ export const usePeerInfo = (
       retry: false,
       refetchInterval: QUERY_REFETCH * 1000,
       cacheTime: Infinity,
-    }
+    },
   );

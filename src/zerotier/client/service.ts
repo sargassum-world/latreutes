@@ -1,4 +1,8 @@
-import { QueryClient, UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
+import {
+  QueryClient,
+  UseQueryStoreResult,
+  useQuery,
+} from '@sveltestack/svelte-query';
 import { HttpVerb, Response, fetch } from '@tauri-apps/api/http';
 
 export const QUERY_KEY_ZT = ['latreutes', 'zerotier'];
@@ -22,34 +26,40 @@ export function fetcher<ResponseData>(
   route: string[],
   method: HttpVerb,
   authToken?: string,
-  emptyError = false
+  emptyError = false,
 ) {
   return async (): Promise<Response<ResponseData>> => {
     let response;
     if (!authToken) {
-      throw new Error(`Missing ZeroTier auth token for ${method} ${route.join('/')}!`);
+      throw new Error(
+        `Missing ZeroTier auth token for ${method} ${route.join('/')}!`,
+      );
     }
 
     try {
       response = await fetch<ResponseData | Empty>(
         [SERVICE_URL_ZT, ...route].join('/'),
-        { method, headers: { 'X-ZT1-Auth': authToken } }
+        { method, headers: { 'X-ZT1-Auth': authToken } },
       );
     } catch (e) {
       throw new Error(
-        `Could not connect to the ZeroTier service for ${method} ${route.join('/')}! Is it running?`
+        `Could not connect to the ZeroTier service for ${method} ${route.join(
+          '/',
+        )}! Is it running?`,
       );
     }
 
     if (response.status === 401) {
       throw new Error(
-        `Not authorized to issue requests to the ZeroTier service! Is the ZeroTier auth token correct? (${method} ${route.join('/')})`
+        `Not authorized to issue requests to the ZeroTier service! Is the ZeroTier auth token correct? (${method} ${route.join(
+          '/',
+        )})`,
       );
     }
 
     if (response.status !== 200) {
       throw new Error(
-        `Unexpected HTTP response code ${response.status}! Is some other service running at ${SERVICE_URL_ZT} instead of ZeroTier?`
+        `Unexpected HTTP response code ${response.status}! Is some other service running at ${SERVICE_URL_ZT} instead of ZeroTier?`,
       );
     }
 
@@ -59,7 +69,9 @@ export function fetcher<ResponseData>(
       Object.keys(response.data).length === 0
     ) {
       throw new Error(
-        `Unexpected empty response for ${method} ${route.join('/')}! Is the ZeroTier auth token correct?`
+        `Unexpected empty response for ${method} ${route.join(
+          '/',
+        )}! Is the ZeroTier auth token correct?`,
       );
     }
 
@@ -75,14 +87,21 @@ const API_ROUTE = ['status'];
 
 // Queries
 
-export const useApiStatus = (): UseQueryStoreResult<ApiStatus, Error, ApiStatus, string[]> =>
+export const useApiStatus = (): UseQueryStoreResult<
+  ApiStatus,
+  Error,
+  ApiStatus,
+  string[]
+> =>
   useQuery(
     QUERY_KEY,
     async () => {
       let response;
 
       try {
-        response = await fetch<unknown>([SERVICE_URL_ZT, ...API_ROUTE].join('/'));
+        response = await fetch<unknown>(
+          [SERVICE_URL_ZT, ...API_ROUTE].join('/'),
+        );
       } catch (e) {
         return ApiStatus.failedRequest;
       }
@@ -105,7 +124,7 @@ export const useApiStatus = (): UseQueryStoreResult<ApiStatus, Error, ApiStatus,
       refetchOnWindowFocus: false,
       refetchInterval: QUERY_REFETCH * 1000,
       cacheTime: Infinity,
-    }
+    },
   );
 
 // Utility functions

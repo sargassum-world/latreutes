@@ -60,7 +60,12 @@ export const useNetworkInfo = (
   authToken: string | undefined,
   refetchInterval: number | false = QUERY_REFETCH * 1000,
   cacheTime = Infinity,
-): UseQueryStoreResult<Response<NetworkInfo>, Error, Response<NetworkInfo>, string[]> =>
+): UseQueryStoreResult<
+  Response<NetworkInfo>,
+  Error,
+  Response<NetworkInfo>,
+  string[]
+> =>
   useQuery(
     [...QUERY_KEY_BASE, networkId],
     fetcher<NetworkInfo>([...API_ROUTE_BASE, networkId], 'GET', authToken),

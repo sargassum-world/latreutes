@@ -30,8 +30,13 @@ const API_ROUTE = ['status'];
 
 export const useNodeInfo = (
   authToken: string | undefined,
-  emptyError = true
-): UseQueryStoreResult<Response<NodeInfo>, Error, Response<NodeInfo>, string[]> =>
+  emptyError = true,
+): UseQueryStoreResult<
+  Response<NodeInfo>,
+  Error,
+  Response<NodeInfo>,
+  string[]
+> =>
   useQuery(
     QUERY_KEY,
     fetcher<NodeInfo>(API_ROUTE, 'GET', authToken, emptyError),
@@ -40,5 +45,5 @@ export const useNodeInfo = (
       retry: false,
       refetchInterval: QUERY_REFETCH * 1000,
       cacheTime: Infinity,
-    }
+    },
   );
