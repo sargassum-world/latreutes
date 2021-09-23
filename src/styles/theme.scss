@@ -18,25 +18,64 @@ $link-active: $scheme-main-grey;
 $link-active-border: $scheme-main-grey-bis;
 
 // Bulma
+
 @import 'node_modules/bulma/bulma.sass';
 
 // Element overrides
 
+.navbar, .navbar-menu, .navbar-start, .navbar-end {
+  @include from($navside-breakpoint) {
+    flex-direction: column;
+  }
+}
+
 .navbar {
-  button:focus {
-    color: $scheme-invert;
-    background-color: $scheme-main-grey-bis;
+  min-height: $navbar-height;
+  max-height: 4em;
+  @include until($navbar-breakpoint) {
+    height: $navbar-height;
+  }
+  @include from($navside-breakpoint) {
+    height: 100%;
+    max-height: 100%;
+  }
+
+  .navbar-brand {
+    @include from($navside-breakpoint) {
+      min-height: 0em;
+    }
   }
   .navbar-menu {
+    .navbar-end {
+      @include from($navside-breakpoint) {
+        margin-top: auto;
+        margin-right: auto;
+        margin-bottom: $navbar-margin;
+      }
+    }
+
     a.navbar-item {
-      margin-left: 0.75em;
-      margin-top: 0.75em;
-      margin-bottom: 0.75em;
+      margin: $navbar-margin;
       padding: 0.5em;
+
+      @include from($navbar-breakpoint) {
+        margin-right: 0em;
+      }
+
+      @include from($navside-breakpoint) {
+        margin-top: $navbar-margin;
+        margin-bottom: 0em;
+        margin-right: $navbar-margin;
+      }
     }
     a.navbar-item.is-active:not(:hover), a.navbar-item:hover, a.navbar-item:focus {
       color: $navbar-button-active-color;
       background-color: $navbar-button-active-background;
     }
+  }
+
+  button:focus {
+    color: $scheme-invert;
+    background-color: $scheme-main-grey-bis;
   }
 }

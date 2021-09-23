@@ -51,7 +51,11 @@
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-          <button class="button is-{theme}" id="theme-toggle" on:click={toggleTheme}>
+          <button
+            class="button is-{theme}"
+            id="theme-toggle"
+            on:click={toggleTheme}
+          >
             <span class="icon is-small">
               <Icon path={mdiWhiteBalanceSunny} size="1em" />
             </span>
