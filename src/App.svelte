@@ -2,6 +2,11 @@
   import { Router } from 'svelte-routing';
   import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query';
   import DarkMode from 'svelte-dark-mode';
+  import '@fontsource/atkinson-hyperlegible/400.css';
+  import '@fontsource/atkinson-hyperlegible/400-italic.css';
+  import '@fontsource/atkinson-hyperlegible/700.css';
+  import '@fontsource/atkinson-hyperlegible/700-italic.css';
+  import '@fontsource/oxygen-mono/400.css';
 
   import MainWindow from './app/MainWindow.svelte';
 
@@ -25,9 +30,9 @@
 
 <svelte:head>
   {#if theme === 'dark'}
-    <style src="bulma-dark.scss"></style>
+    <style src="styles/bulma-dark.scss"></style>
   {:else}
-    <style src="bulma-light.scss"></style>
+    <style src="styles/bulma-light.scss"></style>
   {/if}
 </svelte:head>
 

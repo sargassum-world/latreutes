@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import copy from 'rollup-plugin-copy';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -55,6 +56,12 @@ export default {
 				// enable run-time checks when not in production
 				dev: !production
 			}
+		}),
+		// manually copy fontsource fonts, since rollup refuses to do it on its own
+		copy({
+			targets: [
+				{ src: 'node_modules/@fontsource/*/files/*', dest: 'public/build/files' }
+			]
 		}),
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
