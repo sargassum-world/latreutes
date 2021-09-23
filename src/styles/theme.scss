@@ -23,6 +23,36 @@ $link-active-border: $scheme-main-grey-bis;
 
 // Element overrides
 
+.scroller {
+  overflow: visible;
+  scrollbar-width: auto;
+  scrollbar-color: $scrollbar-color $scrollbar-background;
+}
+.scroller::-webkit-scrollbar {
+  -webkit-appearance: none;  // don't hide scrollbar without hover
+  width: 12px;
+}
+.scroller::-webkit-scrollbar-track {
+  background: $scrollbar-background;
+}
+.scroller::-webkit-scrollbar-thumb {
+  background-color: $scrollbar-color ;
+  border-radius: 6px;
+  border: 3px solid $scrollbar-background;
+}
+.scroller::-webkit-scrollbar-thumb:horizontal:hover {
+  background-color: $scrollbar-hover-color;
+}
+.scroller::-webkit-scrollbar-thumb:horizontal:active {
+  background-color: $scrollbar-hover-color;
+}
+.scroller::-webkit-scrollbar-thumb:vertical:hover {
+  background-color: $scrollbar-hover-color;
+}
+.scroller::-webkit-scrollbar-thumb:vertical:active {
+  background-color: $scrollbar-hover-color;
+}
+
 .navbar, .navbar-menu, .navbar-start, .navbar-end {
   @include from($navside-breakpoint) {
     flex-direction: column;
@@ -31,6 +61,7 @@ $link-active-border: $scheme-main-grey-bis;
 
 .navbar {
   min-height: $navbar-height;
+  height: 25vh;
   max-height: 4em;
   @include until($navbar-breakpoint) {
     height: $navbar-height;

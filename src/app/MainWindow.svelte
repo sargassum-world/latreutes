@@ -26,7 +26,7 @@
 >
   <Navbar {connectedToZeroTier} {theme} {toggleTheme} />
   <div
-    class="is-flex main-container is-flex-direction-column is-flex-grow-1"
+    class="is-flex main-container is-flex-direction-column is-flex-grow-1 scroller"
   >
     <Route path="/">
       <section class="section">
@@ -58,6 +58,7 @@
 <style>
   .main-window {
     height: 100%;
+    overflow: hidden;
   }
   .main-container {
     width: 100%;
