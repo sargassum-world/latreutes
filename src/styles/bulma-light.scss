@@ -1,5 +1,6 @@
 @charset 'utf-8';
 
+// Bulma customizations
 @import 'styles/typography.scss';
-
-@import 'node_modules/bulma/bulma.sass';
+@import 'styles/layout.scss';
+@import 'styles/theme-light.scss';

@@ -1,0 +1,31 @@
+@charset 'utf-8';
+
+@import 'node_modules/bulma/sass/utilities/initial-variables.sass';
+
+// Theme Colors
+
+$scheme-main: $black;
+$scheme-main-bis: $black-bis;
+$scheme-main-ter: $black-ter;
+$scheme-main-grey: $grey-darker;
+$scheme-main-grey-bis: $grey-dark;
+$scheme-main-grey-ter: $grey;
+$scheme-invert-grey-ter: $grey-light;
+$scheme-invert-grey-bis: $grey-lighter;
+$scheme-invert-grey: $grey-lightest;
+$scheme-invert-ter: $white-ter;
+$scheme-invert-bis: $white-bis;
+$scheme-invert: $white;
+
+// Element Colors
+
+$body-background-color: $scheme-main-ter;
+$background: $scheme-main-ter;
+
+// Component Colors
+
+$navbar-background-color: $scheme-main;
+$navbar-button-active-color: $scheme-invert;
+$navbar-button-active-background: $scheme-main-grey-bis;
+
+@import 'styles/theme.scss';

@@ -1,5 +1,7 @@
 <script lang="ts">
   import { QueryClientProvider } from '@sveltestack/svelte-query';
+  import Icon from 'mdi-svelte';
+  import { mdiWhiteBalanceSunny } from '@mdi/js';
 
   import NavLink from './NavLink.svelte';
 
@@ -17,10 +19,13 @@
   function toggleMenu() {
     isMenuOpen = !isMenuOpen;
   }
+  function closeMenu() {
+    isMenuOpen = false;
+  }
 </script>
 
-<nav class="navbar is-{theme}" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand left-burger">
     <button
       class="navbar-burger"
       class:is-active={isMenuOpen}
@@ -39,18 +44,30 @@
       {#if connectedToZeroTier}
         {#each authenticatedMenuItems as { name, path }}
           <!--<NavLink class="navbar-item" to={path}>{name}</NavLink>-->
-          <NavLink to={path}>{name}</NavLink>
+          <NavLink to={path} {closeMenu}>{name}</NavLink>
         {/each}
       {/if}
     </div>
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="buttons">
-          <button class="button is-primary" on:click={toggleTheme}>
-            Toggle Dark Mode
+          <button class="button is-{theme}" id="theme-toggle" on:click={toggleTheme}>
+            <span class="icon is-small">
+              <Icon path={mdiWhiteBalanceSunny} size="1em" />
+            </span>
           </button>
         </div>
       </div>
     </div>
   </div>
 </nav>
+
+<style lang="scss">
+  .navbar-brand.left-burger {
+    align-items: flex-start;
+  }
+  .navbar-brand.left-burger .navbar-burger {
+    margin-left: 0;
+    margin-right: 0;
+  }
+</style>

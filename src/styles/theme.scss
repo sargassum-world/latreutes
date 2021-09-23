@@ -1,0 +1,42 @@
+@charset 'utf-8';
+
+// Note: this is meant to be imported by theme-light, theme-dark, etc.
+
+// Basic Colors
+
+$border: $scheme-main-grey-bis;
+$border-hover: $scheme-main-grey-ter;
+$border-light: $scheme-main-grey;
+$border-light-hover: $scheme-main-grey-ter;
+$text: $scheme-invert-grey-bis;
+$text-light: $scheme-invert-grey-ter;
+$text-strong: $scheme-invert-grey;
+$link-hover: $scheme-invert-grey;
+$link-hover-border: $scheme-main-grey-ter;
+$link-focus: $scheme-invert-grey;
+$link-active: $scheme-main-grey;
+$link-active-border: $scheme-main-grey-bis;
+
+// Bulma
+@import 'node_modules/bulma/bulma.sass';
+
+// Element overrides
+
+.navbar {
+  button:focus {
+    color: $scheme-invert;
+    background-color: $scheme-main-grey-bis;
+  }
+  .navbar-menu {
+    a.navbar-item {
+      margin-left: 0.75em;
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
+      padding: 0.5em;
+    }
+    a.navbar-item.is-active:not(:hover), a.navbar-item:hover, a.navbar-item:focus {
+      color: $navbar-button-active-color;
+      background-color: $navbar-button-active-background;
+    }
+  }
+}
