@@ -26,32 +26,22 @@
 >
   <Navbar {connectedToZeroTier} {theme} {toggleTheme} />
   <div
-    class="is-flex main-container is-flex-direction-column is-flex-grow-1 scroller"
+    class="is-flex main-container is-flex-direction-column is-flex-grow-1 scroller pad-gap"
   >
-    <Route path="/">
-      <section class="section">
-        <div class="container">
-          <h1 class="title">Home</h1>
-          <div class="content">
-            <p class="subtitle">Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-            <p>Latreutes is an application!</p>
-          </div>
-        </div>
-      </section>
+    <Route>
+      <h1 class="title">Home</h1>
+      <div class="content">
+        <p class="subtitle">Latreutes is an application!</p>
+      </div>
     </Route>
-    <Route path="networks">Networks page!</Route>
-    <Route path="peers">Peers page!</Route>
+    {#if connectedToZeroTier}
+      <Route path="networks">
+        <h1 class="title">Networks</h1>
+      </Route>
+      <Route path="peers">
+        <h1 class="title">Peers</h1>
+      </Route>
+    {/if}
   </div>
 </div>
 

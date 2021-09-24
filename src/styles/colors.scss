@@ -1,0 +1,16 @@
+@charset 'utf-8';
+
+$grayscale-hue: 215;
+$grayscale-sat: 20%;
+$black: hsl($grayscale-hue, $grayscale-sat * 5, 5%);
+$black-bis: hsl($grayscale-hue, $grayscale-sat * 3, 10%);
+$black-ter: hsl($grayscale-hue, $grayscale-sat * 1.5, 14%);
+$grey-darker: hsl($grayscale-hue, $grayscale-sat * 1.5, 21%);
+$grey-dark: hsl($grayscale-hue, $grayscale-sat, 29%);
+$grey: hsl($grayscale-hue, $grayscale-sat, 48%);
+$grey-light: hsl($grayscale-hue, $grayscale-sat, 71%);
+$grey-lighter: hsl($grayscale-hue, $grayscale-sat, 82%);
+$grey-lightest: hsl($grayscale-hue, $grayscale-sat, 92%);
+$white-ter: hsl($grayscale-hue, $grayscale-sat, 95%);
+$white-bis: hsl($grayscale-hue, $grayscale-sat, 98%);
+$white: hsl($grayscale-hue, $grayscale-sat, 100%);

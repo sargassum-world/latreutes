@@ -4,12 +4,22 @@
 
 // Breakpoints
 
-$gap: 32px;
+$gap: 16px;
 $tablet: 600px;
 
 $navbar-breakpoint: $tablet;
 $navside-breakpoint: $desktop;
 $navbar-margin: 0.75em;
+
+// Custom Containers
+
+.pad-gap {
+  padding: $gap;
+
+  @include from($navside-breakpoint) {
+    padding: 2 * $gap;
+  }
+}
 
 // Flexbox Responsive Helpers
 
