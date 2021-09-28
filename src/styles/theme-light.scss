@@ -32,4 +32,7 @@ $navbar-background-color: $scheme-main-grey-bis;
 $navbar-button-active-color: $scheme-invert;
 $navbar-button-active-background: $scheme-main-grey-ter;
 
+$card-background-color: $scheme-main-grey;
+
 @import 'styles/theme.scss';
+@import 'styles/components.scss';

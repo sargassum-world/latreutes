@@ -8,7 +8,6 @@
 
   import Navbar from './Navbar.svelte';
 
-  export let theme;
   export let toggleTheme;
 
   const configPathRes = useConfigPath();
@@ -24,7 +23,7 @@
 <div
   class="main-window is-flex is-flex-direction-column-touch is-flex-direction-row-desktop"
 >
-  <Navbar {connectedToZeroTier} {theme} {toggleTheme} />
+  <Navbar {connectedToZeroTier} {toggleTheme} />
   <div
     class="is-flex main-container is-flex-direction-column is-flex-grow-1 scroller pad-gap"
   >

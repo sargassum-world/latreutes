@@ -39,6 +39,6 @@
 <DarkMode bind:theme />
 <QueryClientProvider client={queryClient}>
   <Router {url}>
-    <MainWindow {theme} {toggleTheme} />
+    <MainWindow {toggleTheme} />
   </Router>
 </QueryClientProvider>

@@ -6,7 +6,6 @@
   import NavLink from './NavLink.svelte';
 
   export let connectedToZeroTier;
-  export let theme;
   export let toggleTheme;
 
   const authenticatedMenuItems = [
@@ -52,7 +51,7 @@
       <div class="navbar-item">
         <div class="buttons">
           <button
-            class="button is-{theme}"
+            class="button is-text"
             id="theme-toggle"
             on:click={toggleTheme}
           >
@@ -65,13 +64,3 @@
     </div>
   </div>
 </nav>
-
-<style lang="scss">
-  .navbar-brand.left-burger {
-    align-items: flex-start;
-  }
-  .navbar-brand.left-burger .navbar-burger {
-    margin-left: 0;
-    margin-right: 0;
-  }
-</style>

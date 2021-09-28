@@ -8,49 +8,44 @@ $border: $scheme-main-grey-bis;
 $border-hover: $scheme-main-grey-ter;
 $border-light: $scheme-main-grey;
 $border-light-hover: $scheme-main-grey-ter;
-$text: $scheme-invert-grey-bis;
-$text-light: $scheme-invert-grey-ter;
+$text: $scheme-invert-grey;
+$text-light: $scheme-invert-grey-bis;
 $text-strong: $scheme-invert-grey;
-$link-hover: $scheme-invert-grey;
+$link-hover: $scheme-invert-ter;
 $link-hover-border: $scheme-main-grey-ter;
-$link-focus: $scheme-invert-grey;
+$link-focus: $scheme-invert-ter;
 $link-active: $scheme-main-grey;
 $link-active-border: $scheme-main-grey-bis;
+
+// Component Customizations
+
+$card-shadow: none;
 
 // Bulma
 
 @import 'node_modules/bulma/bulma.sass';
 
-// Element overrides
+// Element Overrides
 
-.scroller {
-  overflow: visible;
-  scrollbar-width: auto;
-  scrollbar-color: $scrollbar-color $scrollbar-background;
+body {
+  scrollbar-width: none;
 }
-.scroller::-webkit-scrollbar {
-  -webkit-appearance: none;  // don't hide scrollbar without hover
-  width: 12px;
+body::-webkit-scrollbar {
+  display: none;
 }
-.scroller::-webkit-scrollbar-track {
-  background: $scrollbar-background;
+
+button.is-ghost.is-ahref {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  height: unset;
 }
-.scroller::-webkit-scrollbar-thumb {
-  background-color: $scrollbar-color ;
-  border-radius: 6px;
-  border: 3px solid $scrollbar-background;
-}
-.scroller::-webkit-scrollbar-thumb:horizontal:hover {
-  background-color: $scrollbar-hover-color;
-}
-.scroller::-webkit-scrollbar-thumb:horizontal:active {
-  background-color: $scrollbar-hover-color;
-}
-.scroller::-webkit-scrollbar-thumb:vertical:hover {
-  background-color: $scrollbar-hover-color;
-}
-.scroller::-webkit-scrollbar-thumb:vertical:active {
-  background-color: $scrollbar-hover-color;
+
+.tag:not(body) {
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  font-size: $size-normal;
+  height: unset;
 }
 
 .navbar, .navbar-menu, .navbar-start, .navbar-end {
@@ -58,55 +53,94 @@ $link-active-border: $scheme-main-grey-bis;
     flex-direction: column;
   }
 }
-
 .navbar {
-  min-height: $navbar-height;
-  height: 25vh;
-  max-height: 4em;
-  @include until($navbar-breakpoint) {
-    height: $navbar-height;
-  }
+  min-height: $navbar-height / 2;
+  height: 10vh;
+  max-height: $navbar-height;
   @include from($navside-breakpoint) {
     height: 100%;
     max-height: 100%;
   }
+}
+.navbar-brand {
+  @include until($navside-breakpoint) {
+    min-height: $navbar-height / 2;
+    height: 100%;
+    max-height: $navbar-height;
+  }
+  @include from($navside-breakpoint) {
+    min-height: 0em;
+  }
+}
+.navbar-brand.left-burger {
+  align-items: flex-start;
 
-  .navbar-brand {
+  .navbar-burger {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+.navbar-burger {
+  width: 10vh;
+  max-width: $navbar-height;
+  height: 100%;
+  max-height: $navbar-height;
+}
+.navbar-item {
+  padding-top: 0;
+  padding-bottom: 0;
+  .buttons {
+    @include until($navside-breakpoint) {
+      margin-top: auto;
+      margin-bottom: auto;
+      height: 100%;
+    }
     @include from($navside-breakpoint) {
-      min-height: 0em;
+      margin-top: $navbar-margin;
+      margin-bottom: $navbar-margin;
     }
   }
-  .navbar-menu {
-    .navbar-end {
-      @include from($navside-breakpoint) {
-        margin-top: auto;
-        margin-right: auto;
-        margin-bottom: $navbar-margin;
-      }
-    }
-
-    a.navbar-item {
-      margin: $navbar-margin;
-      padding: 0.5em;
-
-      @include from($navbar-breakpoint) {
-        margin-right: 0em;
-      }
-
-      @include from($navside-breakpoint) {
-        margin-top: $navbar-margin;
-        margin-bottom: 0em;
-        margin-right: $navbar-margin;
-      }
-    }
-    a.navbar-item.is-active:not(:hover), a.navbar-item:hover, a.navbar-item:focus {
-      color: $navbar-button-active-color;
-      background-color: $navbar-button-active-background;
+  .button {
+    border-radius: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+    @include from($navbar-breakpoint) {
+      height: 100%;
+      max-height: $navbar-height * 0.625;
     }
   }
+  .button.is-active:not(:hover), .button:hover, .button:focus {
+    color: $navbar-button-active-color;
+    background-color: $navbar-button-active-background;
+  }
+}
+a.navbar-item {
+  margin: $navbar-margin;
+  padding: 0.5em;
 
-  button:focus {
-    color: $scheme-invert;
-    background-color: $scheme-main-grey-bis;
+  @include from($navbar-breakpoint) {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 0em;
+    height: 100%;
+    max-height: $navbar-height * 0.625;
+  }
+
+  @include from($navside-breakpoint) {
+    margin-top: $navbar-margin;
+    margin-bottom: 0em;
+    margin-right: $navbar-margin;
+    height: unset;
+  }
+}
+a.navbar-item.is-active:not(:focus):not(:hover), a.navbar-item:hover, a.navbar-item:focus {
+  color: $navbar-button-active-color;
+  background-color: $navbar-button-active-background;
+}
+.navbar-end {
+  @include from($navside-breakpoint) {
+    margin-top: auto;
+    margin-right: auto;
+    margin-bottom: $navbar-margin;
   }
 }
