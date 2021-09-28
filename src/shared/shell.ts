@@ -1,8 +1,8 @@
-import { UseMutationResult, useMutation } from 'react-query';
+import { MutationStoreResult, useMutation } from '@sveltestack/svelte-query';
 import { Command, open } from '@tauri-apps/api/shell';
 import { writeFile } from '@tauri-apps/api/fs';
 
-export const useShellOpener = (): UseMutationResult<void, unknown, string> =>
+export const useShellOpener = (): MutationStoreResult<void, unknown, string> =>
   useMutation(async (path: string) => open(path));
 
 interface CopyArgs {
@@ -11,7 +11,7 @@ interface CopyArgs {
 }
 export const useSuCopier = (
   onSuccess: () => void,
-): UseMutationResult<void, unknown, CopyArgs> =>
+): MutationStoreResult<void, unknown, CopyArgs> =>
   useMutation(
     async ({ source, dest }: CopyArgs) => {
       const command = new Command('pkexec', ['cat', source]);

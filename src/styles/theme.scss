@@ -45,7 +45,7 @@ button.is-ghost.is-ahref {
   padding-left: 0.25em;
   padding-right: 0.25em;
   font-size: $size-normal;
-  height: unset;
+  height: 1.25 * $size-normal;
 }
 
 .navbar, .navbar-menu, .navbar-start, .navbar-end {

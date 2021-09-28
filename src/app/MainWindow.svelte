@@ -7,12 +7,14 @@
   import { useNodeInfo } from '../zerotier/client/node';
 
   import Navbar from './Navbar.svelte';
+  import HomePage from './home/HomePage.svelte';
 
   export let toggleTheme;
 
   const configPathRes = useConfigPath();
   $: authTokenRes = useAuthToken($configPathRes.data);
-  $: nodeInfoRes = useNodeInfo($authTokenRes.missing ? '' : $authTokenRes.data);
+  $: authToken = $authTokenRes.missing ? '' : $authTokenRes.data;
+  $: nodeInfoRes = useNodeInfo(authToken);
   $: authTokenMissing =
     $authTokenRes.status === 'error' || $authTokenRes.data === undefined;
   $: hasNodeInfo =
@@ -24,24 +26,25 @@
   class="main-window is-flex is-flex-direction-column-touch is-flex-direction-row-desktop"
 >
   <Navbar {connectedToZeroTier} {toggleTheme} />
-  <div
-    class="is-flex main-container is-flex-direction-column is-flex-grow-1 scroller pad-gap"
-  >
-    <Route>
-      <h1 class="title">Home</h1>
-      <div class="content">
-        <p class="subtitle">Latreutes is an application!</p>
-      </div>
-    </Route>
-    {#if connectedToZeroTier}
-      <Route path="networks">
+  <Route>
+    <HomePage {authToken} {authTokenMissing} {hasNodeInfo} />
+  </Route>
+  {#if connectedToZeroTier}
+    <Route path="networks">
+      <main
+        class="is-flex main-container is-flex-direction-column scroller pad-gap"
+      >
         <h1 class="title">Networks</h1>
-      </Route>
-      <Route path="peers">
+      </main>
+    </Route>
+    <Route path="peers">
+      <main
+        class="is-flex main-container is-flex-direction-column scroller pad-gap"
+      >
         <h1 class="title">Peers</h1>
-      </Route>
-    {/if}
-  </div>
+      </main>
+    </Route>
+  {/if}
 </div>
 
 <style>
@@ -50,6 +53,7 @@
     overflow: hidden;
   }
   .main-container {
+    height: 100%;
     width: 100%;
     overflow: auto;
   }
