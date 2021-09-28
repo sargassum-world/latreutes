@@ -3,8 +3,9 @@
   import { flip } from 'svelte/animate';
   import { slide } from '../../shared/transitions';
   import { usePeerInfo } from '../client/peer';
-  import { NetworkSummary, useNetworkSummaries } from '../client/networks';
   import { splitNetworkId } from '../client/network';
+  import { NetworkSummary, useNetworkSummaries } from '../client/networks';
+  import NetworkName from '../networks/NetworkName.svelte';
 
   export let address;
   export let authToken;
@@ -16,7 +17,10 @@
   $: peerInfoRes = usePeerInfo(address, authToken);
   $: peerInfoStatus = $peerInfoRes.status;
   $: peerInfo = $peerInfoRes.data?.data;
-  $: hostedNetworks = networkSummaries?.filter((network: NetworkSummary) => splitNetworkId(network.id).hostAddress === address);
+  $: hostedNetworks = networkSummaries?.filter(
+    (network: NetworkSummary) =>
+      splitNetworkId(network.id).hostAddress === address,
+  );
 </script>
 
 <div class="accordion-content" transition:slide|local>
@@ -30,7 +34,9 @@
   {/if}
   <h4 class="is-size-6">ZeroTier Version</h4>
   {#if peerInfo !== undefined && peerInfo.versionMajor >= 0}
-    <p>v{peerInfo.versionMajor}.{peerInfo.versionMinor}.{peerInfo.versionRev}</p>
+    <p>
+      v{peerInfo.versionMajor}.{peerInfo.versionMinor}.{peerInfo.versionRev}
+    </p>
   {:else}
     <p class="tag is-warning">Unknown</p>
   {/if}
@@ -38,11 +44,16 @@
   {#if hostedNetworks === undefined || hostedNetworks.length == 0}
     <p class="tag is-warning">Unknown</p>
   {:else}
-    <div class="tags">
-      {#each hostedNetworks as network (network.id)}
-        <span class="tag zerotier-network" in:receive|local="{{key: network.id}}" out:send|local="{{key: network.id}}" animate:flip={animationOptions}>{network.id}</span>
-      {/each}
-    </div>
+    {#each hostedNetworks as network (network.id)}
+      <div
+        class="network-name"
+        in:receive|local={{ key: network.id }}
+        out:send|local={{ key: network.id }}
+        animate:flip={animationOptions}
+      >
+        <NetworkName id={network.id} name={network.name} />
+      </div>
+    {/each}
   {/if}
 </div>
 
@@ -55,5 +66,8 @@
   }
   .accordion-content p:not(:last-child) {
     margin-bottom: 0;
+  }
+  .network-name:not(:last-child) {
+    margin-bottom: 0.25em;
   }
 </style>

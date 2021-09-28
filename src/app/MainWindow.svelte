@@ -16,10 +16,12 @@
   $: authTokenRes = useAuthToken($configPathRes.data);
   $: authToken = $authTokenRes.missing ? '' : $authTokenRes.data;
   $: nodeInfoRes = useNodeInfo(authToken);
-  $: hasAuthToken = $authTokenRes.status === 'success' && $authTokenRes.data !== undefined;
-  $: authTokenMissing = $authTokenRes.status === 'error' ? true : (
-    $authTokenRes.status === 'success' && $authTokenRes.data === undefined
-  );
+  $: hasAuthToken =
+    $authTokenRes.status === 'success' && $authTokenRes.data !== undefined;
+  $: authTokenMissing =
+    $authTokenRes.status === 'error'
+      ? true
+      : $authTokenRes.status === 'success' && $authTokenRes.data === undefined;
   $: hasNodeInfo =
     $nodeInfoRes.status === 'success' && $nodeInfoRes.data !== undefined;
   $: nodeInfoMissing = $nodeInfoRes.status === 'error';

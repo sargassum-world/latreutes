@@ -16,7 +16,9 @@
   const [send, receive] = crossfade({ fallback: fade });
 
   $: reverseRecordsRes = useReverseResolver(path.address.split('/')[0]);
-  $: hasReverseRecords = $reverseRecordsRes.status === 'success' && $reverseRecordsRes.data !== undefined;
+  $: hasReverseRecords =
+    $reverseRecordsRes.status === 'success' &&
+    $reverseRecordsRes.data !== undefined;
   $: if (path.lastSend !== 0) {
     lastSend = path.lastSend;
   }
@@ -31,7 +33,7 @@
 
     return () => {
       clearInterval(interval);
-    }
+    };
   });
 </script>
 
@@ -50,7 +52,12 @@
 {#if hasReverseRecords && $reverseRecordsRes.data.length > 0}
   <div class="tags">
     {#each $reverseRecordsRes.data as domainName (domainName)}
-      <span class="tag domain-name" in:receive|local="{{key: domainName}}" out:send|local="{{key: domainName}}" animate:flip={animationOptions}>
+      <span
+        class="tag domain-name"
+        in:receive|local={{ key: domainName }}
+        out:send|local={{ key: domainName }}
+        animate:flip={animationOptions}
+      >
         {domainName.replace(/.$/, '')}
       </span>
     {/each}
@@ -58,11 +65,15 @@
 {/if}
 <p>
   Last sent
-  {lastSend === 0 ? 'an unknown time' : ((time - lastSend) / 1000).toFixed(0) + ' s'}
+  {lastSend === 0
+    ? 'an unknown time'
+    : ((time - lastSend) / 1000).toFixed(0) + ' s'}
   ago.
   <br />
   Last received
-  {lastReceive === 0 ? 'an unknown time' : ((time - lastReceive) / 1000).toFixed(0) + ' s'}
+  {lastReceive === 0
+    ? 'an unknown time'
+    : ((time - lastReceive) / 1000).toFixed(0) + ' s'}
   ago.
 </p>
 

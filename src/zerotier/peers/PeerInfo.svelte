@@ -19,9 +19,14 @@
 
   $: casedRole = role.charAt(0) + role.slice(1).toLowerCase();
   $: networkSummariesRes = useNetworkSummaries(authToken);
-  $: networkSummaries = $networkSummariesRes.data
-  $: networkHosts = networkSummaries?.map((network: NetworkSummary) => splitNetworkId(network.id).hostAddress);
-  $: isNetworkHost = $networkSummariesRes.status === 'success' && networkHosts !== undefined && networkHosts.includes(address);
+  $: networkSummaries = $networkSummariesRes.data;
+  $: networkHosts = networkSummaries?.map(
+    (network: NetworkSummary) => splitNetworkId(network.id).hostAddress,
+  );
+  $: isNetworkHost =
+    $networkSummariesRes.status === 'success' &&
+    networkHosts !== undefined &&
+    networkHosts.includes(address);
 </script>
 
 <header class="panel-heading">
@@ -61,5 +66,8 @@
 <style>
   .panel-heading .tag {
     font-weight: normal;
+  }
+  h2 {
+    margin-left: -0.25em;
   }
 </style>

@@ -29,8 +29,8 @@
           on:click={() => $shellOpener.mutate(ZT_DOWNLOAD_URL)}
         >
           {ZT_DOWNLOAD_URL}
-        </button>. Once you&apos;ve installed and started ZeroTier, this message will
-        automatically disappear.
+        </button>. Once you&apos;ve installed and started ZeroTier, this message
+        will automatically disappear.
       </p>
     {:else if apiStatus === ApiStatus.incorrectService}
       <p in:slide|local>

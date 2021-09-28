@@ -29,6 +29,7 @@ $card-shadow: none;
 
 body {
   scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 body::-webkit-scrollbar {
   display: none;
@@ -49,7 +50,7 @@ button.is-ghost.is-ahref {
   padding-left: 0.25em;
   padding-right: 0.25em;
   font-size: $size-normal;
-  height: 1.25 * $size-normal;
+  height: 1.4 * $size-normal;
 }
 
 .navbar, .navbar-menu, .navbar-start, .navbar-end {

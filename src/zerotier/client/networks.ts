@@ -7,6 +7,7 @@ import { Status } from './network';
 
 export interface NetworkSummary {
   id: string;
+  name: string;
   status: Status;
 }
 
@@ -32,7 +33,7 @@ export const useNetworkSummaries = (
         false,
       )();
       return result.data.map(
-        ({ id, status }): NetworkSummary => ({ id, status }),
+        ({ id, name, status }): NetworkSummary => ({ id, name, status }),
       );
     },
     {

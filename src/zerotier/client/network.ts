@@ -8,6 +8,7 @@ import {
 import { Response } from '@tauri-apps/api/http';
 
 import { QUERY_KEY_ZT, fetcher, invalidateCache } from './service';
+import DNS_ZT_NETWORK_KEY from './dns';
 
 // Types
 
@@ -118,4 +119,28 @@ export function splitNetworkId(networkId: string): NetworkSplitId {
     hostAddress: networkId.slice(0, 10),
     networkNumber: networkId.slice(10),
   };
+}
+
+export function checkNetworkDomainName(
+  networkName: string,
+  networkId: string,
+  txtRecords: string[] | undefined,
+  status: string,
+): boolean {
+  if (status !== 'success' || txtRecords === undefined) {
+    return false;
+  }
+
+  const ztNetworkIdRecordPrefix = `${DNS_ZT_NETWORK_KEY}=`;
+  const ztNetworkIdRecords = txtRecords.filter((record) =>
+    record.startsWith(ztNetworkIdRecordPrefix),
+  );
+  if (ztNetworkIdRecords.length !== 1) {
+    return false;
+  }
+
+  const ztNetworkId = ztNetworkIdRecords[0].slice(
+    ztNetworkIdRecordPrefix.length,
+  );
+  return ztNetworkId === networkId;
 }

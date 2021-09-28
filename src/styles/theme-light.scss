@@ -39,6 +39,8 @@ $card-item-border-color: $card-header-background-color;
 
 $zerotier-address-tag-color: $scheme-invert-grey-bis;
 $zerotier-address-tag-background-color: change-color($cyan, $lightness: 85%);
+$zerotier-network-number-tag-color: $scheme-invert-grey-bis;
+$zerotier-network-number-tag-background-color: change-color($green, $lightness: 85%);
 $socket-tag-color: $scheme-invert-grey-bis;
 $socket-tag-background-color: change-color($purple, $lightness: 90%);
 $domain-name-tag-color: $white;

@@ -160,21 +160,58 @@ li[data-accordion-item]>div {
 
 .tag.zerotier-address {
   font-family: $family-monospace;
-  padding-left: 0;
-  padding-right: 0;
   color: $zerotier-address-tag-color;
   background-color: $zerotier-address-tag-background-color;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border-radius: 0.75em;
 }
-.tag.zerotier-network {
+.zerotier-network-id {
+  display: inline-block;
+}
+.tag.zerotier-network-host {
   font-family: $family-monospace;
+  color: $zerotier-address-tag-color;
+  background-color: $zerotier-address-tag-background-color;
+  padding-left: 0.5em;
+  padding-right: 0;
+  margin-right: 0;
+  border-radius: 0.75em 0 0 0.75em;
+}
+.tag.zerotier-network-number {
+  font-family: $family-monospace;
+  color: $zerotier-network-number-tag-color;
+  background-color: $zerotier-network-number-tag-background-color;
+  padding-left: 0;
+  padding-right: 0.5em;
+  margin-left: 0;
+  border-radius: 0 0.75em 0.75em 0;
+}
+.tag.zerotier-unknown-network {
+  display: inline-block;
+  padding-left: 0;
+  padding-right: 0.5em;
+  border-radius: 0.75em;
+  height: unset;
+}
+.tag.zerotier-unknown-network .tag.zerotier-network-name {
+  display: inline;
+  font-style: italic;
+  background-color: transparent;
+  height: unset;
+  white-space: normal;
 }
 .tag.socket {
   font-family: $family-monospace;
   color: $socket-tag-color;
   background-color: $socket-tag-background-color;
+  border-radius: 0.75em;
 }
 .tag.domain-name {
   font-family: $family-monospace;
   color: $domain-name-tag-color;
   background-color: $domain-name-tag-background-color;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  border-radius: 0.75em;
 }

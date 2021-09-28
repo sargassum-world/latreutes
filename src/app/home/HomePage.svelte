@@ -19,13 +19,16 @@
 
   $: hasVersion = $versionRes.data !== undefined;
   $: version = $versionRes.data;
-  $: apiMissing = $apiStatusRes.status === 'success' && $apiStatusRes.data !== ApiStatus.success;
+  $: apiMissing =
+    $apiStatusRes.status === 'success' &&
+    $apiStatusRes.data !== ApiStatus.success;
   $: networkSummariesRes = useNetworkSummaries(authToken);
   $: hasNoNetworks =
     $networkSummariesRes.status === 'success' &&
     $networkSummariesRes.data !== undefined &&
     $networkSummariesRes.data.length === 0;
-  $: showWelcome = apiMissing || authTokenMissing || nodeInfoMissing || hasNoNetworks;
+  $: showWelcome =
+    apiMissing || authTokenMissing || nodeInfoMissing || hasNoNetworks;
 </script>
 
 <main class="info-card-container scroller">
