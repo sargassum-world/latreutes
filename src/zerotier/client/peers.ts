@@ -13,7 +13,7 @@ interface PeerSummary {
 // Parameters
 
 const QUERY_KEY = [...QUERY_KEY_ZT, 'peers'];
-const QUERY_REFETCH = 1.0; // s
+const QUERY_REFETCH = 2.0; // s
 const API_ROUTE = ['peer'];
 
 // Queries

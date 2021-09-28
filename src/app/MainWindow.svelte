@@ -5,6 +5,7 @@
   import { useConfigPath, useAuthToken } from '../shared/config';
 
   import { useNodeInfo } from '../zerotier/client/node';
+  import PeersPage from '../zerotier/peers/PeersPage.svelte';
 
   import Navbar from './Navbar.svelte';
   import HomePage from './home/HomePage.svelte';
@@ -15,11 +16,14 @@
   $: authTokenRes = useAuthToken($configPathRes.data);
   $: authToken = $authTokenRes.missing ? '' : $authTokenRes.data;
   $: nodeInfoRes = useNodeInfo(authToken);
-  $: authTokenMissing =
-    $authTokenRes.status === 'error' || $authTokenRes.data === undefined;
+  $: hasAuthToken = $authTokenRes.status === 'success' && $authTokenRes.data !== undefined;
+  $: authTokenMissing = $authTokenRes.status === 'error' ? true : (
+    $authTokenRes.status === 'success' && $authTokenRes.data === undefined
+  );
   $: hasNodeInfo =
     $nodeInfoRes.status === 'success' && $nodeInfoRes.data !== undefined;
-  $: connectedToZeroTier = !authTokenMissing && hasNodeInfo;
+  $: nodeInfoMissing = $nodeInfoRes.status === 'error';
+  $: connectedToZeroTier = hasAuthToken && hasNodeInfo;
 </script>
 
 <div
@@ -27,7 +31,7 @@
 >
   <Navbar {connectedToZeroTier} {toggleTheme} />
   <Route>
-    <HomePage {authToken} {authTokenMissing} {hasNodeInfo} />
+    <HomePage {authToken} {authTokenMissing} {nodeInfoMissing} />
   </Route>
   {#if connectedToZeroTier}
     <Route path="networks">
@@ -38,11 +42,7 @@
       </main>
     </Route>
     <Route path="peers">
-      <main
-        class="is-flex main-container is-flex-direction-column scroller pad-gap"
-      >
-        <h1 class="title">Peers</h1>
-      </main>
+      <PeersPage {authToken} />
     </Route>
   {/if}
 </div>

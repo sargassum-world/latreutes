@@ -1,10 +1,12 @@
-<script>
+<script lang="ts">
   import { Link } from 'svelte-routing';
 
-  export let hasNodeInfo;
+  import { slide } from '../../shared/transitions';
+
+  export let nodeInfoMissing;
 </script>
 
-<div class="card info-card">
+<div class="card info-card" in:slide|local>
   <div class="content card-content">
     <h1>Welcome!</h1>
     <p>
@@ -17,7 +19,7 @@
       world, with a simpler and safer setup process than making your device
       accessible over the public internet.
     </p>
-    {#if hasNodeInfo}
+    {#if !nodeInfoMissing}
       <p>
         To get started, please click on the <Link to="/networks">Networks</Link>
         button in the navigation menu.

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { useVersion } from '../../shared/config';
 
   import { ApiStatus, useApiStatus } from '../../zerotier/client/service';
@@ -12,31 +12,31 @@
 
   export let authToken;
   export let authTokenMissing;
-  export let hasNodeInfo;
+  export let nodeInfoMissing;
 
   const versionRes = useVersion();
   const apiStatusRes = useApiStatus();
 
   $: hasVersion = $versionRes.data !== undefined;
   $: version = $versionRes.data;
-  $: hasApi = $apiStatusRes.data === ApiStatus.success;
+  $: apiMissing = $apiStatusRes.status === 'success' && $apiStatusRes.data !== ApiStatus.success;
   $: networkSummariesRes = useNetworkSummaries(authToken);
   $: hasNoNetworks =
     $networkSummariesRes.status === 'success' &&
     $networkSummariesRes.data !== undefined &&
     $networkSummariesRes.data.length === 0;
-  $: showWelcome = !hasApi || authTokenMissing || !hasNodeInfo || hasNoNetworks;
+  $: showWelcome = apiMissing || authTokenMissing || nodeInfoMissing || hasNoNetworks;
 </script>
 
 <main class="info-card-container scroller">
   {#if showWelcome}
-    <WelcomeInfo {hasNodeInfo} />
+    <WelcomeInfo {nodeInfoMissing} />
   {/if}
   {#if !hasVersion}
     <BrowserRunError />
-  {:else if !hasApi}
+  {:else if apiMissing}
     <ApiInfo />
-  {:else if authTokenMissing || !hasNodeInfo}
+  {:else if authTokenMissing || nodeInfoMissing}
     <AuthInfo {authToken} />
   {/if}
   <NodeInfo {version} {authToken} />

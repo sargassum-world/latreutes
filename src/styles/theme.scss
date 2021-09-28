@@ -34,6 +34,10 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+:focus {
+  outline: 4px solid $focus-color;
+}
+
 button.is-ghost.is-ahref {
   padding: 0;
   border: none;
@@ -60,6 +64,9 @@ button.is-ghost.is-ahref {
   @include from($navside-breakpoint) {
     height: 100%;
     max-height: 100%;
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: $navside-navbar-width;
   }
 }
 .navbar-brand {
@@ -69,7 +76,8 @@ button.is-ghost.is-ahref {
     max-height: $navbar-height;
   }
   @include from($navside-breakpoint) {
-    min-height: 0em;
+    margin-top: 2 * $gap;
+    min-height: 0;
   }
 }
 .navbar-brand.left-burger {
@@ -85,6 +93,35 @@ button.is-ghost.is-ahref {
   max-width: $navbar-height;
   height: 100%;
   max-height: $navbar-height;
+}
+.navbar-menu {
+  @include until($navbar-breakpoint) {
+    display: block;
+    visibility: hidden;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    scrollbar-width: none;
+  }
+}
+.navbar-menu::-webkit-scrollbar {
+  display: none;
+}
+.navbar-menu.is-active {
+  @include until($navbar-breakpoint) {
+    max-height: 90vh;
+    visibility: visible;
+    padding-top: $gap;
+    padding-bottom: $gap;
+    overflow: auto;
+  }
+}
+.navbar-start {
+  @include from($navside-breakpoint) {
+    width: 100%;
+  }
 }
 .navbar-item {
   padding-top: 0;
@@ -113,6 +150,9 @@ button.is-ghost.is-ahref {
     color: $navbar-button-active-color;
     background-color: $navbar-button-active-background;
   }
+  .button:focus {
+    outline: 4px solid $focus-color;
+  }
 }
 a.navbar-item {
   margin: $navbar-margin;
@@ -127,8 +167,8 @@ a.navbar-item {
   }
 
   @include from($navside-breakpoint) {
-    margin-top: $navbar-margin;
-    margin-bottom: 0em;
+    margin-top: 0em;
+    margin-bottom: $navbar-margin;
     margin-right: $navbar-margin;
     height: unset;
   }

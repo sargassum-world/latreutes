@@ -7,7 +7,11 @@
 $gap: 16px;
 $tablet: 600px;
 
+$section-padding: $gap;
+$section-padding-desktop: 2 * $gap;
+
 $navbar-height: 4rem;
+$navside-navbar-width: 7rem;
 $navbar-breakpoint: $tablet;
 $navside-breakpoint: $desktop;
 $navbar-margin: 0.75em;

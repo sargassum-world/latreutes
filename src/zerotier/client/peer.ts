@@ -31,7 +31,7 @@ interface PeerInfo {
 // Parameters
 
 const QUERY_KEY_BASE = [...QUERY_KEY_ZT, 'peer'];
-const QUERY_REFETCH = 0.5; // s
+const QUERY_REFETCH = 2.0; // s
 const API_ROUTE_BASE = ['peer'];
 
 // Queries

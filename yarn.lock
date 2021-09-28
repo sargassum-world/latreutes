@@ -348,6 +348,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/validator@^13.6.3":
+  version "13.6.3"
+  resolved "https://registry.yarnpkg.com/@types/validator/-/validator-13.6.3.tgz#31ca2e997bf13a0fffca30a25747d5b9f7dbb7de"
+  integrity sha512-fWG42pMJOL4jKsDDZZREnXLjc3UE0R8LOJfARWYg6U966rxDT7TYejYzLnUF5cvSObGg34nd0+H2wHHU5Omdfw==
+
 "@typescript-eslint/eslint-plugin@^4.29.3":
   version "4.31.2"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-4.31.2.tgz#9f41efaee32cdab7ace94b15bd19b756dd099b0a"
@@ -5102,6 +5107,11 @@ supports-color@^7.0.0, supports-color@^7.1.0:
   dependencies:
     has-flag "^4.0.0"
 
+svelte-accessible-accordion@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/svelte-accessible-accordion/-/svelte-accessible-accordion-2.0.0.tgz#84d37edb42fdb4d6c5a4469f0aad6e82e67a017f"
+  integrity sha512-/fhYOAjy0mjkVesLsi/pxdTj2KMPi5l7oZv/fLCYyAMwxWDyoHXp1m4jWBfuSZx7tV5eLTZgT0LVtONIldsQFw==
+
 svelte-check@^2.0.0:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/svelte-check/-/svelte-check-2.2.6.tgz#11d5e70225a616950eddd3d435d56193be687582"
@@ -5544,6 +5554,11 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+validator@^13.6.0:
+  version "13.6.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.6.0.tgz#1e71899c14cdc7b2068463cb24c1cc16f6ec7059"
+  integrity sha512-gVgKbdbHgtxpRyR8K0O6oFZPhhB5tT1jeEHZR0Znr9Svg03U0+r9DXWMrnRAB+HtCStDQKlaIZm42tVsVjqtjg==
 
 verror@1.10.0:
   version "1.10.0"

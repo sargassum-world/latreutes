@@ -1,4 +1,4 @@
-import { UseQueryResult, useQuery } from 'react-query';
+import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
 import { invoke } from '@tauri-apps/api/tauri';
 import isFQDN from 'validator/es/lib/isFQDN';
 import isIP from 'validator/es/lib/isIP';
@@ -20,7 +20,7 @@ export function txtResolver(domainName: string) {
 }
 export const useTxtResolver = (
   domainName: string,
-): UseQueryResult<string[], Error> =>
+): UseQueryStoreResult<string[], Error, string[], string[]> =>
   useQuery([...QUERY_KEY_TXT, domainName], txtResolver(domainName), {
     enabled: !!domainName && isFQDN(domainName),
     retry: false,
@@ -41,7 +41,7 @@ export function reverseResolver(ipAddr: string) {
 }
 export const useReverseResolver = (
   ipAddr: string,
-): UseQueryResult<string[], Error> =>
+): UseQueryStoreResult<string[], Error, string[], string[]> =>
   useQuery([...QUERY_KEY_REVERSE, ipAddr], reverseResolver(ipAddr), {
     enabled: !!ipAddr && isIP(ipAddr),
     retry: false,

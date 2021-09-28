@@ -2,10 +2,10 @@
 
 $grayscale-hue: 215;
 $grayscale-sat: 25%;
-$black: hsl($grayscale-hue, $grayscale-sat * 4, 5%);
+$black: hsl($grayscale-hue, $grayscale-sat * 4, 8%);
 $black-bis: hsl($grayscale-hue, $grayscale-sat * 3, 10%);
-$black-ter: hsl($grayscale-hue, $grayscale-sat * 1.5, 14%);
-$grey-darker: hsl($grayscale-hue, $grayscale-sat, 21%);
+$black-ter: hsl($grayscale-hue, $grayscale-sat * 1.5, 12%);
+$grey-darker: hsl($grayscale-hue, $grayscale-sat, 20%);
 $grey-dark: hsl($grayscale-hue, $grayscale-sat, 29%);
 $grey: hsl($grayscale-hue, $grayscale-sat, 48%);
 $grey-light: hsl($grayscale-hue, $grayscale-sat, 71%);

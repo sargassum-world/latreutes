@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import { Link } from 'svelte-routing';
 
   export let to = '';
@@ -16,6 +16,6 @@
   }
 </script>
 
-<Link {to} {getProps} on:click={closeMenu}>
+<Link {to} {getProps} on:click={closeMenu} {...$$restProps}>
   <slot />
 </Link>

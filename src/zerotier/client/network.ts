@@ -15,6 +15,10 @@ export interface Route {
   target: string;
   via: string | null;
 }
+interface NetworkSplitId {
+  hostAddress: string;
+  networkNumber: string;
+}
 
 export type Status =
   | 'REQUESTING_CONFIGURATION'
@@ -106,3 +110,12 @@ export const useNetworkLeaver = (
       },
     },
   );
+
+// Utilities
+
+export function splitNetworkId(networkId: string): NetworkSplitId {
+  return {
+    hostAddress: networkId.slice(0, 10),
+    networkNumber: networkId.slice(10),
+  };
+}

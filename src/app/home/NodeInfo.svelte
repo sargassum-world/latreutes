@@ -1,4 +1,6 @@
-<script>
+<script lang="ts">
+  import { slide } from '../../shared/transitions';
+
   import { ApiStatus, useApiStatus } from '../../zerotier/client/service';
   import { useNodeInfo } from '../../zerotier/client/node';
 
@@ -8,15 +10,14 @@
   const apiStatusRes = useApiStatus();
   $: apiStatus = $apiStatusRes.data;
   $: nodeInfoRes = useNodeInfo(authToken);
-  $: node =
-    $nodeInfoRes.data === undefined ? undefined : $nodeInfoRes.data.data;
+  $: node = $nodeInfoRes.data?.data;
 </script>
 
-<div class="card info-card">
+<div class="card info-card" in:slide|local>
   <div class="content card-content">
     <h2>This Device</h2>
     {#if apiStatus !== ApiStatus.success}
-      <p>
+      <p in:slide|local>
         Latreutes Version:
         {#if version === undefined}
           <span class="tag is-danger">Unknown</span>
@@ -25,37 +26,39 @@
         {/if}
       </p>
     {:else}
-      <h3 class="is-size-6">ZeroTier Address</h3>
-      {#if node === undefined}
-        <span class="tag is-danger">Unknown</span>
-      {:else}
-        <span class="tag zerotier-address">{node.address}</span>
-      {/if}
-      <h3 class="is-size-6">Connection Status</h3>
-      {#if node === undefined || !node.online}
-        <span class="tag is-danger">Not Connected</span>
-      {:else if node.tcpFallbackActive}
-        <span class="tag is-warning">On Slow Relay</span>
-      {:else}
-        <span class="tag is-success">Connected</span>
-      {/if}
-      <h3 class="is-size-6">Software Versions</h3>
-      <p>
-        ZeroTier:
+      <div class="content" in:slide|local>
+        <h3 class="is-size-6">ZeroTier Address</h3>
         {#if node === undefined}
           <span class="tag is-danger">Unknown</span>
         {:else}
-          v{node.version}
+          <span class="tag zerotier-address">{node.address}</span>
         {/if}
-      </p>
-      <p>
-        Latreutes:
-        {#if version === undefined}
-          <span class="tag is-danger">Unknown</span>
+        <h3 class="is-size-6">Connection Status</h3>
+        {#if node === undefined || !node.online}
+          <span class="tag is-danger">Not Connected</span>
+        {:else if node.tcpFallbackActive}
+          <span class="tag is-warning">On Slow Relay</span>
         {:else}
-          v{version}
+          <span class="tag is-success">Connected</span>
         {/if}
-      </p>
+        <h3 class="is-size-6">Software Versions</h3>
+        <p>
+          ZeroTier:
+          {#if node === undefined}
+            <span class="tag is-danger">Unknown</span>
+          {:else}
+            v{node.version}
+          {/if}
+        </p>
+        <p>
+          Latreutes:
+          {#if version === undefined}
+            <span class="tag is-danger">Unknown</span>
+          {:else}
+            v{version}
+          {/if}
+        </p>
+      </div>
     {/if}
   </div>
 </div>

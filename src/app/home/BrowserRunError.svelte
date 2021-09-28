@@ -1,4 +1,8 @@
-<div class="card info-card">
+<script lang="ts">
+  import { slide } from '../../shared/transitions';
+</script>
+
+<div class="card info-card" in:slide|local>
   <div class="content card-content">
     <h2>Oops!</h2>
     <p>

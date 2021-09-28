@@ -21,6 +21,7 @@ $scheme-invert: $white;
 
 $body-background-color: $scheme-main-ter;
 $background: $scheme-main-ter;
+$focus-color: change-color($cyan, $lightness: 40%);
 $scrollbar-background: $background;
 $scrollbar-color: $scheme-main-grey-bis;
 $scrollbar-hover-color: $scheme-main-grey-ter;
@@ -30,9 +31,18 @@ $scrollbar-hover-color: $scheme-main-grey-ter;
 $navbar-item-color: $scheme-invert-ter;
 $navbar-background-color: $scheme-main;
 $navbar-button-active-color: $scheme-invert;
-$navbar-button-active-background: $scheme-main-ter;
+$navbar-button-active-background: $scheme-main-grey;
 
 $card-background-color: $scheme-main;
+$card-header-background-color: $scheme-main-grey;
+$card-item-border-color: $card-header-background-color;
+
+$zerotier-address-tag-color: change-color($cyan, $lightness: 85%);
+$zerotier-address-tag-background-color: change-color($cyan, $lightness: 30%);
+$socket-tag-color: change-color($purple, $lightness: 90%);
+$socket-tag-background-color: change-color($purple, $lightness: 20%);
+$domain-name-tag-color: $white;
+$domain-name-tag-background-color: $grey-dark;
 
 @import 'styles/theme.scss';
 @import 'styles/components.scss';

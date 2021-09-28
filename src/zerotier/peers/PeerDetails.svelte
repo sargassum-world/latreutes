@@ -1,0 +1,59 @@
+<script lang="ts">
+  import { crossfade, fade } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
+  import { slide } from '../../shared/transitions';
+  import { usePeerInfo } from '../client/peer';
+  import { NetworkSummary, useNetworkSummaries } from '../client/networks';
+  import { splitNetworkId } from '../client/network';
+
+  export let address;
+  export let authToken;
+  export let networkSummaries;
+
+  const animationOptions = { duration: (d) => 30 * Math.sqrt(d) };
+  const [send, receive] = crossfade({ fallback: fade });
+
+  $: peerInfoRes = usePeerInfo(address, authToken);
+  $: peerInfoStatus = $peerInfoRes.status;
+  $: peerInfo = $peerInfoRes.data?.data;
+  $: hostedNetworks = networkSummaries?.filter((network: NetworkSummary) => splitNetworkId(network.id).hostAddress === address);
+</script>
+
+<div class="accordion-content" transition:slide|local>
+  <h4 class="is-size-6">ZeroTier Address</h4>
+  <p class="tag zerotier-address">{address}</p>
+  <h4 class="is-size-6">Estimated Latency</h4>
+  {#if peerInfo !== undefined && peerInfo.latency >= 0}
+    <p>{peerInfo.latency} ms</p>
+  {:else}
+    <p class="tag is-warning">Unknown</p>
+  {/if}
+  <h4 class="is-size-6">ZeroTier Version</h4>
+  {#if peerInfo !== undefined && peerInfo.versionMajor >= 0}
+    <p>v{peerInfo.versionMajor}.{peerInfo.versionMinor}.{peerInfo.versionRev}</p>
+  {:else}
+    <p class="tag is-warning">Unknown</p>
+  {/if}
+  <h4 class="is-size-6">Hosted Networks</h4>
+  {#if hostedNetworks === undefined || hostedNetworks.length == 0}
+    <p class="tag is-warning">Unknown</p>
+  {:else}
+    <div class="tags">
+      {#each hostedNetworks as network (network.id)}
+        <span class="tag zerotier-network" in:receive|local="{{key: network.id}}" out:send|local="{{key: network.id}}" animate:flip={animationOptions}>{network.id}</span>
+      {/each}
+    </div>
+  {/if}
+</div>
+
+<style>
+  .accordion-content h4 {
+    margin-bottom: 0;
+  }
+  .accordion-content h4:not(:first-child) {
+    margin-top: 0.5em;
+  }
+  .accordion-content p:not(:last-child) {
+    margin-bottom: 0;
+  }
+</style>

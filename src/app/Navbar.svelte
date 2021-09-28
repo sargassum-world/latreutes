@@ -41,8 +41,7 @@
   <div class="navbar-menu" class:is-active={isMenuOpen}>
     <div class="navbar-start">
       {#if connectedToZeroTier}
-        {#each authenticatedMenuItems as { name, path }}
-          <!--<NavLink class="navbar-item" to={path}>{name}</NavLink>-->
+        {#each authenticatedMenuItems as { name, path } (path)}
           <NavLink to={path} {closeMenu}>{name}</NavLink>
         {/each}
       {/if}
