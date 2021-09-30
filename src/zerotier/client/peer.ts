@@ -1,4 +1,8 @@
-import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
+import {
+  QueryClient,
+  UseQueryStoreResult,
+  useQuery,
+} from '@sveltestack/svelte-query';
 import { Response } from '@tauri-apps/api/http';
 
 import { QUERY_KEY_ZT, fetcher } from './service';
@@ -37,7 +41,7 @@ const API_ROUTE_BASE = ['peer'];
 // Queries
 
 export const usePeerInfo = (
-  peerId: string,
+  address: string,
   authToken: string | undefined,
 ): UseQueryStoreResult<
   Response<PeerInfo>,
@@ -46,12 +50,22 @@ export const usePeerInfo = (
   string[]
 > =>
   useQuery(
-    [...QUERY_KEY_BASE, peerId],
-    fetcher<PeerInfo>([...API_ROUTE_BASE, peerId], 'GET', authToken),
+    [...QUERY_KEY_BASE, address],
+    fetcher<PeerInfo>([...API_ROUTE_BASE, address], 'GET', authToken),
     {
       enabled: !!authToken,
       retry: false,
       refetchInterval: QUERY_REFETCH * 1000,
       cacheTime: Infinity,
     },
+  );
+
+export const prefetchPeerInfo = (
+  address: string,
+  authToken: string | undefined,
+  queryClient: QueryClient,
+): Promise<void> =>
+  queryClient.prefetchQuery(
+    [...QUERY_KEY_BASE, address],
+    fetcher<PeerInfo>([...API_ROUTE_BASE, address], 'GET', authToken),
   );

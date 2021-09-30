@@ -15,7 +15,10 @@
   const animationOptions = { duration: (d) => 30 * Math.sqrt(d) };
   const [send, receive] = crossfade({ fallback: fade });
 
-  $: reverseRecordsRes = useReverseResolver(path.address.split('/')[0]);
+  $: ipAddress = path.address.split('/')[0];
+  $: port = path.address.split('/')[1];
+  $: isIPv6 = ipAddress.includes(':');
+  $: reverseRecordsRes = useReverseResolver(ipAddress);
   $: hasReverseRecords =
     $reverseRecordsRes.status === 'success' &&
     $reverseRecordsRes.data !== undefined;
@@ -38,7 +41,13 @@
 </script>
 
 <div class="tags">
-  <span class="tag socket">{path.address}</span>
+  <span class="tag socket">
+    {#if isIPv6}
+      [{ipAddress}]:{port}
+    {:else}
+      {ipAddress}:{port}
+    {/if}
+  </span>
   {#if !path.active}
     <span class="tag is-warning">Inactive</span>
   {/if}

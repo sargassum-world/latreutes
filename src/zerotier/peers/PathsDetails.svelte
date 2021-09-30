@@ -21,7 +21,9 @@
 </script>
 
 <div class="accordion-content" transition:slide|local>
-  {#if peerInfo === undefined}
+  {#if peerInfoStatus === 'loading'}
+    Loading...
+  {:else if peerInfo === undefined}
     <p class="tag is-warning">Unknown</p>
   {:else if peerInfo.paths.length == 0}
     <p class="tag is-warning">None</p>

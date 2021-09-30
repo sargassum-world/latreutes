@@ -5,6 +5,7 @@
   import { useConfigPath, useAuthToken } from '../shared/config';
 
   import { useNodeInfo } from '../zerotier/client/node';
+  import NetworksPage from '../zerotier/networks/NetworksPage.svelte';
   import PeersPage from '../zerotier/peers/PeersPage.svelte';
 
   import Navbar from './Navbar.svelte';
@@ -37,11 +38,7 @@
   </Route>
   {#if connectedToZeroTier}
     <Route path="networks">
-      <main
-        class="is-flex main-container is-flex-direction-column scroller pad-gap"
-      >
-        <h1 class="title">Networks</h1>
-      </main>
+      <NetworksPage {authToken} />
     </Route>
     <Route path="peers">
       <PeersPage {authToken} />

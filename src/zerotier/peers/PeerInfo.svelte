@@ -1,9 +1,11 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
+  import { useQueryClient } from '@sveltestack/svelte-query';
   import { Accordion, AccordionItem } from 'svelte-accessible-accordion';
   import Icon from 'mdi-svelte';
   import { mdiChevronDown } from '@mdi/js';
 
+  import { prefetchPeerInfo } from '../client/peer';
   import { NetworkSummary, useNetworkSummaries } from '../client/networks';
   import { splitNetworkId } from '../client/network';
 
@@ -13,6 +15,8 @@
   export let address;
   export let role;
   export let authToken;
+
+  const queryClient = useQueryClient();
 
   let showDetails;
   let showPaths;
@@ -27,6 +31,7 @@
     $networkSummariesRes.status === 'success' &&
     networkHosts !== undefined &&
     networkHosts.includes(address);
+  $: prefetchPeerInfo(address, authToken, queryClient);
 </script>
 
 <header class="panel-heading">
@@ -66,8 +71,5 @@
 <style>
   .panel-heading .tag {
     font-weight: normal;
-  }
-  h2 {
-    margin-left: -0.25em;
   }
 </style>

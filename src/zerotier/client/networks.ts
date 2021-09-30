@@ -1,7 +1,7 @@
 import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
 
 import { QUERY_KEY_ZT, fetcher } from './service';
-import { Status } from './network';
+import { Status, Type } from './network';
 
 // Types
 
@@ -9,6 +9,9 @@ export interface NetworkSummary {
   id: string;
   name: string;
   status: Status;
+  type: Type;
+  bridge: boolean;
+  portError: number;
 }
 
 // Parameters
@@ -33,7 +36,14 @@ export const useNetworkSummaries = (
         false,
       )();
       return result.data.map(
-        ({ id, name, status }): NetworkSummary => ({ id, name, status }),
+        ({ id, name, status, type, bridge, portError }): NetworkSummary => ({
+          id,
+          name,
+          status,
+          type,
+          bridge,
+          portError,
+        }),
       );
     },
     {

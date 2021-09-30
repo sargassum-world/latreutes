@@ -82,6 +82,16 @@ export const useNetworkInfo = (
     },
   );
 
+export const prefetchNetworkInfo = (
+  networkId: string,
+  authToken: string | undefined,
+  queryClient: QueryClient,
+): Promise<void> =>
+  queryClient.prefetchQuery(
+    [...QUERY_KEY_BASE, networkId],
+    fetcher<NetworkInfo>([...API_ROUTE_BASE, networkId], 'GET', authToken),
+  );
+
 // Mutations
 
 export const useNetworkJoiner = (

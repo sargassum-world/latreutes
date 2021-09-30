@@ -112,6 +112,7 @@ button.is-ghost.is-ahref {
 }
 .navbar-menu.is-active {
   @include until($navbar-breakpoint) {
+    display: block;
     max-height: 90vh;
     visibility: visible;
     padding-top: $gap;
