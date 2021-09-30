@@ -51,9 +51,4 @@
     height: 100%;
     overflow: hidden;
   }
-  .main-container {
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-  }
 </style>

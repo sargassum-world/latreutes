@@ -1,15 +1,30 @@
-import { isMacOS, isWindows } from '@tauri-apps/api/helpers/os-check';
+import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
+import { platform } from '@tauri-apps/api/os';
 
-type OS = 'linux' | 'macOS' | 'windows';
+import { APPLICATION_NAMESPACE } from './config';
 
-export function getOS(): OS {
-  if (isMacOS()) {
-    return 'macOS';
-  }
+// Types
 
-  if (isWindows()) {
-    return 'windows';
-  }
+export type Platform =
+  | 'aix'
+  | 'darwin'
+  | 'freebsd'
+  | 'linux'
+  | 'openbsd'
+  | 'sunos'
+  | 'win32'
 
-  return 'linux';
-}
+// Queries
+
+// App Version
+const QUERY_KEY_PLATFORM = [APPLICATION_NAMESPACE, 'platform'];
+export const usePlatform = (): UseQueryStoreResult<
+  string,
+  unknown,
+  Platform,
+  string[]
+> =>
+  useQuery(QUERY_KEY_PLATFORM, platform, {
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });

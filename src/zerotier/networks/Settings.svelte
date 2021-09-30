@@ -35,18 +35,3 @@
     {/if}
   </button>
 </div>
-
-<style>
-  .accordion-content h4 {
-    margin-bottom: 0;
-  }
-  .accordion-content h4:not(:first-child) {
-    margin-top: 0.5em;
-  }
-  .accordion-content p:not(:last-child) {
-    margin-bottom: 0;
-  }
-  .accordion-content p.route:not(:last-child) {
-    margin-bottom: 0.25em;
-  }
-</style>

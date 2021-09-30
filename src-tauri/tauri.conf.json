@@ -55,6 +55,9 @@
       "http": {
         "all": true
       },
+      "os": {
+        "all": true
+      },
       "path": {
         "all": true
       },

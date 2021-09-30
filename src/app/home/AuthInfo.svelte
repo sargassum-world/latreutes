@@ -8,7 +8,7 @@
     useAuthToken,
     invalidateAuthTokenCache,
   } from '../../shared/config';
-  import { getOS } from '../../shared/os';
+  import { usePlatform } from '../../shared/os';
   import { useShellOpener, useSuCopier } from '../../shared/shell';
   import { slide } from '../../shared/transitions';
 
@@ -21,16 +21,15 @@
 
   export let authToken;
 
-  const os = getOS();
-  const ztOneConfigPath = getZtOneConfigPath();
-
   const shellOpener = useShellOpener();
   const suCopier = useSuCopier(invalidateCaches);
   const queryClient = useQueryClient();
+  const platformRes = usePlatform();
   const configDirMaker = useConfigDirMaker();
   const configPathRes = useConfigPath();
 
   $: configPath = $configPathRes.data;
+  $: ztOneConfigPath = $platformRes.data === undefined ? '' : getZtOneConfigPath($platformRes.data);
   $: authTokenPath = `${configPath}${AUTHTOKEN_FILENAME}`;
   $: authTokenRes = useAuthToken(configPath);
   $: authTokenStatus = $authTokenRes.status;
@@ -100,7 +99,7 @@
           </button>
           and make sure you can open the copied file with a text editor.
         </p>
-        {#if os === 'linux'}
+        {#if $platformRes.data === 'linux'}
           <p>
             The easiest way to copy the file so that this program has the
             correct permissions to read the copied file is to run the following

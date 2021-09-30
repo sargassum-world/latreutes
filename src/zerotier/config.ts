@@ -1,12 +1,12 @@
-import { getOS } from '../shared/os';
+import { Platform } from '../shared/os';
 
-export function getZtOneConfigPath(): string {
-  switch (getOS()) {
+export function getZtOneConfigPath(platform: Platform): string {
+  switch (platform) {
     case 'linux':
       return '/var/lib/zerotier-one/';
-    case 'macOS':
+    case 'darwin':
       return '/Library/Application Support/ZeroTier/One/';
-    case 'windows':
+    case 'win32':
       return '\\ProgramData\\ZeroTier\\One\\';
     default:
       return '/var/lib/zerotier-one/';
