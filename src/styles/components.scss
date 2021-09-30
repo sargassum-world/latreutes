@@ -34,6 +34,18 @@
   background-color: $scrollbar-hover-color;
 }
 
+// Sections
+
+.section-description {
+  margin-bottom: $gap;
+}
+.empty-section {
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: padding-top 0.4s ease-out 0.8s;
+  transition: padding-bottom 0.4s ease-out 0.8s;
+}
+
 // Cards
 
 .info-card-container {

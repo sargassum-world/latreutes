@@ -49,7 +49,7 @@
       {:else}
         <p>
           {#if leafPeers.length === 0}
-            This device does not have any peers yet. To add a peer,
+            This device does not have any peers yet. To find other peers,
             <Link to="/networks">join a network</Link>!
           {:else}
             This device has the following peers, which may be network hosts or
