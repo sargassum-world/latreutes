@@ -133,7 +133,7 @@
         <h1>No Access</h1>
         <p>
           This device is trying to connect as a peer on the following
-          networks, but the network has not yet allowed the device to connect:
+          networks, but the network is not allowing the device to connect:
         </p>
       </div>
     {/if}

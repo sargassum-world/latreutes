@@ -17,6 +17,9 @@ $scheme-invert-ter: $black-ter;
 $scheme-invert-bis: $black-bis;
 $scheme-invert: $black;
 
+$green: hsl(153, 53%, 40%);
+$red: hsl(348, 86%, 61%);
+
 // Element Colors
 
 $body-background-color: $scheme-main;
@@ -27,6 +30,8 @@ $scrollbar-color: $scheme-main-grey-ter;
 $scrollbar-hover-color: $scheme-invert-grey-ter;
 
 // Component Colors
+
+$toolbar-background-color: $scheme-main-grey;
 
 $navbar-item-color: $scheme-invert-ter;
 $navbar-background-color: $scheme-main-grey-bis;

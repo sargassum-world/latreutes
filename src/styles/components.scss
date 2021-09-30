@@ -34,6 +34,24 @@
   background-color: $scrollbar-hover-color;
 }
 
+// Toolbars
+
+.toolbar {
+  width: 100%;
+  padding-left: $gap;
+  padding-right: $gap;
+  padding-top: $gap;
+  padding-bottom: $gap;
+  margin-bottom: $gap;
+  background-color: $toolbar-background-color;
+
+  @include from($navside-breakpoint) {
+    padding-left: 2 * $gap;
+    padding-right: 2 * $gap;
+    margin-bottom: 2 * $gap;
+  }
+}
+
 // Sections
 
 .section-description {

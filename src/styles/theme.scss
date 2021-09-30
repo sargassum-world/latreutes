@@ -4,6 +4,8 @@
 
 // Basic Colors
 
+$success: $green;
+$danger: $red;
 $border: $scheme-main-grey-bis;
 $border-hover: $scheme-main-grey-ter;
 $border-light: $scheme-main-grey;
@@ -51,6 +53,13 @@ button.is-ghost.is-ahref {
   padding-right: 0.25em;
   font-size: $size-normal;
   height: 1.4 * $size-normal;
+}
+// For some reason, the Bulma tag color classes ignore $success, $danger, etc.
+.tag:not(body).is-success {
+  background-color: $success;
+}
+.tag:not(body).is-danger {
+  background-color: $danger;
 }
 
 .navbar, .navbar-menu, .navbar-start, .navbar-end {
