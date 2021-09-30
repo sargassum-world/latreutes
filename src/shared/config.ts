@@ -71,14 +71,17 @@ export const useAuthToken = (
   useQuery(
     QUERY_KEY_AUTHTOKEN,
     async () => {
-      const configPath = await getConfigPath();
-      const filePath = `${configPath}${AUTHTOKEN_FILENAME}`;
+      if (configDirPath === undefined) {
+        throw Error('Missing directory path for authtoken.secret file!');
+      }
+      const filePath = `${configDirPath}${AUTHTOKEN_FILENAME}`;
       const fileContents = await readFile(filePath);
       return fileContents.trim();
     },
     {
       enabled: !!configDirPath,
       retry: false,
+      retryOnMount: false,  // if this is true, the query will always retry instantly in a svelte component with transitions, blocking other work
       refetchOnWindowFocus: false,
       staleTime: Infinity,
       cacheTime: Infinity,
