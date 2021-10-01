@@ -124,6 +124,11 @@ export const useNetworkLeaver = (
 
 // Utilities
 
+export function isNetworkId(identifier: string): boolean {
+  const networkIdRegex = /^[a-z\d]{16}$/i;
+  return networkIdRegex.test(identifier);
+}
+
 export function splitNetworkId(networkId: string): NetworkSplitId {
   return {
     hostAddress: networkId.slice(0, 10),

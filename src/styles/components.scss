@@ -7,19 +7,19 @@
 .scroller {
   overflow: auto;
   scrollbar-width: auto;
-  scrollbar-color: $scrollbar-color $scrollbar-background;
+  scrollbar-color: $scrollbar-color $background;
 }
 .scroller::-webkit-scrollbar {
   -webkit-appearance: none;  // don't hide scrollbar without hover
   width: 16px;
 }
 .scroller::-webkit-scrollbar-track {
-  background: $scrollbar-background;
+  background: $background;
 }
 .scroller::-webkit-scrollbar-thumb {
   background-color: $scrollbar-color ;
   border-radius: 8px;
-  border: 4px solid $scrollbar-background;
+  border: 4px solid $background;
 }
 .scroller::-webkit-scrollbar-thumb:horizontal:hover {
   background-color: $scrollbar-hover-color;
@@ -137,9 +137,6 @@
 
 // Modals
 
-.modal-background {
-  background-color: $modal-background;
-}
 div[data-svelte-dialog-portal] {
   position: fixed;
   bottom: 0;
@@ -150,28 +147,29 @@ div[data-svelte-dialog-portal] {
 }
 div[data-svelte-dialog-overlay] {
   background-color: transparent;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  z-index: 41;
 }
-div[data-svelte-dialog-content] {
-  background-color: $background;
+.modal-background {
+  background-color: $modal-overlay-background;
+}
+.drawer-container {
+  position: relative;
+  background-color: $modal-dialog-background;
   padding: $gap;
 
   @include from($navside-breakpoint) {
     padding: 2 * $gap;
   }
 }
-div[data-svelte-dialog-content] .modal-title {
-  margin-bottom: $gap;
-
-  @include from($navside-breakpoint) {
-    margin-bottom: 2 * $gap;
-  }
-}
-[data-svelte-dialog-content].drawer {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-.right-drawer {
+.drawer-container.right-drawer {
   width: 100%;
   max-width: 24em;
   margin-left: auto;
@@ -179,6 +177,22 @@ div[data-svelte-dialog-content] .modal-title {
   margin-top: 0;
   margin-bottom: 0;
   height: 100vh;
+}
+.drawer-container.scroller {
+  scrollbar-color: $scrollbar-color $modal-dialog-background;
+}
+.drawer-container.scroller::-webkit-scrollbar-track {
+  background: $modal-dialog-background;
+}
+.drawer-container.scroller::-webkit-scrollbar-thumb {
+  border-color: $modal-dialog-background;
+}
+.drawer-container .modal-title {
+  margin-bottom: $gap;
+
+  @include from($navside-breakpoint) {
+    margin-bottom: 2 * $gap;
+  }
 }
 
 // Accordions

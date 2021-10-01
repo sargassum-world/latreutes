@@ -1,20 +1,22 @@
 <script lang="ts">
-  import { crossfade, fade, fly } from 'svelte/transition';
+  import { crossfade, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
+  import { expoOut } from 'svelte/easing';
   import { Link } from 'svelte-routing';
-  import { DialogOverlay, DialogContent } from 'svelte-accessible-dialog';
 
   import { slide } from '../../shared/transitions';
+  import DialogOverlay from '../../shared/modals/DialogOverlay.svelte';
 
   import { SERVICE_PORT_ZT, ApiStatus, useApiStatus } from '../client/service';
   import { NetworkSummary, useNetworkSummaries } from '../client/networks';
 
   import NetworkInfo from '../networks/NetworkInfo.svelte';
 
+  import JoinDialog from './JoinDialog.svelte';
+
   export let authToken;
 
-  const modalBackgroundOptions = { duration: 100 };
-  const rightDrawerOptions = { x: 50, duration: 100 };
+  const modalOptions = { duration: 50 };
   const sectionOutOptions = { delay: 200 };
   const animationOptions = {
     duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
@@ -212,8 +214,7 @@
             networks which it's configured to connect to.
           {:else}
             This device is trying to connect as a peer on the following
-            networks, but some technical error has occurred in trying to connect
-            to them:
+            networks, but some technical error has occurred:
           {/if}
         </p>
       </div>
@@ -238,47 +239,51 @@
     {/each}
   </section>
   {#if showJoin}
-    <div class="modal is-active" transition:fade={modalBackgroundOptions}>
-      <div class="modal-background" />
-      <DialogOverlay isOpen={showJoin} onDismiss={closeJoin}>
-        <div class="right-drawer" transition:fly={rightDrawerOptions}>
-          <DialogContent
-            class="drawer content"
-            aria-label="Network joining wizard"
-          >
-            <header class="modal-title">
-              <h2>Join a Network</h2>
-              <button
-                class="delete is-large"
-                aria-label="close"
-                on:click={closeJoin}
-              />
-            </header>
-            <p>This feature is not yet implemented!</p>
-          </DialogContent>
+    <div class="modal is-active">
+      <div class="modal-background" transition:fade|local={modalOptions} />
+      <DialogOverlay onDismiss={closeJoin}>
+        <div
+          class="drawer-container right-drawer scroller content"
+          transition:fade|local={modalOptions}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Network joining wizard"
+          tabindex="-1"
+        >
+          <header class="modal-title">
+            <h2>Join a Network</h2>
+            <button
+              class="delete is-large"
+              aria-label="close"
+              on:click={closeJoin}
+            />
+          </header>
+          <JoinDialog />
         </div>
       </DialogOverlay>
     </div>
   {/if}
   {#if showHost}
-    <div class="modal is-active" transition:fade={modalBackgroundOptions}>
-      <div class="modal-background" />
-      <DialogOverlay isOpen={showHost} onDismiss={closeHost}>
-        <div class="right-drawer" transition:fly={rightDrawerOptions}>
-          <DialogContent
-            class="drawer content"
-            aria-label="Network hosting wizard"
-          >
-            <header class="modal-title">
-              <h2>Host a Network</h2>
-              <button
-                class="delete is-large"
-                aria-label="close"
-                on:click={closeHost}
-              />
-            </header>
-            <p>This feature is not yet implemented!</p>
-          </DialogContent>
+    <div class="modal is-active">
+      <div class="modal-background" transition:fade|local={modalOptions} />
+      <DialogOverlay onDismiss={closeHost}>
+        <div
+          class="drawer-container right-drawer scroller content"
+          transition:fade|local={modalOptions}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Network hosting wizard"
+          tabindex="-1"
+        >
+          <header class="modal-title">
+            <h2>Host a Network</h2>
+            <button
+              class="delete is-large"
+              aria-label="close"
+              on:click={closeHost}
+            />
+          </header>
+          <p>This feature is not yet implemented!</p>
         </div>
       </DialogOverlay>
     </div>

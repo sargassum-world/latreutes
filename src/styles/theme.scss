@@ -23,7 +23,7 @@ $link-active-border: $scheme-main-grey-bis;
 // Component Customizations
 
 $card-shadow: none;
-$modal-background: rgba(10, 19, 31, 0.75);
+$modal-overlay-background: rgba(10, 19, 31, 0.75);
 
 // Bulma
 
@@ -118,7 +118,7 @@ button.is-ghost.is-ahref {
     padding-top: 0;
     padding-bottom: 0;
     overflow: hidden;
-    transition: all 0.4s ease;
+    transition: all 0.2s ease-out;
     scrollbar-width: none;
   }
 }
@@ -200,4 +200,15 @@ a.navbar-item.is-active:not(:focus):not(:hover), a.navbar-item:hover, a.navbar-i
     margin-right: auto;
     margin-bottom: $navbar-margin;
   }
+}
+
+.field .message {
+  margin-top: $gap;
+}
+.field .message .message-body {
+  padding: $gap;
+}
+// For some reason, the Bulma tag color classes ignore $success, $danger, etc.
+.message.is-danger {
+  background-color: $danger-light;
 }

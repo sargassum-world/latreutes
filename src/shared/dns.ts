@@ -8,6 +8,7 @@ const QUERY_KEY = [...QUERY_KEY_DNS, 'lookup'];
 const QUERY_STALE = 30; // s
 
 // TXT record lookup
+
 const QUERY_KEY_TXT = [...QUERY_KEY, 'txt'];
 export function txtResolver(domainName: string) {
   return async (): Promise<string[]> => {
@@ -29,6 +30,7 @@ export const useTxtResolver = (
   });
 
 // Reverse lookup
+
 const QUERY_KEY_REVERSE = [...QUERY_KEY, 'reverse'];
 export function reverseResolver(ipAddr: string) {
   return async (): Promise<string[]> => {
@@ -48,3 +50,15 @@ export const useReverseResolver = (
     staleTime: QUERY_STALE * 1000,
     cacheTime: Infinity,
   });
+
+// Utilities
+
+export function hasDomainName(identifier: string): boolean {
+  let domainName = '';
+  try {
+    domainName = new URL(identifier).hostname;
+  } catch {
+    domainName = identifier;
+  }
+  return isFQDN(domainName, { require_tld: true, allow_trailing_dot: true });
+}

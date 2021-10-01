@@ -52,6 +52,25 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@felte/common@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@felte/common/-/common-0.5.1.tgz#f188182a6fdf4dfada9a74180883c5147beb7aa8"
+  integrity sha512-r5sepUPBwwTMtks/vGfRPsp+lu4FPemwM+w5xb9J/G1uJCMThf8r/iuivhUWHzfyL9C+6XoNBDTwuvy5c+81Ow==
+
+"@felte/core@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@felte/core/-/core-0.2.3.tgz#8545281dc0bcb9acec0028c71c4df2a3bc453c98"
+  integrity sha512-gDF0JxbVvcPDBovqys4o2mZA92hFKbqw3tW6odu6XATXQc5fM5v5RquL5bIuQz35GJkow9n5d13jy79DQQVJAw==
+  dependencies:
+    "@felte/common" "0.5.1"
+
+"@felte/reporter-svelte@^0.3.16":
+  version "0.3.16"
+  resolved "https://registry.yarnpkg.com/@felte/reporter-svelte/-/reporter-svelte-0.3.16.tgz#79e3a6a35f649e25bf62ac368e77c3435ee54967"
+  integrity sha512-CasRjC+TFkMuA2qTKPegq+0b96fKOavyvi7jRz8dR/0nwZtKvzW1mcealP2P+LyXBCZu2J+ZBMGmHJVmhjGzRg==
+  dependencies:
+    "@felte/common" "0.5.1"
+
 "@fontsource/atkinson-hyperlegible@^4.5.1":
   version "4.5.1"
   resolved "https://registry.yarnpkg.com/@fontsource/atkinson-hyperlegible/-/atkinson-hyperlegible-4.5.1.tgz#7d14141d4b3f2ad6b1bd9f785fa6961c3ad28a07"
@@ -1862,6 +1881,13 @@ fd-slicer@~1.1.0:
   integrity sha1-JcfInLH5B3+IkbvmHY85Dq4lbx4=
   dependencies:
     pend "~1.2.0"
+
+felte@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/felte/-/felte-0.8.3.tgz#6509a0ba217c75c4a422c45585f6f8ffb4b75bdd"
+  integrity sha512-WktRztcsUGCso1c+k/cgzPZ8UcOra5BELRAVH2+GE9uxI3Wp6hKirLoY210oa77GjYXb6dTAmHYYVc8r65YWNw==
+  dependencies:
+    "@felte/core" "0.2.3"
 
 figures@^1.3.5:
   version "1.7.0"
@@ -5028,11 +5054,6 @@ svelte-accessible-accordion@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/svelte-accessible-accordion/-/svelte-accessible-accordion-2.0.0.tgz#84d37edb42fdb4d6c5a4469f0aad6e82e67a017f"
   integrity sha512-/fhYOAjy0mjkVesLsi/pxdTj2KMPi5l7oZv/fLCYyAMwxWDyoHXp1m4jWBfuSZx7tV5eLTZgT0LVtONIldsQFw==
-
-svelte-accessible-dialog@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/svelte-accessible-dialog/-/svelte-accessible-dialog-2.1.3.tgz#ba1a32475e270cd25ba5b66e6c00b6e8bab75917"
-  integrity sha512-W3JVaPgLznHn297uTF32Ybp5FUYr7Mm9Geiu8zhQvOTIkLdo/iLpOeytTaD7U/8CdNFx8YWJayBCnAXJvxdLew==
 
 svelte-check@^2.0.0:
   version "2.2.6"

@@ -20,13 +20,15 @@ $scheme-invert: $white;
 $green: hsl(153%, 53%, 30%);
 $turquoise: hsl(175, 100%, 30%);
 $red: hsl(348, 86%, 50%);
+$red-light: change-color($red, $lightness: 90%);
+
+$danger-light: $red-light;
 
 // Element Colors
 
 $body-background-color: $scheme-main-ter;
 $background: $scheme-main-ter;
 $focus-color: change-color($cyan, $lightness: 40%);
-$scrollbar-background: $background;
 $scrollbar-color: $scheme-main-grey-bis;
 $scrollbar-hover-color: $scheme-main-grey-ter;
 
@@ -42,6 +44,8 @@ $navbar-button-active-background: $scheme-main-grey;
 $card-background-color: $scheme-main;
 $card-header-background-color: $scheme-main-grey;
 $card-item-border-color: $card-header-background-color;
+
+$modal-dialog-background: $scheme-main-grey;
 
 $zerotier-address-tag-color: change-color($cyan, $lightness: 85%);
 $zerotier-address-tag-background-color: change-color($cyan, $lightness: 30%);
