@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
   import { useQueryClient } from '@sveltestack/svelte-query';
   import { Accordion, AccordionItem } from 'svelte-accessible-accordion';
   import Icon from 'mdi-svelte';

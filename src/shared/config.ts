@@ -81,7 +81,7 @@ export const useAuthToken = (
     {
       enabled: !!configDirPath,
       retry: false,
-      retryOnMount: false,  // if this is true, the query will always retry instantly in a svelte component with transitions, blocking other work
+      retryOnMount: false, // if this is true, the query will always retry instantly in a svelte component with transitions, blocking other work
       refetchOnWindowFocus: false,
       staleTime: Infinity,
       cacheTime: Infinity,

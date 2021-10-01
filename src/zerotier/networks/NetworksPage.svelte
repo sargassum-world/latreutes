@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { crossfade } from 'svelte/transition';
+  import { crossfade, fade, fly } from 'svelte/transition';
   import { flip } from 'svelte/animate';
   import { Link } from 'svelte-routing';
+  import { DialogOverlay, DialogContent } from 'svelte-accessible-dialog';
 
   import { slide } from '../../shared/transitions';
 
@@ -12,9 +13,19 @@
 
   export let authToken;
 
-  const sectionOutOptions = { delay: 800 };
-  const animationOptions = { duration: (d) => Math.min(800, 30 * Math.sqrt(d)) };
-  const [send, receive] = crossfade({ fallback: slide });
+  const modalBackgroundOptions = { duration: 100 };
+  const rightDrawerOptions = { x: 50, duration: 100 };
+  const sectionOutOptions = { delay: 200 };
+  const animationOptions = {
+    duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
+  };
+  const [send, receive] = crossfade({
+    duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
+    fallback: slide,
+  });
+
+  let showJoin = false;
+  let showHost = false;
 
   $: networkSummariesRes = useNetworkSummaries(authToken);
   $: networkSummariesStatus = $networkSummariesRes.status;
@@ -22,15 +33,18 @@
   $: authorizedNetworks = networkSummaries?.filter(
     (network: NetworkSummary) => network.status === 'OK',
   );
-  $: hasAuthorizedNetworks = authorizedNetworks !== undefined && authorizedNetworks.length > 0;
+  $: hasAuthorizedNetworks =
+    authorizedNetworks !== undefined && authorizedNetworks.length > 0;
   $: connectingNetworks = networkSummaries?.filter(
     (network: NetworkSummary) => network.status === 'REQUESTING_CONFIGURATION',
   );
-  $: hasConnectingNetworks = connectingNetworks !== undefined && connectingNetworks.length > 0;
+  $: hasConnectingNetworks =
+    connectingNetworks !== undefined && connectingNetworks.length > 0;
   $: unauthorizedNetworks = networkSummaries?.filter(
     (network: NetworkSummary) => network.status === 'ACCESS_DENIED',
   );
-  $: hasUnauthorizedNetworks = unauthorizedNetworks !== undefined && unauthorizedNetworks.length > 0;
+  $: hasUnauthorizedNetworks =
+    unauthorizedNetworks !== undefined && unauthorizedNetworks.length > 0;
   $: errorNetworks = networkSummaries?.filter(
     (network: NetworkSummary) =>
       network.status !== 'OK' &&
@@ -38,9 +52,28 @@
       network.status !== 'ACCESS_DENIED',
   );
   $: hasErrorNetworks = errorNetworks !== undefined && errorNetworks.length > 0;
+
+  function openJoin() {
+    showJoin = true;
+  }
+  function closeJoin() {
+    showJoin = false;
+  }
+  function openHost() {
+    showHost = true;
+  }
+  function closeHost() {
+    showHost = false;
+  }
 </script>
 
 <main class="main-container scroller">
+  <div class="toolbar buttons">
+    <button class="button is-primary" on:click={openJoin}>Join a network</button
+    >
+    <button class="button is-primary" on:click={openHost}>Host a network</button
+    >
+  </div>
   <section class="section content">
     <h1>Networks</h1>
     {#if !authToken}
@@ -70,8 +103,7 @@
       {:else}
         <p>
           {#if authorizedNetworks.length === 0}
-            This device is not yet allowed by any networks to connect as a
-            peer.
+            This device is not yet allowed by any networks to connect as a peer.
           {:else}
             This device is allowed by the following networks to connect as a
             peer, and it is configured to connect to them:
@@ -100,11 +132,14 @@
   </section>
   <section class="section content" class:empty-section={!hasConnectingNetworks}>
     {#if hasConnectingNetworks}
-      <div class="section-description" in:slide|local out:slide|local={sectionOutOptions}>
+      <div
+        class="section-description"
+        in:slide|local
+        out:slide|local={sectionOutOptions}
+      >
         <h1>Connecting</h1>
         <p>
-          This device is trying to connect as a peer on the following
-          networks:
+          This device is trying to connect as a peer on the following networks:
         </p>
       </div>
     {/if}
@@ -127,13 +162,20 @@
       </article>
     {/each}
   </section>
-  <section class="section content" class:empty-section={!hasUnauthorizedNetworks}>
+  <section
+    class="section content"
+    class:empty-section={!hasUnauthorizedNetworks}
+  >
     {#if hasUnauthorizedNetworks}
-      <div class="section-description" in:slide|local out:slide|local={sectionOutOptions}>
+      <div
+        class="section-description"
+        in:slide|local
+        out:slide|local={sectionOutOptions}
+      >
         <h1>No Access</h1>
         <p>
-          This device is trying to connect as a peer on the following
-          networks, but the network is not allowing the device to connect:
+          This device is trying to connect as a peer on the following networks,
+          but the network is not allowing the device to connect:
         </p>
       </div>
     {/if}
@@ -158,7 +200,11 @@
   </section>
   <section class="section content" class:empty-section={!hasErrorNetworks}>
     {#if hasErrorNetworks}
-      <div class="section-description" in:slide|local out:slide|local={sectionOutOptions}>
+      <div
+        class="section-description"
+        in:slide|local
+        out:slide|local={sectionOutOptions}
+      >
         <h1>Errors</h1>
         <p>
           {#if errorNetworks.length === 0}
@@ -191,6 +237,52 @@
       </article>
     {/each}
   </section>
+  {#if showJoin}
+    <div class="modal is-active" transition:fade={modalBackgroundOptions}>
+      <div class="modal-background" />
+      <DialogOverlay isOpen={showJoin} onDismiss={closeJoin}>
+        <div class="right-drawer" transition:fly={rightDrawerOptions}>
+          <DialogContent
+            class="drawer content"
+            aria-label="Network joining wizard"
+          >
+            <header class="modal-title">
+              <h2>Join a Network</h2>
+              <button
+                class="delete is-large"
+                aria-label="close"
+                on:click={closeJoin}
+              />
+            </header>
+            <p>This feature is not yet implemented!</p>
+          </DialogContent>
+        </div>
+      </DialogOverlay>
+    </div>
+  {/if}
+  {#if showHost}
+    <div class="modal is-active" transition:fade={modalBackgroundOptions}>
+      <div class="modal-background" />
+      <DialogOverlay isOpen={showHost} onDismiss={closeHost}>
+        <div class="right-drawer" transition:fly={rightDrawerOptions}>
+          <DialogContent
+            class="drawer content"
+            aria-label="Network hosting wizard"
+          >
+            <header class="modal-title">
+              <h2>Host a Network</h2>
+              <button
+                class="delete is-large"
+                aria-label="close"
+                on:click={closeHost}
+              />
+            </header>
+            <p>This feature is not yet implemented!</p>
+          </DialogContent>
+        </div>
+      </DialogOverlay>
+    </div>
+  {/if}
 </main>
 
 <style>
@@ -198,6 +290,9 @@
     width: 100%;
     height: 100%;
     overflow: auto;
+  }
+  .toolbar {
+    padding-bottom: 0;
   }
   section:not(:first-child) {
     padding-top: 0;
@@ -210,5 +305,15 @@
   }
   .panel.entity-panel {
     max-width: 26em;
+  }
+  .right-drawer {
+    max-width: 30em;
+  }
+  .modal-title h2 {
+    display: inline;
+  }
+  .modal-title .delete {
+    display: block;
+    float: right;
   }
 </style>

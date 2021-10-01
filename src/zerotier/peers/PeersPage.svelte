@@ -12,8 +12,13 @@
 
   export let authToken;
 
-  const animationOptions = { duration: (d) => 30 * Math.sqrt(d) };
-  const [send, receive] = crossfade({ fallback: slide });
+  const animationOptions = {
+    duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
+  };
+  const [send, receive] = crossfade({
+    duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
+    fallback: slide,
+  });
 
   $: peerSummariesRes = usePeerSummaries(authToken);
   $: peerSummariesStatus = $peerSummariesRes.status;

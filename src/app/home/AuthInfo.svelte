@@ -29,7 +29,10 @@
   const configPathRes = useConfigPath();
 
   $: configPath = $configPathRes.data;
-  $: ztOneConfigPath = $platformRes.data === undefined ? '' : getZtOneConfigPath($platformRes.data);
+  $: ztOneConfigPath =
+    $platformRes.data === undefined
+      ? ''
+      : getZtOneConfigPath($platformRes.data);
   $: authTokenPath = `${configPath}${AUTHTOKEN_FILENAME}`;
   $: authTokenRes = useAuthToken(configPath);
   $: authTokenStatus = $authTokenRes.status;

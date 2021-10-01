@@ -4,6 +4,7 @@
 
 // Basic Colors
 
+$primary: $turquoise;
 $success: $green;
 $danger: $red;
 $border: $scheme-main-grey-bis;
@@ -22,6 +23,7 @@ $link-active-border: $scheme-main-grey-bis;
 // Component Customizations
 
 $card-shadow: none;
+$modal-background: rgba(10, 19, 31, 0.75);
 
 // Bulma
 
@@ -37,7 +39,7 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-:focus {
+:focus, button.button:focus {
   outline: 4px solid $focus-color;
 }
 
@@ -46,6 +48,10 @@ button.is-ghost.is-ahref {
   border: none;
   border-radius: 0;
   height: unset;
+}
+// For some reason, the Bulma tag color classes ignore $success, $danger, etc.
+.button.is-primary {
+  background-color: $primary;
 }
 
 .tag:not(body) {

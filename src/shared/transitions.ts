@@ -12,7 +12,7 @@ export function slide(
   node: Element,
   {
     delay = 0,
-    duration = 400,
+    duration = 200,
     topRatio = 0.2,
     easing = cubicOut,
   }: SlideParams = {},

@@ -52,6 +52,11 @@
   }
 }
 
+.toolbar .button {
+  font-weight: bold;
+  margin-bottom: $gap;
+}
+
 // Sections
 
 .section-description {
@@ -60,8 +65,8 @@
 .empty-section {
   padding-top: 0;
   padding-bottom: 0;
-  transition: padding-top 0.4s ease-out 0.8s;
-  transition: padding-bottom 0.4s ease-out 0.8s;
+  transition: padding-top 0.2s ease-out 0.8s;
+  transition: padding-bottom 0.2s ease-out 0.8s;
 }
 
 // Cards
@@ -130,6 +135,52 @@
   }
 }
 
+// Modals
+
+.modal-background {
+  background-color: $modal-background;
+}
+div[data-svelte-dialog-portal] {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 40;
+}
+div[data-svelte-dialog-overlay] {
+  background-color: transparent;
+}
+div[data-svelte-dialog-content] {
+  background-color: $background;
+  padding: $gap;
+
+  @include from($navside-breakpoint) {
+    padding: 2 * $gap;
+  }
+}
+div[data-svelte-dialog-content] .modal-title {
+  margin-bottom: $gap;
+
+  @include from($navside-breakpoint) {
+    margin-bottom: 2 * $gap;
+  }
+}
+[data-svelte-dialog-content].drawer {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+.right-drawer {
+  width: 100%;
+  max-width: 24em;
+  margin-left: auto;
+  margin-right: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  height: 100vh;
+}
+
 // Accordions
 
 ul[data-accordion] {
@@ -170,7 +221,7 @@ li[data-accordion-item]>button {
   display: flex;
 }
 button .accordion-header .icon {
-  transition: transform 0.4s ease-out;
+  transition: transform 0.2s ease-out;
 }
 button[aria-expanded="true"] .accordion-header .icon {
   transform: rotate(0.5turn);

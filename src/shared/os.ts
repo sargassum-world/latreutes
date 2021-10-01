@@ -12,7 +12,7 @@ export type Platform =
   | 'linux'
   | 'openbsd'
   | 'sunos'
-  | 'win32'
+  | 'win32';
 
 // Queries
 
