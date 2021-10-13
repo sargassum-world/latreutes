@@ -110,6 +110,9 @@ button.is-ghost.is-ahref {
   height: 100%;
   max-height: $navbar-height;
 }
+.navbar-burger span {
+  transition: unset;
+}
 .navbar-menu {
   @include until($navbar-breakpoint) {
     display: block;

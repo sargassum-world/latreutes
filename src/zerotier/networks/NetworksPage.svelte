@@ -112,12 +112,13 @@
           {/if}
         </p>
         {#each authorizedNetworks as { id, name, status, type, bridge, portError } (id)}
-          <article
+          <!--<article
             class="panel entity-panel"
             in:receive|local={{ key: id }}
             out:send|local={{ key: id }}
             animate:flip={animationOptions}
-          >
+            >-->
+          <article class="panel entity-panel" transition:slide>
             <NetworkInfo
               {id}
               {name}
@@ -146,12 +147,13 @@
       </div>
     {/if}
     {#each connectingNetworks as { id, name, status, type, bridge, portError } (id)}
-      <article
+      <!--<article
         class="panel entity-panel"
         in:receive|local={{ key: id }}
         out:send|local={{ key: id }}
         animate:flip={animationOptions}
-      >
+        >-->
+      <article class="panel entity-panel" transition:slide>
         <NetworkInfo
           {id}
           {name}
@@ -182,12 +184,13 @@
       </div>
     {/if}
     {#each unauthorizedNetworks as { id, name, status, type, bridge, portError } (id)}
-      <article
+      <!--<article
         class="panel entity-panel"
         in:receive|local={{ key: id }}
         out:send|local={{ key: id }}
         animate:flip={animationOptions}
-      >
+        >-->
+      <article class="panel entity-panel" transition:slide>
         <NetworkInfo
           {id}
           {name}
@@ -220,12 +223,13 @@
       </div>
     {/if}
     {#each errorNetworks as { id, name, status, type, bridge, portError } (id)}
-      <article
+      <!--<article
         class="panel entity-panel"
         in:receive|local={{ key: id }}
         out:send|local={{ key: id }}
         animate:flip={animationOptions}
-      >
+        >-->
+      <article class="panel entity-panel" transition:slide>
         <NetworkInfo
           {id}
           {name}
@@ -313,12 +317,5 @@
   }
   .right-drawer {
     max-width: 30em;
-  }
-  .modal-title h2 {
-    display: inline;
-  }
-  .modal-title .delete {
-    display: block;
-    float: right;
   }
 </style>

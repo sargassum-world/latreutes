@@ -39,12 +39,13 @@
       </p>
     {:else}
       {#each networkInfo.routes as { target, via } (target)}
-        <p
+        <!--<p
           class="route"
           in:receive|local={{ key: target }}
           out:send|local={{ key: target }}
           animate:flip={animationOptions}
-        >
+          >-->
+        <p class="route" transition:fade>
           <span class="tag ip-subnet">{target}</span>
           {#if via !== null}
             via <span class="tag ip-subnet">{via}</span>

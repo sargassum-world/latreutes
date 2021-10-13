@@ -138,7 +138,7 @@
 // Modals
 
 div[data-svelte-dialog-portal] {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
@@ -149,13 +149,18 @@ div[data-svelte-dialog-overlay] {
   background-color: transparent;
   width: 100vw;
   height: 100vh;
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   overflow: hidden;
   z-index: 41;
+}
+.modal {
+  // Bulma's default for "position: fixed" causes the modal to freeze the application
+  // on the Jetson Nano (aarch64, Ubuntu 18.04), for some reason
+  position: absolute;
 }
 .modal-background {
   background-color: $modal-overlay-background;
@@ -193,6 +198,13 @@ div[data-svelte-dialog-overlay] {
   @include from($navside-breakpoint) {
     margin-bottom: 2 * $gap;
   }
+}
+.modal-title h2 {
+  display: inline;
+}
+.modal-title .delete {
+  display: block;
+  float: right;
 }
 
 // Accordions
@@ -233,9 +245,6 @@ li[data-accordion-item]>button {
 }
 .accordion-header.level {
   display: flex;
-}
-button .accordion-header .icon {
-  transition: transform 0.2s ease-out;
 }
 button[aria-expanded="true"] .accordion-header .icon {
   transform: rotate(0.5turn);
