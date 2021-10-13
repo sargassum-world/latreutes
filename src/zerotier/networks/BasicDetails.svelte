@@ -69,13 +69,15 @@
       </p>
     {:else}
       {#each networkInfo.assignedAddresses as address (address)}
-        <!--<p
+        <!--
+        <p
           class="tag ip-address"
           in:receive|local={{ key: address }}
           out:send|local={{ key: address }}
           animate:flip={animationOptions}
-          >-->
-        <p class="tag ip-address" transition:fade>
+        >
+        -->
+        <p class="tag ip-address" transition:fade|local>
           {address.split('/')[0]}
         </p>
       {/each}

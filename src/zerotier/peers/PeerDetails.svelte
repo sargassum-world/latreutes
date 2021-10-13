@@ -61,7 +61,7 @@
           animate:flip={animationOptions}
         >
         -->
-        <div class="network-name" transition:fade>
+        <div class="network-name" transition:fade|local>
           <NetworkName id={network.id} name={network.name} />
         </div>
       {/each}
