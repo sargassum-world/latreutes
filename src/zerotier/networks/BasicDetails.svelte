@@ -23,7 +23,6 @@
   $: hasNetworkInfo =
     networkInfoStatus === 'success' && networkInfo !== undefined;
   $: txtRecordsRes = useTxtResolver(name);
-  $: hasName = name !== undefined && name.length > 0;
   $: hasConfirmedDomainName = checkNetworkDomainName(
     name,
     id,
@@ -93,6 +92,7 @@
     margin-bottom: 0;
   }
   .accordion-content .ip-address:not(:last-child) {
+    margin-right: 0.25em;
     margin-bottom: 0.25em;
   }
 </style>

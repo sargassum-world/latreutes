@@ -8,6 +8,7 @@
   import { prefetchNetworkInfo, splitNetworkId } from '../client/network';
 
   import NetworkName from './NetworkName.svelte';
+  import StatusTags from './StatusTags.svelte';
   import BasicDetails from './BasicDetails.svelte';
   import AdvancedDetails from './AdvancedDetails.svelte';
   import Settings from './Settings.svelte';
@@ -20,40 +21,12 @@
   export let portError;
   export let authToken;
 
-  const statusTags = {
-    OK: {
-      label: ({}) => 'Authorized',
-      type: 'success',
-    },
-    REQUESTING_CONFIGURATION: {
-      label: ({}) => 'Requesting Information',
-      type: 'info',
-    },
-    ACCESS_DENIED: {
-      label: ({}) => 'Access Denied',
-      type: 'danger',
-    },
-    NOT_FOUND: {
-      label: ({}) => 'Not Found',
-      type: 'danger',
-    },
-    PORT_ERROR: {
-      label: ({ portError }) => `Port Error ${portError}`,
-      type: 'danger',
-    },
-    CLIENT_TOO_OLD: {
-      label: ({}) => 'Incompatible Version',
-      type: 'danger',
-    },
-  };
-
   const queryClient = useQueryClient();
 
   let showBasicDetails;
   let showAdvancedDetails;
   let showSettings;
 
-  $: statusTag = statusTags[status];
   $: networkSummariesRes = useNetworkSummaries(authToken);
   $: networkSummaries = $networkSummariesRes.data;
   $: prefetchNetworkInfo(id, authToken, queryClient);
@@ -62,16 +35,7 @@
 <header class="panel-heading">
   <h2 class="network-name"><NetworkName {id} {name} /></h2>
   <div class="tags">
-    <span class={`tag is-${statusTag.type}`}
-      >{statusTag.label({ portError })}</span
-    >
-    <!--TODO: add a tag if the network is self-hosted, by comparing the network ID's address section with the node ID-->
-    {#if type === 'PUBLIC'}
-      <span class="tag is-warning">Public</span>
-    {/if}
-    {#if bridge}
-      <span class="tag is-info">Bridge</span>
-    {/if}
+    <StatusTags {status} {type} {bridge} {portError} />
   </div>
 </header>
 <Accordion multiselect>
@@ -111,9 +75,6 @@
 </Accordion>
 
 <style>
-  .panel-heading .tag {
-    font-weight: normal;
-  }
   .network-name {
     font-weight: normal;
     margin-bottom: 0.25em;

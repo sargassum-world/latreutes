@@ -137,12 +137,16 @@ export function splitNetworkId(networkId: string): NetworkSplitId {
 }
 
 export function checkNetworkDomainName(
-  networkName: string,
+  networkName: string | undefined,
   networkId: string,
   txtRecords: string[] | undefined,
   status: string,
 ): boolean {
-  if (status !== 'success' || txtRecords === undefined) {
+  if (
+    status !== 'success' ||
+    networkName === undefined ||
+    txtRecords === undefined
+  ) {
     return false;
   }
 

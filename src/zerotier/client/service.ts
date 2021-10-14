@@ -57,6 +57,12 @@ export function fetcher<ResponseData>(
       );
     }
 
+    if (response.status === 404) {
+      throw new Error(
+        `Missing resource (${method} ${route.join('/')})! Is the resource nonexistent?`,
+      );
+    }
+
     if (response.status !== 200) {
       throw new Error(
         `Unexpected HTTP response code ${response.status}! Is some other service running at ${SERVICE_URL_ZT} instead of ZeroTier?`,

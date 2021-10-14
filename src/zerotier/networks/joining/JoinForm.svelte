@@ -1,6 +1,8 @@
 <script lang="ts" context="module">
   import { writable } from 'svelte/store';
 
+  export type IdentifierType = 'domain-name' | 'network-id';
+
   export const identifierTypes = {
     'domain-name': {
       name: 'domain name',
@@ -26,14 +28,12 @@
   import { svelteReporter, ValidationMessage } from '@felte/reporter-svelte';
   import isFQDN from 'validator/es/lib/isFQDN';
 
-  import { hasDomainName } from '../../shared/dns';
-  import { slide } from '../../shared/transitions';
+  import { hasDomainName } from '../../../shared/dns';
+  import { slide } from '../../../shared/transitions';
 
-  import { isNetworkId } from '../client/network';
+  import { isNetworkId } from '../../client/network';
 
-  import NetworkId from './NetworkId.svelte';
-
-  type IdentifierType = 'domain-name' | 'network-id';
+  import NetworkId from '../NetworkId.svelte';
 
   export let afterSubmit;
 

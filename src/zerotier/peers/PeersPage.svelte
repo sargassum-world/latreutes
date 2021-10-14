@@ -116,6 +116,6 @@
     margin-bottom: 0;
   }
   .panel.entity-panel {
-    max-width: 26em;
+    max-width: 27em;
   }
 </style>

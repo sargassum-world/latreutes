@@ -12,7 +12,7 @@
 
   import NetworkInfo from '../networks/NetworkInfo.svelte';
 
-  import JoinDialog from './JoinDialog.svelte';
+  import JoinDialog from './joining/JoinDialog.svelte';
 
   export let authToken;
 
@@ -258,7 +258,7 @@
               on:click={closeJoin}
             />
           </header>
-          <JoinDialog />
+          <JoinDialog {authToken} />
         </div>
       </DialogOverlay>
     </div>
@@ -309,9 +309,9 @@
     margin-bottom: 0;
   }
   .panel.entity-panel {
-    max-width: 26em;
+    max-width: 27em;
   }
-  .right-drawer {
-    max-width: 30em;
+  .drawer-container.right-drawer {
+    max-width: 32em;
   }
 </style>
