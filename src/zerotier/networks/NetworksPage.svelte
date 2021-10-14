@@ -16,7 +16,7 @@
 
   export let authToken;
 
-  const modalOptions = { duration: 50 };
+  const modalOptions = { duration: 100 };
   const sectionOutOptions = { delay: 200 };
   const animationOptions = {
     duration: (d) => Math.min(200, 30 * Math.sqrt(d)),

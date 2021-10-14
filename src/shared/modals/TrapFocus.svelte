@@ -47,7 +47,7 @@
   // make sense to include this function in the coverage report.
   // istanbul ignore next
   const handleKeydown = (event) => {
-    if (event.key !== 'Tab') {
+    if (event.code !== 'Tab') {
       return;
     }
 
