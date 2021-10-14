@@ -7,8 +7,15 @@ import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
 import copy from 'rollup-plugin-copy';
+import replace from 'rollup-plugin-re';
 
 const production = !process.env.ROLLUP_WATCH;
+const remove_transform_animations = process.env.REMOVE_TRANSFORM_ANIMATIONS;
+if (remove_transform_animations) {
+	console.log('CSS transform animations will be removed for compatibility.\n');
+} else {
+	console.log('CSS transform animations will be enabled.\n');
+}
 
 function serve() {
 	let server;
@@ -40,6 +47,25 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		replace({
+			patterns: [
+				{
+					exclude: remove_transform_animations ? [] : ['**'],
+					test: /in\:receive\|local=\{\{ key: .*? \}\}/,
+					replace: '',
+				},
+				{
+					exclude: remove_transform_animations ? [] : ['**'],
+					test: /out\:send\|local=\{\{ key: .*? \}\}/,
+					replace: '',
+				},
+				{
+					exclude: remove_transform_animations ? [] : ['**'],
+					test: /animate\:flip\=\{animationOptions\}/,
+					replace: 'transition:fade|local',
+				},
+			],
+		}),
 		svelte({
 			preprocess: sveltePreprocess({
 				sourceMap: !production,

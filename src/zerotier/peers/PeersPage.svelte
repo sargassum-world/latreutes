@@ -62,15 +62,12 @@
           {/if}
         </p>
         {#each leafPeers as { address, role } (address)}
-          <!--
           <article
             class="panel entity-panel"
             in:receive|local={{ key: address }}
             out:send|local={{ key: address }}
             animate:flip={animationOptions}
           >
-          -->
-          <article class="panel entity-panel" transition:slide|local>
             <PeerInfo {address} {role} {authToken} />
           </article>
         {/each}
@@ -90,15 +87,12 @@
         {/if}
       </p>
       {#each introducerPeers as { address, role } (address)}
-        <!--
         <article
           class="panel entity-panel"
           in:receive|local={{ key: address }}
           out:send|local={{ key: address }}
           animate:flip={animationOptions}
         >
-        -->
-        <article class="panel entity-panel" transition:slide|local>
           <PeerInfo {address} {role} {authToken} />
         </article>
       {/each}

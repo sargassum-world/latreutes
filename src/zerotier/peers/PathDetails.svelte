@@ -61,15 +61,12 @@
 {#if hasReverseRecords && $reverseRecordsRes.data.length > 0}
   <div class="tags">
     {#each $reverseRecordsRes.data as domainName (domainName)}
-      <!--
       <span
         class="tag domain-name"
         in:receive|local={{ key: domainName }}
         out:send|local={{ key: domainName }}
         animate:flip={animationOptions}
       >
-      -->
-      <span class="tag domain-name" transition:fade|local>
         {domainName.replace(/.$/, '')}
       </span>
     {/each}

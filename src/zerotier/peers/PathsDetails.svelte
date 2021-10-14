@@ -29,15 +29,12 @@
     <p class="tag is-warning">None</p>
   {:else}
     {#each peerInfo.paths as path (path.address)}
-      <!--
       <div
         class="content"
         in:receive|local={{ key: path.address }}
         out:send|local={{ key: path.address }}
         animate:flip={animationOptions}
       >
-      -->
-      <div class="content" transition:fade|local>
         <PathDetails {path} />
       </div>
     {/each}

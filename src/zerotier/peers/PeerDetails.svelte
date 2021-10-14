@@ -53,15 +53,12 @@
       <p class="tag is-warning">Unknown</p>
     {:else}
       {#each hostedNetworks as network (network.id)}
-        <!--
         <div
           class="network-name"
           in:receive|local={{ key: network.id }}
           out:send|local={{ key: network.id }}
           animate:flip={animationOptions}
         >
-        -->
-        <div class="network-name" transition:fade|local>
           <NetworkName id={network.id} name={network.name} />
         </div>
       {/each}
