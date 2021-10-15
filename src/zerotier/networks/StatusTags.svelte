@@ -38,9 +38,11 @@
 </script>
 
 {#if statusTag !== undefined}
-  <span class={`tag is-${statusTag.type}`} transition:fade|local
-    >{statusTag.label({ portError })}</span
-  >
+  {#key statusTag.label({ portError })}
+    <span class={`tag is-${statusTag.type}`} in:fade|local
+      >{statusTag.label({ portError })}</span
+    >
+  {/key}
 {/if}
 <!--TODO: add a tag if the network is self-hosted, by comparing the network ID's address section with the node ID-->
 {#if type === 'PUBLIC'}

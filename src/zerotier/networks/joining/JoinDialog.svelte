@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { fade } from 'svelte/transition';
+
   import { slide } from '../../../shared/transitions';
 
   import JoinForm, {
@@ -26,21 +28,31 @@
   <div transition:slide|local>
     <JoinForm afterSubmit={hideForm} />
   </div>
-{:else}
+{:else if $submission.identifierType === 'domain-name'}
   <div transition:slide|local>
-    {#if $submission.identifierType === 'domain-name'}
-      <DomainNameJoiner domainName={$submission.identifier} {authToken} />
-    {:else if $submission.identifierType === 'network-id'}
-      <NetworkIdJoiner
-        id={$submission.identifier}
-        expectedName={undefined}
-        {authToken}
-      />
-    {:else}
-      Error: unknown network identifier type!
-    {/if}
+    <p>
+      Looking for a ZeroTier network in the domain name records for
+      <span class="tag domain-name">{$submission.identifier}</span>...
+    </p>
+    <DomainNameJoiner domainName={$submission.identifier} {authToken} />
     <button class="button is-primary" on:click={resetForm}>
       Join another network
     </button>
+  </div>
+{:else if $submission.identifierType === 'network-id'}
+  <div transition:slide|local>
+    <NetworkIdJoiner
+      id={$submission.identifier}
+      expectedName={undefined}
+      {authToken}
+    />
+    <button class="button is-primary" on:click={resetForm}>
+      Join another network
+    </button>
+  </div>
+{:else}
+  <div transition:slide|local>
+    Error: unknown network identifier type!
+    <button class="button is-primary" on:click={resetForm}> Try again </button>
   </div>
 {/if}

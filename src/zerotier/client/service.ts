@@ -59,7 +59,9 @@ export function fetcher<ResponseData>(
 
     if (response.status === 404) {
       throw new Error(
-        `Missing resource (${method} ${route.join('/')})! Is the resource nonexistent?`,
+        `Missing resource (${method} ${route.join(
+          '/',
+        )})! Is the resource nonexistent?`,
       );
     }
 
