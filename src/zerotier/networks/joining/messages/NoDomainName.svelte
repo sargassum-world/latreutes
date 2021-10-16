@@ -17,8 +17,8 @@
   {:else}
     declares its name as
   {/if}
-  <span class="is-family-monospace">{name}</span>, which does not seem to be a domain name pointing to this
-  network. If you expected the network to have a different name, this may be the
-  wrong network and you should disconnect from it in order to protect your
-  device.
+  <span class="is-family-monospace">{name}</span>, which does not seem to be a
+  domain name pointing to this network. If you expected the network to have a
+  different name, this may be the wrong network and you should disconnect from
+  it in order to protect your device.
 </div>

@@ -31,7 +31,7 @@
     apiMissing || authTokenMissing || nodeInfoMissing || hasNoNetworks;
 </script>
 
-<main class="info-card-container scroller">
+<main class="main-container scroller">
   {#if showWelcome}
     <WelcomeInfo {nodeInfoMissing} />
   {/if}
@@ -44,11 +44,3 @@
   {/if}
   <NodeInfo {version} {authToken} />
 </main>
-
-<style>
-  .info-card-container {
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-  }
-</style>

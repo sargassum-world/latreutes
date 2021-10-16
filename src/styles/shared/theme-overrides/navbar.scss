@@ -1,80 +1,12 @@
 @charset 'utf-8';
 
-// Note: this is meant to be imported by theme-light, theme-dark, etc.
-
-// Basic Colors
-
-$primary: $turquoise;
-$success: $green;
-$danger: $red;
-$border: $scheme-main-grey-bis;
-$border-hover: $scheme-main-grey-ter;
-$border-light: $scheme-main-grey;
-$border-light-hover: $scheme-main-grey-ter;
-$text: $scheme-invert-grey;
-$text-light: $scheme-invert-grey-bis;
-$text-strong: $scheme-invert-grey;
-$link-hover: $scheme-invert-ter;
-$link-hover-border: $scheme-main-grey-ter;
-$link-focus: $scheme-invert-ter;
-$link-active: $scheme-main-grey;
-$link-active-border: $scheme-main-grey-bis;
-
-// Component Customizations
-
-$card-shadow: none;
-$modal-overlay-background: rgba(10, 19, 31, 0.75);
-
-// Bulma
-
-@import 'node_modules/bulma/bulma.sass';
-
-// Element Overrides
-
-body {
-  scrollbar-width: none;
-  scroll-behavior: smooth;
-}
-body::-webkit-scrollbar {
-  display: none;
-}
-
-:focus, button.button:focus {
-  outline: 4px solid $focus-color;
-}
-
-button.is-ghost.is-ahref {
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  height: unset;
-}
-// For some reason, the Bulma tag color classes ignore $success, $danger, etc.
-.button.is-primary {
-  background-color: $primary;
-}
-
-.tag:not(body) {
-  padding-left: 0.25em;
-  padding-right: 0.25em;
-  font-size: $size-normal;
-  height: 1.4 * $size-normal;
-}
-// For some reason, the Bulma tag color classes ignore $success, $danger, etc.
-.tag:not(body).is-success {
-  background-color: $success;
-}
-.tag:not(body).is-danger {
-  background-color: $danger;
-}
-
 .navbar, .navbar-menu, .navbar-start, .navbar-end {
   @include from($navside-breakpoint) {
     flex-direction: column;
   }
 }
 .navbar {
-  min-height: $navbar-height / 2;
+  min-height: 0.5 * $navbar-height;
   height: 10vh;
   max-height: $navbar-height;
   @include from($navside-breakpoint) {
@@ -82,18 +14,67 @@ button.is-ghost.is-ahref {
     max-height: 100%;
     flex-grow: 0;
     flex-shrink: 0;
-    flex-basis: $navside-navbar-width;
+    flex-basis: fit-content;
   }
 }
 .navbar-brand {
   @include until($navside-breakpoint) {
-    min-height: $navbar-height / 2;
+    min-height: 0.5 * $navbar-height;
     height: 100%;
     max-height: $navbar-height;
   }
   @include from($navside-breakpoint) {
     margin-top: 2 * $gap;
     min-height: 0;
+  }
+
+  a.navbar-item {
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 0.25em;
+    margin-right: 0em;
+    padding-left: 0.25em;
+    height: 100%;
+    max-height: $navbar-height * 0.625;
+    font-weight: bold;
+    text-align: center;
+
+    @include from($navbar-breakpoint) {
+      margin-left: $navbar-margin;
+    }
+
+    @include from($navside-breakpoint) {
+      display: block;
+      margin-top: 0em;
+      margin-bottom: $navbar-margin;
+      margin-right: $navbar-margin;
+      padding-left: 0.5em;
+      max-height: unset;
+      height: unset;
+    }
+  }
+  a.navbar-item.brand-with-logo {
+    @include from($navside-breakpoint) {
+      margin-top: -0.75em;
+    }
+  }
+  a.navbar-item.is-active:not(:focus):not(:hover), a.navbar-item:hover, a.navbar-item:focus {
+    color: $navbar-button-active-color;
+    background-color: $navbar-button-active-background;
+  }
+}
+img.navbar-brand-logo {
+  padding-top: 0.125em;
+  padding-bottom: 0.125em;
+  padding-right: 0.25em;
+
+  @include from($navside-breakpoint) {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0em;
+    padding-right: 0em;
+    max-height: $navbar-height;
   }
 }
 .navbar-brand.left-burger {
@@ -105,13 +86,19 @@ button.is-ghost.is-ahref {
   }
 }
 .navbar-burger {
+  min-width: 0.5 * $navbar-height;
   width: 10vh;
   max-width: $navbar-height;
   height: 100%;
   max-height: $navbar-height;
 }
+.navbar-burger:hover, .navbar-burger:focus {
+  color: $navbar-button-active-color;
+  background-color: $navbar-button-active-background;
+}
 .navbar-burger span {
   transition: unset;
+  height: 0.5px;
 }
 .navbar-menu {
   @include until($navbar-breakpoint) {
@@ -128,17 +115,25 @@ button.is-ghost.is-ahref {
 .navbar-menu::-webkit-scrollbar {
   display: none;
 }
-.navbar-menu.is-active {
+.navbar-menu.is-active, .navbar-menu:target, .navbar-menu[aria-expanded="true"] {
   @include until($navbar-breakpoint) {
     display: block;
     max-height: 90vh;
     visibility: visible;
-    padding-top: $gap;
+    padding-top: 0.25 * $gap;
     padding-bottom: $gap;
     overflow: auto;
   }
+
+  .navbar-burger {
+    min-width: unset;
+    width: 2.5em;
+    max-width: unset;
+    height: 2.5em;
+    max-height: unset;
+  }
 }
-.navbar-start {
+.navbar-start, .navbar-end {
   @include from($navside-breakpoint) {
     width: 100%;
   }
@@ -147,6 +142,8 @@ button.is-ghost.is-ahref {
   padding-top: 0;
   padding-bottom: 0;
   .buttons {
+    margin-left: auto;
+    margin-right: auto;
     @include until($navside-breakpoint) {
       margin-top: auto;
       margin-bottom: auto;
@@ -164,6 +161,21 @@ button.is-ghost.is-ahref {
     @include from($navbar-breakpoint) {
       height: 100%;
       max-height: $navbar-height * 0.625;
+    }
+  }
+  .icon-button {
+    @include until($navbar-breakpoint) {
+      width: 2.5em;
+    }
+    @include from($navbar-breakpoint) {
+      padding-top: 0.25 * $gap;
+      padding-bottom: 0.25 * $gap;
+      padding-left: 0.125 * $gap;
+      padding-right: 0.125 * $gap;
+    }
+    .icon:first-child:last-child {
+      margin-left: auto;
+      margin-right: auto;
     }
   }
   .button.is-active:not(:hover), .button:hover, .button:focus {
@@ -197,21 +209,13 @@ a.navbar-item.is-active:not(:focus):not(:hover), a.navbar-item:hover, a.navbar-i
   color: $navbar-button-active-color;
   background-color: $navbar-button-active-background;
 }
+.navbar-item .icon img {
+  height: 1em;
+}
 .navbar-end {
   @include from($navside-breakpoint) {
     margin-top: auto;
     margin-right: auto;
     margin-bottom: $navbar-margin;
   }
-}
-
-.field .message {
-  margin-top: $gap;
-}
-.field .message .message-body {
-  padding: $gap;
-}
-// For some reason, the Bulma tag color classes ignore $success, $danger, etc.
-.message.is-danger {
-  background-color: $danger-light;
 }

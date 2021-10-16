@@ -30,9 +30,9 @@
 
 <svelte:head>
   {#if theme === 'dark'}
-    <style src="styles/bulma-dark.scss"></style>
+    <style src="styles/theme-dark.scss"></style>
   {:else}
-    <style src="styles/bulma-light.scss"></style>
+    <style src="styles/theme-light.scss"></style>
   {/if}
 </svelte:head>
 

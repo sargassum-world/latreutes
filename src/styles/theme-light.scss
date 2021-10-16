@@ -1,58 +1,27 @@
 @charset 'utf-8';
 
+// Shared base
+@import 'styles/shared/global.scss';
+@import 'styles/shared/typography.vars.scss';
+@import 'node_modules/bulma/sass/utilities/mixins.sass';
+
+// Application-specific parameters
+@import 'styles/app/layout.vars.scss';
+
+// Shared
+@import 'styles/shared/layout.scss';
+@import 'styles/shared/colors-base.vars.scss';
 @import 'node_modules/bulma/sass/utilities/initial-variables.sass';
 
-// Theme Colors
+// Theme colors
+@import 'styles/shared/colors-light.vars.scss';
 
-$scheme-main: $white;
-$scheme-main-bis: $white-bis;
-$scheme-main-ter: $white-ter;
-$scheme-main-grey: $grey-lightest;
-$scheme-main-grey-bis: $grey-lighter;
-$scheme-main-grey-ter: $grey-light;
-$scheme-invert-grey-ter: $grey;
-$scheme-invert-grey-bis: $grey-dark;
-$scheme-invert-grey: $grey-darker;
-$scheme-invert-ter: $black-ter;
-$scheme-invert-bis: $black-bis;
-$scheme-invert: $black;
+// Shared
+@import 'styles/shared/theme.vars.scss';
 
-$green: hsl(153, 53%, 40%);
-$turquoise: hsl(175, 100%, 35%);
-$red: hsl(348, 86%, 61%);
+// Application-specific Bulma imports
+@import 'styles/app/bulma.scss';
 
-// Element Colors
-
-$body-background-color: $scheme-main;
-$background: $scheme-main;
-$focus-color: change-color($cyan, $lightness: 65%);
-$scrollbar-color: $scheme-main-grey-ter;
-$scrollbar-hover-color: $scheme-invert-grey-ter;
-
-// Component Colors
-
-$toolbar-background-color: $scheme-main-grey;
-
-$navbar-item-color: $scheme-invert-ter;
-$navbar-background-color: $scheme-main-grey-bis;
-$navbar-button-active-color: $scheme-invert;
-$navbar-button-active-background: $scheme-main-grey-ter;
-
-$card-background-color: $scheme-main-grey;
-$card-header-background-color: $scheme-main-grey-bis;
-$card-item-border-color: $card-header-background-color;
-
-$modal-dialog-background: $scheme-main;
-
-$zerotier-address-tag-color: $scheme-invert-grey-bis;
-$zerotier-address-tag-background-color: change-color($cyan, $lightness: 80%);
-$zerotier-network-number-tag-color: $scheme-invert-grey-bis;
-$zerotier-network-number-tag-background-color: change-color($green, $lightness: 80%);
-$zerotier-unknown-network-tag-color: $background;
-$socket-tag-color: $scheme-invert-grey-bis;
-$socket-tag-background-color: change-color($purple, $lightness: 90%);
-$domain-name-tag-color: $white;
-$domain-name-tag-background-color: $grey;
-
-@import 'styles/theme.scss';
-@import 'styles/components.scss';
+// Overrides & components
+@import 'styles/app/theme-overrides.scss';
+@import 'styles/app/components.scss';

@@ -45,10 +45,3 @@
     </Route>
   {/if}
 </div>
-
-<style>
-  .main-window {
-    height: 100%;
-    overflow: hidden;
-  }
-</style>
