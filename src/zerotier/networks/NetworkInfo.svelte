@@ -4,8 +4,8 @@
   import Icon from 'mdi-svelte';
   import { mdiChevronDown } from '@mdi/js';
 
-  import { NetworkSummary, useNetworkSummaries } from '../client/networks';
-  import { prefetchNetworkInfo, splitNetworkId } from '../client/network';
+  import { useNetworkSummaries } from '../client/networks';
+  import { prefetchNetworkInfo } from '../client/network';
 
   import NetworkName from './NetworkName.svelte';
   import StatusTags from './StatusTags.svelte';

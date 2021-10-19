@@ -1,13 +1,11 @@
 <script lang="ts">
   import { crossfade, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
-  import { expoOut } from 'svelte/easing';
-  import { Link } from 'svelte-routing';
 
   import { slide } from '../../shared/transitions';
   import DialogOverlay from '../../shared/modals/DialogOverlay.svelte';
 
-  import { SERVICE_PORT_ZT, ApiStatus, useApiStatus } from '../client/service';
+  import { SERVICE_PORT_ZT } from '../client/service';
   import { NetworkSummary, useNetworkSummaries } from '../client/networks';
 
   import NetworkInfo from '../networks/NetworkInfo.svelte';

@@ -5,7 +5,7 @@
 
   import { slide } from '../../shared/transitions';
 
-  import { SERVICE_PORT_ZT, ApiStatus, useApiStatus } from '../client/service';
+  import { SERVICE_PORT_ZT } from '../client/service';
   import { PeerSummary, usePeerSummaries } from '../client/peers';
 
   import PeerInfo from './PeerInfo.svelte';

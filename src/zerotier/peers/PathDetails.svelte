@@ -4,7 +4,6 @@
   import { flip } from 'svelte/animate';
 
   import { useReverseResolver } from '../../shared/dns';
-  import { slide } from '../../shared/transitions';
 
   export let path;
 

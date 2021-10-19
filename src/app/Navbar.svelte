@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { QueryClientProvider } from '@sveltestack/svelte-query';
   import Icon from 'mdi-svelte';
   import { mdiWhiteBalanceSunny } from '@mdi/js';
 

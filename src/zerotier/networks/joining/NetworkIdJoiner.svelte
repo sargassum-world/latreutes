@@ -2,8 +2,6 @@
   import { fade } from 'svelte/transition';
   import { useQueryClient } from '@sveltestack/svelte-query';
 
-  import { slide } from '../../../shared/transitions';
-
   import {
     useNetworkJoiner,
     useNetworkLeaver,

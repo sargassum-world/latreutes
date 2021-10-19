@@ -1,7 +1,6 @@
 <script lang="ts">
   import { crossfade, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
-  import { onMount } from 'svelte';
 
   import { slide } from '../../shared/transitions';
 

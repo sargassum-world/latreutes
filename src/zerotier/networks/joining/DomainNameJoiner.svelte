@@ -1,6 +1,5 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  import { useQueryClient } from '@sveltestack/svelte-query';
 
   import { useTxtResolver } from '../../../shared/dns';
   import { slide } from '../../../shared/transitions';
@@ -20,7 +19,6 @@
   export let authToken;
 
   const recordPrefix = `${DNS_ZT_NETWORK_KEY}=`;
-  const queryClient = useQueryClient();
 
   $: txtRecordsRes = useTxtResolver(domainName);
   $: hasTxtRecords =

@@ -26,7 +26,6 @@
 <script lang="ts">
   import { createForm } from 'felte';
   import { svelteReporter, ValidationMessage } from '@felte/reporter-svelte';
-  import isFQDN from 'validator/es/lib/isFQDN';
 
   import { hasDomainName } from '../../../shared/dns';
   import { slide } from '../../../shared/transitions';
@@ -90,20 +89,15 @@
       return errors;
     },
     onSubmit: async (values) => {
-      let identifier = '';
-      switch (values.identifierType) {
-        case 'domain-name': {
-          try {
-            identifier = new URL(values.identifier).hostname;
-          } catch {
-            identifier = values.identifier;
-          }
-          break;
-        }
-        default: {
+      let identifier = values.identifier;
+      if (values.identifierType === 'domain-name') {
+        try {
+          identifier = new URL(values.identifier).hostname;
+        } catch {
           identifier = values.identifier;
         }
       }
+      values.identifier = identifier;
       set(values);
       afterSubmit();
     },

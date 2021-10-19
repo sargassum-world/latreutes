@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Route } from 'svelte-routing';
-  import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query';
 
   import { useConfigPath, useAuthToken } from '../shared/config';
 

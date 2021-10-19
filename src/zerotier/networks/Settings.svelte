@@ -5,8 +5,6 @@
 
   import { useNetworkLeaver } from '../client/network';
 
-  import NetworkId from './NetworkId.svelte';
-
   export let id;
   export let status;
   export let authToken;

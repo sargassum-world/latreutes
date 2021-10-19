@@ -1,20 +1,13 @@
 <script lang="ts">
-  import { fade } from 'svelte/transition';
-
   import { slide } from '../../../shared/transitions';
 
-  import JoinForm, {
-    IdentifierType,
-    identifierTypes,
-    submission,
-  } from './JoinForm.svelte';
+  import JoinForm, { submission } from './JoinForm.svelte';
   import NetworkIdJoiner from './NetworkIdJoiner.svelte';
   import DomainNameJoiner from './DomainNameJoiner.svelte';
 
   export let authToken;
 
   let showForm = true;
-  let identifierType: IdentifierType = 'domain-name';
 
   function hideForm() {
     showForm = false;

@@ -2,7 +2,6 @@
   import { useShellOpener } from '../../../../shared/shell';
 
   const platformRes = usePlatform();
-  const shellOpener = useShellOpener();
 
   function openPortErrorTroubleshooting() {
     const shellOpener = useShellOpener();

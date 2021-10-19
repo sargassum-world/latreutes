@@ -6,7 +6,7 @@
 
   import { usePeerInfo } from '../client/peer';
   import { splitNetworkId } from '../client/network';
-  import { NetworkSummary, useNetworkSummaries } from '../client/networks';
+  import { NetworkSummary } from '../client/networks';
 
   import NetworkName from '../networks/NetworkName.svelte';
 

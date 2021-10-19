@@ -4,7 +4,7 @@
   export let to = '';
   export let closeMenu;
 
-  function getProps({ location, href, isPartiallyCurrent, isCurrent }) {
+  function getProps({ href, isPartiallyCurrent, isCurrent }) {
     const isActive = href === '/' ? isCurrent : isPartiallyCurrent || isCurrent;
 
     if (!isActive) {

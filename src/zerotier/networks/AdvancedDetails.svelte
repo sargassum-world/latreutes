@@ -2,12 +2,9 @@
   import { crossfade, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
-  import { useTxtResolver } from '../../shared/dns';
   import { slide } from '../../shared/transitions';
 
   import { useNetworkInfo } from '../client/network';
-
-  import NetworkId from './NetworkId.svelte';
 
   export let id;
   export let authToken;
