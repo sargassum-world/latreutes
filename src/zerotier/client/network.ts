@@ -95,7 +95,7 @@ export const prefetchNetworkInfo = (
 // Mutations
 
 export const useNetworkJoiner = (
-  authToken: string,
+  authToken: string | undefined,
   queryClient: QueryClient,
 ): MutationStoreResult<Response<NetworkInfo>, unknown, string> =>
   useMutation(
@@ -110,7 +110,7 @@ export const useNetworkJoiner = (
 
 export const useNetworkLeaver = (
   networkId: string,
-  authToken: string,
+  authToken: string | undefined,
   queryClient: QueryClient,
 ): MutationStoreResult<Response<NetworkInfo>, unknown, void> =>
   useMutation(

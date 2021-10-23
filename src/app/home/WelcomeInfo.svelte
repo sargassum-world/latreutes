@@ -3,7 +3,7 @@
 
   import { slide } from '../../shared/transitions';
 
-  export let nodeInfoMissing;
+  export let nodeInfoMissing: boolean;
 </script>
 
 <div class="card info-card" in:slide|local>

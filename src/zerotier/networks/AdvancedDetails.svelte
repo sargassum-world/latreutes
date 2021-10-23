@@ -1,22 +1,20 @@
 <script lang="ts">
-  import { crossfade, fade } from 'svelte/transition';
+  import { crossfade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
-  import { slide } from '../../shared/transitions';
+  import { slide, crossfadeFade } from '../../shared/transitions';
 
   import { useNetworkInfo } from '../client/network';
 
-  export let id;
-  export let authToken;
+  export let id: string;
+  export let authToken: string | undefined;
 
-  const animationOptions = { duration: (d) => 30 * Math.sqrt(d) };
-  const [send, receive] = crossfade({ fallback: fade });
+  const animationOptions = { duration: (d: number) => 30 * Math.sqrt(d) };
+  const [send, receive] = crossfade({ fallback: crossfadeFade });
 
   $: networkInfoRes = useNetworkInfo(id, authToken);
   $: networkInfoStatus = $networkInfoRes.status;
   $: networkInfo = $networkInfoRes.data?.data;
-  $: hasNetworkInfo =
-    networkInfoStatus === 'success' && networkInfo !== undefined;
 </script>
 
 <div class="accordion-content" transition:slide|local>

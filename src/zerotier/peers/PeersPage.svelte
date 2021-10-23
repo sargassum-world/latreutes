@@ -3,21 +3,21 @@
   import { flip } from 'svelte/animate';
   import { Link } from 'svelte-routing';
 
-  import { slide } from '../../shared/transitions';
+  import { crossfadeSlide } from '../../shared/transitions';
 
   import { SERVICE_PORT_ZT } from '../client/service';
   import { PeerSummary, usePeerSummaries } from '../client/peers';
 
   import PeerInfo from './PeerInfo.svelte';
 
-  export let authToken;
+  export let authToken: string | undefined;
 
   const animationOptions = {
-    duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
+    duration: (d: number) => Math.min(200, 30 * Math.sqrt(d)),
   };
   const [send, receive] = crossfade({
-    duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
-    fallback: slide,
+    duration: (d: number) => Math.min(200, 30 * Math.sqrt(d)),
+    fallback: crossfadeSlide,
   });
 
   $: peerSummariesRes = usePeerSummaries(authToken);
@@ -51,6 +51,8 @@
           some other program running on port {SERVICE_PORT_ZT} instead of the ZeroTier
           service?
         </p>
+      {:else if leafPeers === undefined}
+        <p>Unknown error!</p>
       {:else}
         <p>
           {#if leafPeers.length === 0}
@@ -77,25 +79,33 @@
   {#if peerSummariesStatus === 'success' && peerSummaries !== undefined}
     <section class="section content">
       <h1>Peer Introducers</h1>
-      <p>
-        {#if introducerPeers.length === 0}
-          This device is not yet in contact with any peers which can introduce
-          it to other peers. Is this device connected to the internet?
-        {:else}
-          This device can locate other peers by being mutually introduced
-          through one of the following special peers:
-        {/if}
-      </p>
-      {#each introducerPeers as { address, role } (address)}
-        <article
-          class="panel entity-panel"
-          in:receive|local={{ key: address }}
-          out:send|local={{ key: address }}
-          animate:flip={animationOptions}
-        >
-          <PeerInfo {address} {role} {authToken} />
-        </article>
-      {/each}
+      {#if introducerPeers === undefined}
+        <p>
+          Error: received an unexpected response from the ZeroTier service! Is
+          some other program running on port {SERVICE_PORT_ZT} instead of the ZeroTier
+          service?
+        </p>
+      {:else}
+        <p>
+          {#if introducerPeers.length === 0}
+            This device is not yet in contact with any peers which can introduce
+            it to other peers. Is this device connected to the internet?
+          {:else}
+            This device can locate other peers by being mutually introduced
+            through one of the following special peers:
+          {/if}
+        </p>
+        {#each introducerPeers as { address, role } (address)}
+          <article
+            class="panel entity-panel"
+            in:receive|local={{ key: address }}
+            out:send|local={{ key: address }}
+            animate:flip={animationOptions}
+          >
+            <PeerInfo {address} {role} {authToken} />
+          </article>
+        {/each}
+      {/if}
     </section>
   {/if}
 </main>

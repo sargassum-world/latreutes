@@ -4,8 +4,7 @@
   import Icon from 'mdi-svelte';
   import { mdiChevronDown } from '@mdi/js';
 
-  import { useNetworkSummaries } from '../client/networks';
-  import { prefetchNetworkInfo } from '../client/network';
+  import { Status, Type, prefetchNetworkInfo } from '../client/network';
 
   import NetworkName from './NetworkName.svelte';
   import StatusTags from './StatusTags.svelte';
@@ -13,23 +12,22 @@
   import AdvancedDetails from './AdvancedDetails.svelte';
   import Settings from './Settings.svelte';
 
-  export let id;
-  export let name;
-  export let status;
-  export let type;
-  export let bridge;
-  export let portError;
-  export let authToken;
+  export let id: string;
+  export let name: string;
+  export let status: Status;
+  export let type: Type;
+  export let bridge: boolean;
+  export let portError: number;
+  export let authToken: string | undefined;
 
   const queryClient = useQueryClient();
 
-  let showBasicDetails;
-  let showAdvancedDetails;
-  let showSettings;
+  let showBasicDetails: boolean;
+  let showAdvancedDetails: boolean;
+  let showSettings: boolean;
 
-  $: networkSummariesRes = useNetworkSummaries(authToken);
-  $: networkSummaries = $networkSummariesRes.data;
-  $: prefetchNetworkInfo(id, authToken, queryClient);
+  // We use void to ignore the result of the prefetch promise - if it fails, it's fine
+  $: void prefetchNetworkInfo(id, authToken, queryClient);
 </script>
 
 <header class="panel-heading">
@@ -58,7 +56,7 @@
       </span>
     </span>
     {#if showAdvancedDetails}
-      <AdvancedDetails {id} {authToken} {networkSummaries} />
+      <AdvancedDetails {id} {authToken} />
     {/if}
   </AccordionItem>
   <AccordionItem bind:expanded={showSettings} class="panel-block">

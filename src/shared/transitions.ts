@@ -1,5 +1,10 @@
 import { cubicOut } from 'svelte/easing';
-import { TransitionConfig, EasingFunction } from 'svelte/transition';
+import {
+  CrossfadeParams,
+  TransitionConfig,
+  EasingFunction,
+  fade,
+} from 'svelte/transition';
 
 export interface SlideParams {
   delay?: number;
@@ -40,4 +45,26 @@ export function slide(
         (Math.max(0, t - topRatio) / (1 - topRatio)) * margin_bottom
       }px;`,
   };
+}
+
+export function crossfadeFade(
+  node: Element,
+  params: CrossfadeParams,
+): TransitionConfig {
+  return fade(node, {
+    delay: params.delay,
+    duration: params.duration instanceof Function ? 200 : params.duration,
+    easing: params.easing,
+  });
+}
+
+export function crossfadeSlide(
+  node: Element,
+  params: CrossfadeParams,
+): TransitionConfig {
+  return slide(node, {
+    delay: params.delay,
+    duration: params.duration instanceof Function ? 200 : params.duration,
+    easing: params.easing,
+  });
 }

@@ -5,21 +5,21 @@
   import Icon from 'mdi-svelte';
   import { mdiChevronDown } from '@mdi/js';
 
-  import { prefetchPeerInfo } from '../client/peer';
+  import { Role, prefetchPeerInfo } from '../client/peer';
   import { NetworkSummary, useNetworkSummaries } from '../client/networks';
   import { splitNetworkId } from '../client/network';
 
   import PeerDetails from './PeerDetails.svelte';
   import PathsDetails from './PathsDetails.svelte';
 
-  export let address;
-  export let role;
-  export let authToken;
+  export let address: string;
+  export let role: Role;
+  export let authToken: string | undefined;
 
   const queryClient = useQueryClient();
 
-  let showDetails;
-  let showPaths;
+  let showDetails: boolean;
+  let showPaths: boolean;
 
   $: casedRole = role.charAt(0) + role.slice(1).toLowerCase();
   $: networkSummariesRes = useNetworkSummaries(authToken);
@@ -31,7 +31,8 @@
     $networkSummariesRes.status === 'success' &&
     networkHosts !== undefined &&
     networkHosts.includes(address);
-  $: prefetchPeerInfo(address, authToken, queryClient);
+  // We use void to ignore the result of the prefetch promise - it the prefetch fails, it's fine
+  $: void prefetchPeerInfo(address, authToken, queryClient);
 </script>
 
 <header class="panel-heading">
@@ -51,7 +52,7 @@
         <Icon path={mdiChevronDown} size="1em" />
       </span>
     </span>
-    {#if showDetails}
+    {#if showDetails && networkSummaries !== undefined}
       <PeerDetails {address} {authToken} {networkSummaries} />
     {/if}
   </AccordionItem>

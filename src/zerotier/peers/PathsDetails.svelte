@@ -1,18 +1,18 @@
 <script lang="ts">
-  import { crossfade, fade } from 'svelte/transition';
+  import { crossfade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
-  import { slide } from '../../shared/transitions';
+  import { slide, crossfadeFade } from '../../shared/transitions';
 
   import { usePeerInfo } from '../client/peer';
 
   import PathDetails from './PathDetails.svelte';
 
-  export let address;
-  export let authToken;
+  export let address: string;
+  export let authToken: string | undefined;
 
-  const animationOptions = { duration: (d) => 30 * Math.sqrt(d) };
-  const [send, receive] = crossfade({ fallback: fade });
+  const animationOptions = { duration: (d: number) => 30 * Math.sqrt(d) };
+  const [send, receive] = crossfade({ fallback: crossfadeFade });
 
   $: peerInfoRes = usePeerInfo(address, authToken);
   $: peerInfoStatus = $peerInfoRes.status;

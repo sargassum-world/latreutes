@@ -19,7 +19,7 @@
   const { subscribe, set } = writable({
     identifierType: undefined,
     identifier: undefined,
-  });
+  } as Record<string, string | undefined>);
   export const submission = { subscribe };
 </script>
 
@@ -34,7 +34,7 @@
 
   import NetworkId from '../NetworkId.svelte';
 
-  export let afterSubmit;
+  export let afterSubmit: () => void;
 
   let identifierType: IdentifierType = 'domain-name';
 
@@ -43,10 +43,21 @@
 
   const { form, data, touched, isValid } = createForm({
     extend: svelteReporter,
-    validate: (values) => {
-      const errors = {};
+    validate: (values: Record<string, string>) => {
+      const errors = {
+        identifierType: undefined as undefined | Array<string>,
+        identifier: undefined as undefined | Array<string>,
+      };
       if (values.identifierType === undefined) {
         errors.identifierType = ['Must select an identifier type!'];
+        return errors;
+      }
+
+      if (
+        values.identifierType !== 'domain-name' &&
+        values.identifierType !== 'network-id'
+      ) {
+        errors.identifierType = ['Must select a valid identifier type!'];
         return errors;
       }
 
@@ -88,7 +99,7 @@
       }
       return errors;
     },
-    onSubmit: async (values) => {
+    onSubmit: (values: Record<string, string>) => {
       let identifier = values.identifier;
       if (values.identifierType === 'domain-name') {
         try {

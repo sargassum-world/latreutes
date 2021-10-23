@@ -26,7 +26,9 @@
         will need to install it from
         <button
           class="button is-ghost is-ahref"
-          on:click={() => $shellOpener.mutate(ZT_DOWNLOAD_URL)}
+          on:click={() => {
+            $shellOpener.mutate(ZT_DOWNLOAD_URL);
+          }}
         >
           {ZT_DOWNLOAD_URL}
         </button>. Once you&apos;ve installed and started ZeroTier, this message

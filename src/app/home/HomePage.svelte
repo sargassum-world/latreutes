@@ -10,9 +10,9 @@
   import AuthInfo from './AuthInfo.svelte';
   import NodeInfo from './NodeInfo.svelte';
 
-  export let authToken;
-  export let authTokenMissing;
-  export let nodeInfoMissing;
+  export let authToken: string | undefined;
+  export let authTokenMissing: boolean;
+  export let nodeInfoMissing: boolean;
 
   const versionRes = useVersion();
   const apiStatusRes = useApiStatus();

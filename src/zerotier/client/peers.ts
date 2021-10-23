@@ -5,7 +5,7 @@ import { Role } from './peer';
 
 // Types
 
-interface PeerSummary {
+export interface PeerSummary {
   address: string;
   role: Role;
 }

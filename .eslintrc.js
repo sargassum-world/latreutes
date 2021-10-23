@@ -18,7 +18,16 @@ module.exports = {
   overrides: [
     {
       files: ['*.svelte'],
-      processor: 'svelte3/svelte3'
+      processor: 'svelte3/svelte3',
+      rules: {
+        // For some reason, eslint generates false positives wherever I use svelte-query,
+        // even though svelte-query has all the type annotations and they make sense to me.
+        // We'll just rely on svelte-check to warn us about `any` values.
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
+      },
     }
   ],
   plugins: ['svelte3', '@typescript-eslint'],

@@ -11,7 +11,7 @@ interface CopyArgs {
 }
 export const useSuCopier = (
   onSuccess: () => void,
-): MutationStoreResult<void, unknown, CopyArgs> =>
+): MutationStoreResult<void, unknown, CopyArgs, string[]> =>
   useMutation(
     async ({ source, dest }: CopyArgs) => {
       const command = new Command('pkexec', ['cat', source]);

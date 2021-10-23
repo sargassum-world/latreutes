@@ -9,9 +9,9 @@ import { QUERY_KEY_ZT, fetcher } from './service';
 
 // Types
 
-export type Role = 'LEAF' | 'UPSTREAM' | 'ROOT' | 'PLANET';
+export type Role = 'LEAF' | 'UPSTREAM' | 'ROOT' | 'PLANET' | 'MOON';
 
-interface PathInfo {
+export interface PathInfo {
   address: string;
   lastSend: number;
   lastReceive: number;
@@ -21,7 +21,7 @@ interface PathInfo {
   trustedPathId: number;
 }
 
-interface PeerInfo {
+export interface PeerInfo {
   address: string;
   versionMajor: number;
   versionMinor: number;

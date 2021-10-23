@@ -10,11 +10,11 @@
   import Navbar from './Navbar.svelte';
   import HomePage from './home/HomePage.svelte';
 
-  export let toggleTheme;
+  export let toggleTheme: () => void;
 
   const configPathRes = useConfigPath();
   $: authTokenRes = useAuthToken($configPathRes.data);
-  $: authToken = $authTokenRes.missing ? '' : $authTokenRes.data;
+  $: authToken = $authTokenRes.data;
   $: nodeInfoRes = useNodeInfo(authToken);
   $: hasAuthToken =
     $authTokenRes.status === 'success' && $authTokenRes.data !== undefined;

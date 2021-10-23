@@ -2,7 +2,7 @@
   import { useTxtResolver } from '../../../shared/dns';
   import { slide } from '../../../shared/transitions';
 
-  import { checkNetworkDomainName } from '../../client/network';
+  import { Status, Type, checkNetworkDomainName } from '../../client/network';
 
   import AccessDenied from './messages/AccessDenied.svelte';
   import NotFound from './messages/NotFound.svelte';
@@ -13,11 +13,11 @@
   import DomainName from './messages/DomainName.svelte';
   import PublicNetwork from './messages/PublicNetwork.svelte';
 
-  export let id;
-  export let name;
-  export let status;
-  export let type;
-  export let expectedName;
+  export let id: string;
+  export let name: string;
+  export let status: Status;
+  export let type: Type;
+  export let expectedName: string | undefined;
 
   $: txtRecordsRes = useTxtResolver(name);
   $: hasConfirmedDomainName = checkNetworkDomainName(

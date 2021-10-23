@@ -8,6 +8,7 @@
     "start": "sirv public --no-clear",
     "check": "svelte-check --tsconfig ./tsconfig.json",
     "tauri": "tauri",
+    "formatted": "prettier --check ./src/**/*.{js,svelte,html,ts}",
     "format": "prettier --write ./src/**/*.{js,svelte,html,ts}",
     "lint": "tsc --noEmit && prettier --write ./src/**/*.{js,svelte,html,ts} && eslint src/**/*.{js,ts,svelte}",
     "lint:fix": "tsc --noEmit && prettier --write ./src/**/*.{js,svelte,html,ts} && eslint --fix src/**/*.{js,ts,svelte}"
@@ -39,7 +40,7 @@
     "rollup-plugin-terser": "^7.0.0",
     "svelte": "^3.0.0",
     "svelte-accessible-accordion": "^2.0.0",
-    "svelte-check": "^2.0.0",
+    "svelte-check": "^2.2.7",
     "svelte-dark-mode": "^2.0.0",
     "svelte-preprocess": "^4.0.0",
     "tslib": "^2.0.0",

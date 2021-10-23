@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { crossfade, fade } from 'svelte/transition';
+  import { crossfade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
-  import { slide } from '../../shared/transitions';
+  import { slide, crossfadeFade } from '../../shared/transitions';
 
   import { usePeerInfo } from '../client/peer';
   import { splitNetworkId } from '../client/network';
@@ -10,12 +10,12 @@
 
   import NetworkName from '../networks/NetworkName.svelte';
 
-  export let address;
-  export let authToken;
-  export let networkSummaries;
+  export let address: string;
+  export let authToken: string | undefined;
+  export let networkSummaries: Array<NetworkSummary>;
 
-  const animationOptions = { duration: (d) => 30 * Math.sqrt(d) };
-  const [send, receive] = crossfade({ fallback: fade });
+  const animationOptions = { duration: (d: number) => 30 * Math.sqrt(d) };
+  const [send, receive] = crossfade({ fallback: crossfadeFade });
 
   $: peerInfoRes = usePeerInfo(address, authToken);
   $: peerInfoStatus = $peerInfoRes.status;

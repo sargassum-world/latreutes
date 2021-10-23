@@ -13,9 +13,9 @@
 
   import JoinMessages from './JoinMessages.svelte';
 
-  export let id;
-  export let expectedName;
-  export let authToken;
+  export let id: string;
+  export let expectedName: string | undefined;
+  export let authToken: string | undefined;
 
   const queryClient = useQueryClient();
 
@@ -26,7 +26,10 @@
   $: networkInfo = $networkInfoRes.data?.data;
   $: hasNetworkInfo =
     networkInfoStatus === 'success' && networkInfo !== undefined;
-  $: hasEmptyNetworkInfo = hasNetworkInfo && networkInfo.status === undefined;
+  $: hasEmptyNetworkInfo =
+    hasNetworkInfo &&
+    networkInfo !== undefined &&
+    networkInfo.status === undefined;
   $: missingNetworkInfo = networkInfoStatus === 'error' || hasEmptyNetworkInfo;
   $: showJoiner =
     id &&
@@ -60,7 +63,7 @@
   {:else}
     <button class="button" on:click={leaveNetwork}>Cancel</button>
   {/if}
-{:else if showJoiner && joinAttempted}
+{:else if showJoiner && joinAttempted && networkInfo !== undefined}
   <div in:fade|local>
     <p>
       Attempting to join <NetworkId {id} />...
@@ -96,7 +99,7 @@
       </button>
     {/if}
   </div>
-{:else if showJoiner && hasNetworkInfo && networkInfo.id === id}
+{:else if showJoiner && hasNetworkInfo && networkInfo !== undefined && networkInfo.id === id}
   <p in:fade|local>
     This device has already tried to join the network with ZeroTier network ID
     <NetworkId {id} />.

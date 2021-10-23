@@ -2,9 +2,19 @@
   import { Link } from 'svelte-routing';
 
   export let to = '';
-  export let closeMenu;
+  export let closeMenu = (): void => {
+    /* do nothing by default */
+  };
 
-  function getProps({ href, isPartiallyCurrent, isCurrent }) {
+  function getProps({
+    href,
+    isPartiallyCurrent,
+    isCurrent,
+  }: {
+    href: string;
+    isPartiallyCurrent: boolean;
+    isCurrent: boolean;
+  }) {
     const isActive = href === '/' ? isCurrent : isPartiallyCurrent || isCurrent;
 
     if (!isActive) {

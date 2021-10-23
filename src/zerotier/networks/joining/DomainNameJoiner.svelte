@@ -15,15 +15,13 @@
   import MultipleNetworkIdRecords from './messages/MultipleNetworkIdRecords.svelte';
   import EmptyNetworkIdRecord from './messages/EmptyNetworkIdRecord.svelte';
 
-  export let domainName;
-  export let authToken;
+  export let domainName: string;
+  export let authToken: string | undefined;
 
   const recordPrefix = `${DNS_ZT_NETWORK_KEY}=`;
 
   $: txtRecordsRes = useTxtResolver(domainName);
-  $: hasTxtRecords =
-    $txtRecordsRes.status === 'success' && $txtRecordsRes.data !== undefined;
-  $: records = $txtRecordsRes.data?.filter((record) =>
+  $: records = $txtRecordsRes.data?.filter((record: string) =>
     record.startsWith(recordPrefix),
   );
   $: id =
@@ -40,7 +38,7 @@
   <article class="message is-danger" transition:slide|local>
     <NoNetworkIdRecord {domainName} />
   </article>
-{:else if showJoiner && txtRecordsSuccess && records.length > 1}
+{:else if showJoiner && txtRecordsSuccess && records !== undefined && records.length > 1}
   <article class="message is-danger" transition:slide|local>
     <MultipleNetworkIdRecords {domainName} />
   </article>
@@ -48,7 +46,7 @@
   <article class="message is-danger" transition:slide|local>
     <EmptyNetworkIdRecord {domainName} />
   </article>
-{:else if showJoiner && txtRecordsSuccess}
+{:else if showJoiner && txtRecordsSuccess && id !== undefined}
   <div in:fade|local>
     <p>
       The network named by <span class="tag domain-name">{domainName}</span> has

@@ -1,14 +1,13 @@
 <script lang="ts">
   import { useTxtResolver } from '../../shared/dns';
 
-  import { splitNetworkId, checkNetworkDomainName } from '../client/network';
+  import { checkNetworkDomainName } from '../client/network';
 
   import NetworkId from './NetworkId.svelte';
 
-  export let id;
-  export let name;
+  export let id: string;
+  export let name: string;
 
-  $: networkSplitId = splitNetworkId(id);
   $: txtRecordsRes = useTxtResolver(name);
   $: hasName = name !== undefined && name.length > 0;
 </script>

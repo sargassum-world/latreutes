@@ -5,7 +5,7 @@
   import NetworkIdJoiner from './NetworkIdJoiner.svelte';
   import DomainNameJoiner from './DomainNameJoiner.svelte';
 
-  export let authToken;
+  export let authToken: string | undefined;
 
   let showForm = true;
 
@@ -21,7 +21,7 @@
   <div transition:slide|local>
     <JoinForm afterSubmit={hideForm} />
   </div>
-{:else if $submission.identifierType === 'domain-name'}
+{:else if $submission.identifierType === 'domain-name' && $submission.identifier !== undefined}
   <div transition:slide|local>
     <p>
       Looking for a ZeroTier network in the domain name records for
@@ -32,7 +32,7 @@
       Join another network
     </button>
   </div>
-{:else if $submission.identifierType === 'network-id'}
+{:else if $submission.identifierType === 'network-id' && $submission.identifier !== undefined}
   <div transition:slide|local>
     <NetworkIdJoiner
       id={$submission.identifier}
@@ -45,7 +45,7 @@
   </div>
 {:else}
   <div transition:slide|local>
-    Error: unknown network identifier type!
+    Error: unknown network identifier type or missing identifier!
     <button class="button is-primary" on:click={resetForm}> Try again </button>
   </div>
 {/if}

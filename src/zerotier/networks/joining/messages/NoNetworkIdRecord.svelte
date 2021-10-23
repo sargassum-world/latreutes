@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let domainName;
+  export let domainName: string;
 </script>
 
 <div class="message-header">Network not found</div>

@@ -1,23 +1,24 @@
 <script lang="ts">
   import { useShellOpener } from '../../../../shared/shell';
+  import { usePlatform } from '../../../../shared/os';
 
   const platformRes = usePlatform();
+  const shellOpener = useShellOpener();
 
   function openPortErrorTroubleshooting() {
-    const shellOpener = useShellOpener();
     switch ($platformRes.data) {
-      case 'macOS':
-        shellOpener.mutate(
+      case 'darwin':
+        $shellOpener.mutate(
           'https://zerotier.atlassian.net/wiki/spaces/SD/pages/7241787/PORT+ERROR+on+Mac',
         );
         break;
-      case 'windows':
-        shellOpener.mutate(
+      case 'win32':
+        $shellOpener.mutate(
           'https://zerotier.atlassian.net/wiki/spaces/SD/pages/35455014/PORT+ERROR+on+Windows',
         );
         break;
       default:
-        shellOpener.mutate(
+        $shellOpener.mutate(
           'https://zerotier.atlassian.net/wiki/spaces/SD/pages/29065282/Command+Line+Interface+zerotier-cli',
         );
     }

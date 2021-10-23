@@ -5070,10 +5070,10 @@ svelte-accessible-accordion@^2.0.0:
   resolved "https://registry.yarnpkg.com/svelte-accessible-accordion/-/svelte-accessible-accordion-2.0.0.tgz#84d37edb42fdb4d6c5a4469f0aad6e82e67a017f"
   integrity sha512-/fhYOAjy0mjkVesLsi/pxdTj2KMPi5l7oZv/fLCYyAMwxWDyoHXp1m4jWBfuSZx7tV5eLTZgT0LVtONIldsQFw==
 
-svelte-check@^2.0.0:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/svelte-check/-/svelte-check-2.2.6.tgz#11d5e70225a616950eddd3d435d56193be687582"
-  integrity sha512-oJux/afbmcZO+N+ADXB88h6XANLie8Y2rh2qBlhgfkpr2c3t/q/T0w2JWrHqagaDL8zeNwO8a8RVFBkrRox8gg==
+svelte-check@^2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/svelte-check/-/svelte-check-2.2.7.tgz#e3eb73fe2b77888977dfb309212d10779481a0b1"
+  integrity sha512-lH8ArmwVC+D314cToZkXBBfj7NlpvgQGP7nXCAMnNHo6hTEcbKcf/cAZgzbnAOTftjIJrmLHp+EDW887VJFSOQ==
   dependencies:
     chalk "^4.0.0"
     chokidar "^3.4.1"

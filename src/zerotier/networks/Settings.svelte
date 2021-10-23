@@ -3,11 +3,11 @@
 
   import { slide } from '../../shared/transitions';
 
-  import { useNetworkLeaver } from '../client/network';
+  import { Status, useNetworkLeaver } from '../client/network';
 
-  export let id;
-  export let status;
-  export let authToken;
+  export let id: string;
+  export let status: Status;
+  export let authToken: string | undefined;
 
   const queryClient = useQueryClient();
 

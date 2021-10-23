@@ -26,8 +26,12 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Install app dependencies
       run: yarn --prefer-offline
+    - name: Run format checker
+      run: yarn formatted
     - name: Run linter
       run: yarn lint
+    - name: Run svelte checker
+      run: yarn svelte-check
     - name: Run frontend build
       run: yarn build
 

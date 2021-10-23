@@ -14,7 +14,7 @@
   let lastTabbableChild;
   let returnFocusElem;
 
-  onMount(() => {
+  onMount(async () => {
     returnFocusElem = returnFocusElement || document.activeElement;
     tabbableChildren = [...ref.querySelectorAll('*')].filter(
       (node) => node.tabIndex >= 0,
@@ -23,18 +23,17 @@
     lastTabbableChild = tabbableChildren[tabbableChildren.length - 1];
 
     // Wait for children to mount before trying to focus `initialFocusElement`
-    tick().then(() => {
-      if (initialFocusElement) {
-        initialFocusElement.focus();
-      } else {
-        const initialFocusElem =
-          ref.querySelector('[autofocus]') ||
-          firstTabbableChild ||
-          ref.querySelector('[data-svelte-dialog-content]');
+    await tick();
+    if (initialFocusElement) {
+      initialFocusElement.focus();
+    } else {
+      const initialFocusElem =
+        ref.querySelector('[autofocus]') ||
+        firstTabbableChild ||
+        ref.querySelector('[data-svelte-dialog-content]');
 
-        initialFocusElem.focus();
-      }
-    });
+      initialFocusElem.focus();
+    }
   });
 
   onDestroy(() => {

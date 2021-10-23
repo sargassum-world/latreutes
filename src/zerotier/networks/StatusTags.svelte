@@ -1,34 +1,37 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
 
-  export let status;
-  export let type;
-  export let bridge;
-  export let portError;
+  import { Status, Type } from '../client/network';
+
+  export let status: Status;
+  export let type: Type;
+  export let bridge: boolean;
+  export let portError: number;
 
   const statusTags = {
     OK: {
-      label: ({}) => 'Authorized',
+      label: () => 'Authorized',
       type: 'success',
     },
     REQUESTING_CONFIGURATION: {
-      label: ({}) => 'Requesting Information',
+      label: () => 'Requesting Information',
       type: 'info',
     },
     ACCESS_DENIED: {
-      label: ({}) => 'Access Denied',
+      label: () => 'Access Denied',
       type: 'danger',
     },
     NOT_FOUND: {
-      label: ({}) => 'Not Found',
+      label: () => 'Not Found',
       type: 'danger',
     },
     PORT_ERROR: {
-      label: ({ portError }) => `Port Error ${portError}`,
+      label: ({ portError }: { portError: number }) =>
+        `Port Error ${portError}`,
       type: 'danger',
     },
     CLIENT_TOO_OLD: {
-      label: ({}) => 'Incompatible Version',
+      label: () => 'Incompatible Version',
       type: 'danger',
     },
     undefined: undefined,

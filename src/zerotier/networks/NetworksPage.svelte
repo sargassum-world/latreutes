@@ -2,7 +2,7 @@
   import { crossfade, fade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
-  import { slide } from '../../shared/transitions';
+  import { slide, crossfadeSlide } from '../../shared/transitions';
   import DialogOverlay from '../../shared/modals/DialogOverlay.svelte';
 
   import { SERVICE_PORT_ZT } from '../client/service';
@@ -12,16 +12,16 @@
 
   import JoinDialog from './joining/JoinDialog.svelte';
 
-  export let authToken;
+  export let authToken: string | undefined;
 
   const modalOptions = { duration: 100 };
   const sectionOutOptions = { delay: 200 };
   const animationOptions = {
-    duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
+    duration: (d: number) => Math.min(200, 30 * Math.sqrt(d)),
   };
   const [send, receive] = crossfade({
-    duration: (d) => Math.min(200, 30 * Math.sqrt(d)),
-    fallback: slide,
+    duration: (d: number) => Math.min(200, 30 * Math.sqrt(d)),
+    fallback: crossfadeSlide,
   });
 
   let showJoin = false;
@@ -33,8 +33,6 @@
   $: authorizedNetworks = networkSummaries?.filter(
     (network: NetworkSummary) => network.status === 'OK',
   );
-  $: hasAuthorizedNetworks =
-    authorizedNetworks !== undefined && authorizedNetworks.length > 0;
   $: connectingNetworks = networkSummaries?.filter(
     (network: NetworkSummary) => network.status === 'REQUESTING_CONFIGURATION',
   );
@@ -80,7 +78,7 @@
       <p>Error: the ZeroTier auth token is missing!</p>
     {:else if networkSummariesStatus === 'loading'}
       <p>Loading...</p>
-    {:else if networkSummariesStatus === 'error'}
+    {:else if networkSummariesStatus === 'error' || authorizedNetworks === undefined}
       {#if !$networkSummariesRes.error}
         <p>Unknown error!</p>
       {:else}
@@ -130,112 +128,122 @@
       {/if}
     {/if}
   </section>
-  <section class="section content" class:empty-section={!hasConnectingNetworks}>
-    {#if hasConnectingNetworks}
-      <div
-        class="section-description"
-        in:slide|local
-        out:slide|local={sectionOutOptions}
-      >
-        <h1>Connecting</h1>
-        <p>
-          This device is trying to connect as a peer on the following networks:
-        </p>
-      </div>
-    {/if}
-    {#each connectingNetworks as { id, name, status, type, bridge, portError } (id)}
-      <article
-        class="panel entity-panel"
-        in:receive|local={{ key: id }}
-        out:send|local={{ key: id }}
-        animate:flip={animationOptions}
-      >
-        <NetworkInfo
-          {id}
-          {name}
-          {status}
-          {authToken}
-          {type}
-          {portError}
-          {bridge}
-        />
-      </article>
-    {/each}
-  </section>
-  <section
-    class="section content"
-    class:empty-section={!hasUnauthorizedNetworks}
-  >
-    {#if hasUnauthorizedNetworks}
-      <div
-        class="section-description"
-        in:slide|local
-        out:slide|local={sectionOutOptions}
-      >
-        <h1>No Access</h1>
-        <p>
-          This device is trying to connect as a peer on the following networks,
-          but the network is not allowing the device to connect:
-        </p>
-      </div>
-    {/if}
-    {#each unauthorizedNetworks as { id, name, status, type, bridge, portError } (id)}
-      <article
-        class="panel entity-panel"
-        in:receive|local={{ key: id }}
-        out:send|local={{ key: id }}
-        animate:flip={animationOptions}
-      >
-        <NetworkInfo
-          {id}
-          {name}
-          {status}
-          {authToken}
-          {type}
-          {portError}
-          {bridge}
-        />
-      </article>
-    {/each}
-  </section>
-  <section class="section content" class:empty-section={!hasErrorNetworks}>
-    {#if hasErrorNetworks}
-      <div
-        class="section-description"
-        in:slide|local
-        out:slide|local={sectionOutOptions}
-      >
-        <h1>Errors</h1>
-        <p>
-          {#if errorNetworks.length === 0}
-            This device has not encountered any errors connecting to the
-            networks which it's configured to connect to.
-          {:else}
+  {#if connectingNetworks !== undefined}
+    <section
+      class="section content"
+      class:empty-section={!hasConnectingNetworks}
+    >
+      {#if hasConnectingNetworks}
+        <div
+          class="section-description"
+          in:slide|local
+          out:slide|local={sectionOutOptions}
+        >
+          <h1>Connecting</h1>
+          <p>
             This device is trying to connect as a peer on the following
-            networks, but some technical error has occurred:
-          {/if}
-        </p>
-      </div>
-    {/if}
-    {#each errorNetworks as { id, name, status, type, bridge, portError } (id)}
-      <article
-        class="panel entity-panel"
-        in:receive|local={{ key: id }}
-        out:send|local={{ key: id }}
-        animate:flip={animationOptions}
-      >
-        <NetworkInfo
-          {id}
-          {name}
-          {status}
-          {authToken}
-          {type}
-          {portError}
-          {bridge}
-        />
-      </article>
-    {/each}
-  </section>
+            networks:
+          </p>
+        </div>
+      {/if}
+      {#each connectingNetworks as { id, name, status, type, bridge, portError } (id)}
+        <article
+          class="panel entity-panel"
+          in:receive|local={{ key: id }}
+          out:send|local={{ key: id }}
+          animate:flip={animationOptions}
+        >
+          <NetworkInfo
+            {id}
+            {name}
+            {status}
+            {authToken}
+            {type}
+            {portError}
+            {bridge}
+          />
+        </article>
+      {/each}
+    </section>
+  {/if}
+  {#if unauthorizedNetworks !== undefined}
+    <section
+      class="section content"
+      class:empty-section={!hasUnauthorizedNetworks}
+    >
+      {#if hasUnauthorizedNetworks}
+        <div
+          class="section-description"
+          in:slide|local
+          out:slide|local={sectionOutOptions}
+        >
+          <h1>No Access</h1>
+          <p>
+            This device is trying to connect as a peer on the following
+            networks, but the network is not allowing the device to connect:
+          </p>
+        </div>
+      {/if}
+      {#each unauthorizedNetworks as { id, name, status, type, bridge, portError } (id)}
+        <article
+          class="panel entity-panel"
+          in:receive|local={{ key: id }}
+          out:send|local={{ key: id }}
+          animate:flip={animationOptions}
+        >
+          <NetworkInfo
+            {id}
+            {name}
+            {status}
+            {authToken}
+            {type}
+            {portError}
+            {bridge}
+          />
+        </article>
+      {/each}
+    </section>
+  {/if}
+  {#if errorNetworks !== undefined}
+    <section class="section content" class:empty-section={!hasErrorNetworks}>
+      {#if hasErrorNetworks}
+        <div
+          class="section-description"
+          in:slide|local
+          out:slide|local={sectionOutOptions}
+        >
+          <h1>Errors</h1>
+          <p>
+            {#if errorNetworks.length === 0}
+              This device has not encountered any errors connecting to the
+              networks which it's configured to connect to.
+            {:else}
+              This device is trying to connect as a peer on the following
+              networks, but some technical error has occurred:
+            {/if}
+          </p>
+        </div>
+      {/if}
+      {#each errorNetworks as { id, name, status, type, bridge, portError } (id)}
+        <article
+          class="panel entity-panel"
+          in:receive|local={{ key: id }}
+          out:send|local={{ key: id }}
+          animate:flip={animationOptions}
+        >
+          <NetworkInfo
+            {id}
+            {name}
+            {status}
+            {authToken}
+            {type}
+            {portError}
+            {bridge}
+          />
+        </article>
+      {/each}
+    </section>
+  {/if}
   {#if showJoin}
     <div class="modal is-active">
       <div class="modal-background" transition:fade|local={modalOptions} />

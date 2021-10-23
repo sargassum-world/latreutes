@@ -1,6 +1,6 @@
 <script lang="ts">
-  export let name;
-  export let nameExpected;
+  export let name: string;
+  export let nameExpected: boolean;
 </script>
 
 <div class="message-header">

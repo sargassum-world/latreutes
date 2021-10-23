@@ -1,7 +1,7 @@
 <script lang="ts">
   import { splitNetworkId } from '../client/network';
 
-  export let id;
+  export let id: string;
 
   $: networkSplitId = splitNetworkId(id);
 </script>

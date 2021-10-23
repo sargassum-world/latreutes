@@ -15,7 +15,7 @@
 
   const queryClient = new QueryClient();
 
-  let theme;
+  let theme: 'dark' | 'light';
   $: document.body.className = theme;
 
   function toggleTheme() {

@@ -4,8 +4,8 @@
   import { ApiStatus, useApiStatus } from '../../zerotier/client/service';
   import { useNodeInfo } from '../../zerotier/client/node';
 
-  export let version;
-  export let authToken;
+  export let version: string | undefined;
+  export let authToken: string | undefined;
 
   const apiStatusRes = useApiStatus();
   $: apiStatus = $apiStatusRes.data;

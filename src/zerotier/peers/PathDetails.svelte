@@ -1,18 +1,22 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { crossfade, fade } from 'svelte/transition';
+  import { crossfade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
+
+  import { crossfadeFade } from '../../shared/transitions';
 
   import { useReverseResolver } from '../../shared/dns';
 
-  export let path;
+  import { PathInfo } from '../client/peer';
+
+  export let path: PathInfo;
 
   let time = new Date().getTime();
   let lastSend = 0;
   let lastReceive = 0;
 
-  const animationOptions = { duration: (d) => 30 * Math.sqrt(d) };
-  const [send, receive] = crossfade({ fallback: fade });
+  const animationOptions = { duration: (d: number) => 30 * Math.sqrt(d) };
+  const [send, receive] = crossfade({ fallback: crossfadeFade });
 
   $: ipAddress = path.address.split('/')[0];
   $: port = path.address.split('/')[1];
@@ -57,7 +61,7 @@
     <span class="tag is-info">Preferred</span>
   {/if}
 </div>
-{#if hasReverseRecords && $reverseRecordsRes.data.length > 0}
+{#if hasReverseRecords && $reverseRecordsRes.data !== undefined && $reverseRecordsRes.data.length > 0}
   <div class="tags">
     {#each $reverseRecordsRes.data as domainName (domainName)}
       <span

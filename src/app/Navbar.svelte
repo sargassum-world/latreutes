@@ -4,8 +4,8 @@
 
   import NavLink from './NavLink.svelte';
 
-  export let connectedToZeroTier;
-  export let toggleTheme;
+  export let connectedToZeroTier: boolean;
+  export let toggleTheme: () => void;
 
   const authenticatedMenuItems = [
     { name: 'Home', path: '/' },

@@ -1,27 +1,25 @@
 <script lang="ts">
-  import { crossfade, fade } from 'svelte/transition';
+  import { crossfade } from 'svelte/transition';
   import { flip } from 'svelte/animate';
 
   import { useTxtResolver } from '../../shared/dns';
-  import { slide } from '../../shared/transitions';
+  import { slide, crossfadeFade } from '../../shared/transitions';
 
   import { useNetworkInfo } from '../client/network';
   import { checkNetworkDomainName } from '../client/network';
 
   import NetworkId from './NetworkId.svelte';
 
-  export let id;
-  export let name;
-  export let authToken;
+  export let id: string;
+  export let name: string;
+  export let authToken: string | undefined;
 
-  const animationOptions = { duration: (d) => 30 * Math.sqrt(d) };
-  const [send, receive] = crossfade({ fallback: fade });
+  const animationOptions = { duration: (d: number) => 30 * Math.sqrt(d) };
+  const [send, receive] = crossfade({ fallback: crossfadeFade });
 
   $: networkInfoRes = useNetworkInfo(id, authToken);
   $: networkInfoStatus = $networkInfoRes.status;
   $: networkInfo = $networkInfoRes.data?.data;
-  $: hasNetworkInfo =
-    networkInfoStatus === 'success' && networkInfo !== undefined;
   $: txtRecordsRes = useTxtResolver(name);
   $: hasConfirmedDomainName = checkNetworkDomainName(
     name,

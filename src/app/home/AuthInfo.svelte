@@ -19,7 +19,7 @@
   } from '../../zerotier/client/service';
   import { useNodeInfo } from '../../zerotier/client/node';
 
-  export let authToken;
+  export let authToken: string | undefined;
 
   const shellOpener = useShellOpener();
   const suCopier = useSuCopier(invalidateCaches);
@@ -48,7 +48,9 @@
   }
   function openConfigPath() {
     $configDirMaker.mutate();
-    $shellOpener.mutate(configPath);
+    if (configPath !== undefined) {
+      $shellOpener.mutate(configPath);
+    }
   }
   function copyAuthTokenFile() {
     $configDirMaker.mutate();
@@ -108,7 +110,7 @@
             correct permissions to read the copied file is to run the following
             command in the terminal:
             <br />
-            <code display="block">
+            <code class="is-block">
               sudo cat {ztOneConfigPath}{AUTHTOKEN_FILENAME} &gt; {configPath}{AUTHTOKEN_FILENAME}
             </code>
           </p>
