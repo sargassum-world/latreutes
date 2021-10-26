@@ -1,4 +1,4 @@
-import { UseQueryResult, useQuery } from 'react-query';
+import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
 import { invoke } from '@tauri-apps/api/tauri';
 import isFQDN from 'validator/es/lib/isFQDN';
 import isIP from 'validator/es/lib/isIP';
@@ -8,6 +8,7 @@ const QUERY_KEY = [...QUERY_KEY_DNS, 'lookup'];
 const QUERY_STALE = 30; // s
 
 // TXT record lookup
+
 const QUERY_KEY_TXT = [...QUERY_KEY, 'txt'];
 export function txtResolver(domainName: string) {
   return async (): Promise<string[]> => {
@@ -19,16 +20,22 @@ export function txtResolver(domainName: string) {
   };
 }
 export const useTxtResolver = (
-  domainName: string
-): UseQueryResult<string[], Error> =>
-  useQuery([...QUERY_KEY_TXT, domainName], txtResolver(domainName), {
-    enabled: !!domainName && isFQDN(domainName),
-    retry: false,
-    staleTime: QUERY_STALE * 1000,
-    cacheTime: Infinity,
-  });
+  domainName?: string,
+): UseQueryStoreResult<string[], Error, string[], string[]> =>
+  useQuery(
+    [...QUERY_KEY_TXT, domainName === undefined ? '' : domainName],
+    txtResolver(domainName === undefined ? '' : domainName),
+    {
+      enabled:
+        domainName !== undefined && domainName.length > 0 && isFQDN(domainName),
+      retry: false,
+      staleTime: QUERY_STALE * 1000,
+      cacheTime: Infinity,
+    },
+  );
 
 // Reverse lookup
+
 const QUERY_KEY_REVERSE = [...QUERY_KEY, 'reverse'];
 export function reverseResolver(ipAddr: string) {
   return async (): Promise<string[]> => {
@@ -40,11 +47,31 @@ export function reverseResolver(ipAddr: string) {
   };
 }
 export const useReverseResolver = (
-  ipAddr: string
-): UseQueryResult<string[], Error> =>
-  useQuery([...QUERY_KEY_REVERSE, ipAddr], reverseResolver(ipAddr), {
-    enabled: !!ipAddr && isIP(ipAddr),
-    retry: false,
-    staleTime: QUERY_STALE * 1000,
-    cacheTime: Infinity,
-  });
+  ipAddr?: string,
+): UseQueryStoreResult<string[], Error, string[], string[]> =>
+  useQuery(
+    [...QUERY_KEY_REVERSE, ipAddr === undefined ? '' : ipAddr],
+    reverseResolver(ipAddr === undefined ? '' : ipAddr),
+    {
+      enabled: ipAddr !== undefined && ipAddr.length > 0 && isIP(ipAddr),
+      retry: false,
+      staleTime: QUERY_STALE * 1000,
+      cacheTime: Infinity,
+    },
+  );
+
+// Utilities
+
+export function hasDomainName(identifier: string | undefined): boolean {
+  if (identifier === undefined) {
+    return false;
+  }
+
+  let domainName = '';
+  try {
+    domainName = new URL(identifier).hostname;
+  } catch {
+    domainName = identifier;
+  }
+  return isFQDN(domainName, { require_tld: true, allow_trailing_dot: true });
+}

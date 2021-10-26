@@ -1,12 +1,12 @@
 {
   "package": {
     "productName": "Latreutes",
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "build": {
-    "distDir": "../build",
-    "devPath": "http://localhost:3000",
-    "beforeDevCommand": "npm run start",
+    "distDir": "../public",
+    "devPath": "http://localhost:5000",
+    "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build"
   },
   "tauri": {
@@ -53,6 +53,9 @@
         "readTextFile": true
       },
       "http": {
+        "all": true
+      },
+      "os": {
         "all": true
       },
       "path": {

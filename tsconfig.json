@@ -1,10 +1,14 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
+    ],
+    "typeRoots": [
+      "./types",
     ],
     "allowJs": true,
     "skipLibCheck": true,
@@ -18,9 +22,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "importsNotUsedAsValues": "remove"
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src/**/*", "node_modules/@tauri-apps/**/*"],
+  "exclude": ["__sapper__/*", "public/*"]
 }

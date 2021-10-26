@@ -1,0 +1,44 @@
+<script lang="ts">
+  import { Router } from 'svelte-routing';
+  import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query';
+  import DarkMode from 'svelte-dark-mode';
+  import '@fontsource/atkinson-hyperlegible/400.css';
+  import '@fontsource/atkinson-hyperlegible/400-italic.css';
+  import '@fontsource/atkinson-hyperlegible/700.css';
+  import '@fontsource/atkinson-hyperlegible/700-italic.css';
+  import '@fontsource/oxygen-mono/400.css';
+
+  import MainWindow from './app/MainWindow.svelte';
+
+  // Used for SSR; falsy value is ignored by Router
+  export let url = '';
+
+  const queryClient = new QueryClient();
+
+  let theme: 'dark' | 'light';
+  $: document.body.className = theme;
+
+  function toggleTheme() {
+    if (theme === 'dark') {
+      theme = 'light';
+      return;
+    }
+
+    theme = 'dark';
+  }
+</script>
+
+<svelte:head>
+  {#if theme === 'dark'}
+    <style src="styles/theme-dark.scss"></style>
+  {:else}
+    <style src="styles/theme-light.scss"></style>
+  {/if}
+</svelte:head>
+
+<DarkMode bind:theme />
+<QueryClientProvider client={queryClient}>
+  <Router {url}>
+    <MainWindow {toggleTheme} />
+  </Router>
+</QueryClientProvider>

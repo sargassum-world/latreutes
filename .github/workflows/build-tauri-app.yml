@@ -26,8 +26,12 @@ jobs:
           ${{ runner.os }}-yarn-
     - name: Install app dependencies
       run: yarn --prefer-offline
+    - name: Run format checker
+      run: yarn formatted
     - name: Run linter
       run: yarn lint
+    - name: Run svelte checker
+      run: yarn svelte-check
     - name: Run frontend build
       run: yarn build
 
@@ -145,7 +149,7 @@ jobs:
           echo "Run bundle build"
           # Note: right now tauri's appimage.sh is hardcoded to build AppImages
           # against x86_64, so we can't build AppImage bundles for ARM.
-          cargo tauri build --bundle deb
+          REMOVE_TRANSFORM_ANIMATIONS=1 cargo tauri build --bundle deb
     - name: Upload the build artifacts
       uses: actions/upload-artifact@v2
       with:
