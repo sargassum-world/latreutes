@@ -36,7 +36,7 @@
 </script>
 
 <header class="panel-heading">
-  <h2 class="tag zerotier-address">{address}</h2>
+  <h2 class="entity-name"><span class="tag zerotier-address">{address}</span></h2>
   <div class="tags">
     <span class="tag is-success">{casedRole}</span>
     {#if isNetworkHost}
@@ -68,9 +68,3 @@
     {/if}
   </AccordionItem>
 </Accordion>
-
-<style>
-  .panel-heading .tag {
-    font-weight: normal;
-  }
-</style>

@@ -31,7 +31,7 @@
 </script>
 
 <header class="panel-heading">
-  <h2 class="network-name"><NetworkName {id} {name} /></h2>
+  <h2 class="entity-name"><NetworkName {id} {name} /></h2>
   <div class="tags">
     <StatusTags {status} {type} {bridge} {portError} />
   </div>
@@ -71,11 +71,3 @@
     {/if}
   </AccordionItem>
 </Accordion>
-
-<style>
-  .network-name {
-    font-weight: normal;
-    margin-bottom: 0.25em;
-    display: inline-flex;
-  }
-</style>
