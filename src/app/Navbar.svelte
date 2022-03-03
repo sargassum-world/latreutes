@@ -46,10 +46,10 @@
       {/if}
     </div>
     <div class="navbar-end">
-      <div class="navbar-item">
+      <div class="navbar-item end-buttons">
         <div class="buttons">
           <button
-            class="button is-text"
+            class="button icon-button is-text"
             id="theme-toggle"
             on:click={toggleTheme}
           >
