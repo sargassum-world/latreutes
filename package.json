@@ -18,6 +18,7 @@
     "@rollup/plugin-commonjs": "^17.0.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
+    "@sargassum-world/styles": "^0.2.0",
     "@tauri-apps/cli": "^1.0.0-beta.10",
     "@tsconfig/svelte": "^2.0.0",
     "@types/validator": "^13.6.3",
