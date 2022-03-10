@@ -3,7 +3,8 @@
 
   import { slide } from '../../shared/transitions';
 
-  export let nodeInfoMissing: boolean;
+  export let authTokenMissing: boolean;
+  export let apiMissing: boolean;
 </script>
 
 <div class="card info-card" in:slide|local>
@@ -19,7 +20,7 @@
       world, with a simpler and safer setup process than making your device
       accessible over the public internet.
     </p>
-    {#if !nodeInfoMissing}
+    {#if !authTokenMissing && !apiMissing}
       <p>
         To get started, please click on the <Link to="/networks">Networks</Link>
         button in the navigation menu.

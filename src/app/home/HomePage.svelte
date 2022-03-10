@@ -33,7 +33,7 @@
 
 <main class="main-container scroller">
   {#if showWelcome}
-    <WelcomeInfo {nodeInfoMissing} />
+    <WelcomeInfo {authTokenMissing} {apiMissing} />
   {/if}
   {#if !hasVersion}
     <BrowserRunError />
