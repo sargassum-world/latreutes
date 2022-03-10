@@ -6,6 +6,7 @@
   import DomainNameJoiner from './DomainNameJoiner.svelte';
 
   export let authToken: string | undefined;
+  export let closeJoin: () => void;
 
   let showForm = true;
 
@@ -28,9 +29,6 @@
       <span class="tag domain-name">{$submission.identifier}</span>...
     </p>
     <DomainNameJoiner domainName={$submission.identifier} {authToken} />
-    <button class="button is-primary" on:click={resetForm}>
-      Join another network
-    </button>
   </div>
 {:else if $submission.identifierType === 'network-id' && $submission.identifier !== undefined}
   <div transition:slide|local>
@@ -39,13 +37,19 @@
       expectedName={undefined}
       {authToken}
     />
-    <button class="button is-primary" on:click={resetForm}>
-      Join another network
-    </button>
   </div>
 {:else}
   <div transition:slide|local>
     Error: unknown network identifier type or missing identifier!
-    <button class="button is-primary" on:click={resetForm}> Try again </button>
   </div>
 {/if}
+<div class="buttons is-padded">
+  {#if !showForm && $submission.identifier !== undefined}
+    <button class="button is-primary" on:click={resetForm}>
+      Join another network
+    </button>
+  {:else if !showForm}
+    <button class="button is-primary" on:click={resetForm}> Try again </button>
+  {/if}
+  <button class="button is-primary" on:click={closeJoin}> Close Panel </button>
+</div>

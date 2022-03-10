@@ -264,7 +264,7 @@
               on:click={closeJoin}
             />
           </header>
-          <JoinDialog {authToken} />
+          <JoinDialog {authToken} {closeJoin} />
         </div>
       </DialogOverlay>
     </div>
