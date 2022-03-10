@@ -1,4 +1,10 @@
 <script lang="ts">
+  import {
+    useArch,
+    usePlatform,
+    usePlatformType,
+    useVersion,
+  } from '../../shared/os';
   import { slide } from '../../shared/transitions';
 
   import { ApiStatus, useApiStatus } from '../../zerotier/client/service';
@@ -7,6 +13,10 @@
   export let version: string | undefined;
   export let authToken: string | undefined;
 
+  const platformRes = usePlatform();
+  const archRes = useArch();
+  const platformTypeRes = usePlatformType();
+  const versionRes = useVersion();
   const apiStatusRes = useApiStatus();
   $: apiStatus = $apiStatusRes.data;
   $: nodeInfoRes = useNodeInfo(authToken);
@@ -57,6 +67,19 @@
           {:else}
             v{version}
           {/if}
+        </p>
+        <h3 class="is-size-6">OS</h3>
+        <p>
+          Platform: {$platformRes.data}
+        </p>
+        <p>
+          Type: {$platformTypeRes.data}
+        </p>
+        <p>
+          Arch: {$archRes.data}
+        </p>
+        <p>
+          Version: {$versionRes.data}
         </p>
       </div>
     {/if}

@@ -27,9 +27,7 @@
   {:else if peerInfo.paths.length == 0}
     <p class="tag is-warning">None</p>
   {:else}
-    {#each peerInfo.paths.filter(
-      (path, index, self) => self.findIndex((p) => (p.address === path.address)) === index
-    ) as path (path.address)}
+    {#each peerInfo.paths.filter((path, index, self) => self.findIndex((p) => p.address === path.address) === index) as path (path.address)}
       <div
         class="content"
         in:receive|local={{ key: path.address }}

@@ -36,7 +36,9 @@
 </script>
 
 <header class="panel-heading">
-  <h2 class="entity-name"><span class="tag zerotier-address">{address}</span></h2>
+  <h2 class="entity-name">
+    <span class="tag zerotier-address">{address}</span>
+  </h2>
   <div class="tags">
     <span class="tag is-success">{casedRole}</span>
     {#if isNetworkHost}
