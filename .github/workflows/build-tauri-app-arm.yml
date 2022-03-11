@@ -24,7 +24,7 @@ jobs:
         tmpfs_size: 4
     - uses: actions/checkout@v2
     - name: Run the release build
-      uses: uraimo/run-on-arch-action@v2
+      uses: uraimo/run-on-arch-action@v2.1.1
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
