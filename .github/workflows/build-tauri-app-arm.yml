@@ -64,7 +64,7 @@ jobs:
           rustup update
           rustc --version
           echo "Install Tauri"
-          cargo install tauri-cli
+          cargo install tauri-cli --version 1.0.0-rc.7
           # Report disk usage
           echo "Disk usage"
           sudo df -h
