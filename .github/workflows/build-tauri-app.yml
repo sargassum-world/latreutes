@@ -72,7 +72,8 @@ jobs:
       run: yarn --prefer-offline
     - name: Use rust cache
       uses: Swatinem/rust-cache@v1
-      working-directory: src-tauri
+      with:
+        working-directory: src-tauri
     - name: Run the release build
       run: |
         echo "Print tauri info"
