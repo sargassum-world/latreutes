@@ -1,8 +1,8 @@
-import {
+import type {
   QueryClient,
   UseQueryStoreResult,
-  useQuery,
 } from '@sveltestack/svelte-query';
+import { useQuery } from '@sveltestack/svelte-query';
 import { Response } from '@tauri-apps/api/http';
 
 import { QUERY_KEY_ZT, fetcher } from './service';

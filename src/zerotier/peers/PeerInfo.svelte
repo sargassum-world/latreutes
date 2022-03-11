@@ -5,8 +5,10 @@
   import Icon from 'mdi-svelte';
   import { mdiChevronDown } from '@mdi/js';
 
-  import { Role, prefetchPeerInfo } from '../client/peer';
-  import { NetworkSummary, useNetworkSummaries } from '../client/networks';
+  import type { Role } from '../client/peer';
+  import { prefetchPeerInfo } from '../client/peer';
+  import type { NetworkSummary } from '../client/networks';
+  import { useNetworkSummaries } from '../client/networks';
   import { splitNetworkId } from '../client/network';
 
   import PeerDetails from './PeerDetails.svelte';

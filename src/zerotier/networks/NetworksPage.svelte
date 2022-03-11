@@ -6,7 +6,8 @@
   import DialogOverlay from '../../shared/modals/DialogOverlay.svelte';
 
   import { SERVICE_PORT_ZT } from '../client/service';
-  import { NetworkSummary, useNetworkSummaries } from '../client/networks';
+  import type { NetworkSummary } from '../client/networks';
+  import { useNetworkSummaries } from '../client/networks';
 
   import NetworkInfo from '../networks/NetworkInfo.svelte';
 

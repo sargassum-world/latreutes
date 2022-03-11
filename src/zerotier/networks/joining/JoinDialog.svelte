@@ -44,12 +44,19 @@
   </div>
 {/if}
 <div class="buttons is-padded">
-  {#if !showForm && $submission.identifier !== undefined}
+  {#if showForm}
+    <button class="button" on:click={closeJoin}> Close Panel </button>
+  {:else if !showForm && $submission.identifier !== undefined}
     <button class="button is-primary" on:click={resetForm}>
       Join another network
     </button>
+    <button class="button is-primary" on:click={closeJoin}>
+      Close Panel
+    </button>
   {:else if !showForm}
     <button class="button is-primary" on:click={resetForm}> Try again </button>
+    <button class="button is-primary" on:click={closeJoin}>
+      Close Panel
+    </button>
   {/if}
-  <button class="button is-primary" on:click={closeJoin}> Close Panel </button>
 </div>

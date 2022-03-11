@@ -3,7 +3,8 @@
 
   import { slide } from '../../shared/transitions';
 
-  import { Status, useNetworkLeaver } from '../client/network';
+  import type { Status } from '../client/network';
+  import { useNetworkLeaver } from '../client/network';
 
   export let id: string;
   export let status: Status;

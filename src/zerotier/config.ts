@@ -1,4 +1,4 @@
-import { PlatformType } from '../shared/os';
+import type { PlatformType } from '../shared/os';
 
 export function getZtOneConfigPath(platformType: PlatformType): string {
   switch (platformType) {

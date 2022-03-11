@@ -8,11 +8,19 @@
   export let id: string;
   export let name: string;
 
-  $: txtRecordsRes = useTxtResolver(name);
   $: hasName = name !== undefined && name.length > 0;
+  $: txtRecordsRes = useTxtResolver(name);
+  $: hasConfirmedDomainName = checkNetworkDomainName(
+    name,
+    id,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    $txtRecordsRes.data,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    $txtRecordsRes.status,
+  );
 </script>
 
-{#if checkNetworkDomainName(name, id, $txtRecordsRes.data, $txtRecordsRes.status)}
+{#if hasConfirmedDomainName}
   <span class="tag domain-name">{name}</span>
 {:else}
   <span class="tag scoped-name" class:zerotier-unknown-network-named={hasName}>

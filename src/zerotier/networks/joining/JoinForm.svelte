@@ -25,7 +25,7 @@
 
 <script lang="ts">
   import { createForm } from 'felte';
-  import { svelteReporter, ValidationMessage } from '@felte/reporter-svelte';
+  import { reporter, ValidationMessage } from '@felte/reporter-svelte';
 
   import { hasDomainName } from '../../../shared/dns';
   import { slide } from '../../../shared/transitions';
@@ -42,7 +42,7 @@
   $: placeholder = identifierTypes[identifierType].placeholder;
 
   const { form, data, touched, isValid } = createForm({
-    extend: svelteReporter,
+    extend: reporter,
     validate: (values: Record<string, string>) => {
       const errors = {
         identifierType: undefined as undefined | Array<string>,

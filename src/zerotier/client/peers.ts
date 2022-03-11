@@ -1,7 +1,8 @@
-import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
+import type { UseQueryStoreResult } from '@sveltestack/svelte-query';
+import { useQuery } from '@sveltestack/svelte-query';
 
 import { QUERY_KEY_ZT, fetcher } from './service';
-import { Role } from './peer';
+import type { Role } from './peer';
 
 // Types
 

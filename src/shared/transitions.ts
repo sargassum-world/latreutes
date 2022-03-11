@@ -1,10 +1,10 @@
 import { cubicOut } from 'svelte/easing';
-import {
+import type {
   CrossfadeParams,
   TransitionConfig,
   EasingFunction,
-  fade,
 } from 'svelte/transition';
+import { fade } from 'svelte/transition';
 
 export interface SlideParams {
   delay?: number;

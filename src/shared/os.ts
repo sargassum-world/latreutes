@@ -1,4 +1,5 @@
-import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
+import type { UseQueryStoreResult } from '@sveltestack/svelte-query';
+import { useQuery } from '@sveltestack/svelte-query';
 import { arch, platform, type, version } from '@tauri-apps/api/os';
 
 import { APPLICATION_NAMESPACE } from './config';

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
 
-  import { Status, Type } from '../client/network';
+  import type { Status, Type } from '../client/network';
 
   export let status: Status;
   export let type: Type;

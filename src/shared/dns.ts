@@ -1,4 +1,5 @@
-import { UseQueryStoreResult, useQuery } from '@sveltestack/svelte-query';
+import type { UseQueryStoreResult } from '@sveltestack/svelte-query';
+import { useQuery } from '@sveltestack/svelte-query';
 import { invoke } from '@tauri-apps/api/tauri';
 import isFQDN from 'validator/es/lib/isFQDN';
 import isIP from 'validator/es/lib/isIP';

@@ -1,4 +1,5 @@
-import { MutationStoreResult, useMutation } from '@sveltestack/svelte-query';
+import type { MutationStoreResult } from '@sveltestack/svelte-query';
+import { useMutation } from '@sveltestack/svelte-query';
 import { Command, open } from '@tauri-apps/api/shell';
 import { writeFile } from '@tauri-apps/api/fs';
 

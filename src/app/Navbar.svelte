@@ -22,12 +22,11 @@
   }
 </script>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar" aria-label="main navigation">
   <div class="navbar-brand left-burger">
     <button
       class="navbar-burger"
       class:is-active={isMenuOpen}
-      role="button"
       aria-label="menu"
       aria-expanded={isMenuOpen}
       on:click={toggleMenu}

@@ -28,7 +28,9 @@
   const configDirMaker = useConfigDirMaker();
   const configPathRes = useConfigPath();
 
+  let configPath: string;
   $: configPath = $configPathRes.data;
+  let ztOneConfigPath: string;
   $: ztOneConfigPath =
     $platformTypeRes.data === undefined
       ? ''

@@ -24,7 +24,9 @@
   $: hasConfirmedDomainName = checkNetworkDomainName(
     name,
     id,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     $txtRecordsRes.data,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     $txtRecordsRes.status,
   );
 </script>

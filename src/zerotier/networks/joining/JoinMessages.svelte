@@ -2,7 +2,8 @@
   import { useTxtResolver } from '../../../shared/dns';
   import { slide } from '../../../shared/transitions';
 
-  import { Status, Type, checkNetworkDomainName } from '../../client/network';
+  import type { Status, Type } from '../../client/network';
+  import { checkNetworkDomainName } from '../../client/network';
 
   import AccessDenied from './messages/AccessDenied.svelte';
   import NotFound from './messages/NotFound.svelte';
@@ -23,7 +24,9 @@
   $: hasConfirmedDomainName = checkNetworkDomainName(
     name,
     id,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     $txtRecordsRes.data,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     $txtRecordsRes.status,
   );
 </script>
