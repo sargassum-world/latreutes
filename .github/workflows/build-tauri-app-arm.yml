@@ -25,7 +25,7 @@ jobs:
       uses: JonasAlfredsson/docker-on-tmpfs@v1.0.1
       if: matrix.arch == 'armv7'
       with:
-        tmpfs_size: 4
+        tmpfs_size: 5
     - uses: actions/checkout@v2
     - name: Run the release build
       uses: uraimo/run-on-arch-action@v2.1.1
@@ -83,15 +83,12 @@ jobs:
           yarn
           cargo tauri info
           echo "Run bundle build"
-          # TODO: figure out if tauri's appimage.sh is still hardcoded to build AppImages
-          # against x86_64, so that we can't build AppImage bundles for ARM.
+          # Tauri's appimage.sh works on ARMv7 but not ARM64 for some reason
           # We disable CSS transformation animations because they freeze the webview for some reason
-          REMOVE_TRANSFORM_ANIMATIONS=1 cargo tauri build
+          REMOVE_TRANSFORM_ANIMATIONS=1 cargo tauri build --verbose
           # Report disk usage
           echo "Disk usage"
           df -h
-          echo
-          free -h
     - name: Upload the build artifacts
       uses: actions/upload-artifact@v2
       with:
