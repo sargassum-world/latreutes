@@ -88,6 +88,8 @@ jobs:
       matrix:
         include:
           - arch: armv7
+            distro: buster
+          - arch: armv7
             distro: bullseye
 
     runs-on: ubuntu-latest
@@ -117,7 +119,8 @@ jobs:
           echo "Update system"
           apt-get update
           echo "Install dependencies"
-          apt-get install -y webkit2gtk-4.0 libwebkit2gtk-4.0-dev build-essential curl wget libssl-dev libgtk-3-dev libappindicator3-dev patchelf librsvg2-dev
+          apt-get install -y webkit2gtk-4.0 libwebkit2gtk-4.0-dev build-essential curl wget libssl-dev libgtk-3-dev patchelf librsvg2-dev
+          if [[ ${{ matrix.distro }} == "buster" ]]; then apt-get install -y libayatana-appindicator3-dev; else apt-get install -y libappindicator3-dev; fi
           echo "Install NVM"
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
           export NVM_DIR="$HOME/.nvm"
