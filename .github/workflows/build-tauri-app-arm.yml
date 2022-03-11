@@ -23,7 +23,7 @@ jobs:
     # https://users.rust-lang.org/t/rust-docker-image-broken-on-architecture-linux-arm-v7/54868/2
     - name: Run Docker on tmpfs
       uses: JonasAlfredsson/docker-on-tmpfs@v1.0.1
-      if: matrix.platform == 'armv7'
+      if: matrix.arch == 'armv7'
       with:
         tmpfs_size: 4
     - uses: actions/checkout@v2
