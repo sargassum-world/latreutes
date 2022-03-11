@@ -67,9 +67,9 @@ jobs:
           cargo install tauri-cli --version 1.0.0-rc.7
           # Report disk usage
           echo "Disk usage"
-          sudo df -h
+          df -h
           echo
-          sudo free -h
+          free -h
         run: |
           cd ${{ github.workspace }}
           source "${HOME}/.cargo/env"
@@ -89,9 +89,9 @@ jobs:
           REMOVE_TRANSFORM_ANIMATIONS=1 cargo tauri build
           # Report disk usage
           echo "Disk usage"
-          sudo df -h
+          df -h
           echo
-          sudo free -h
+          free -h
     - name: Upload the build artifacts
       uses: actions/upload-artifact@v2
       with:
