@@ -16,7 +16,6 @@
   $: authTokenRes = useAuthToken($configPathRes.data);
   let authToken: string | undefined;
   $: authToken = $authTokenRes.data;
-  let nodeInfoRes: string | undefined;
   $: nodeInfoRes = useNodeInfo(authToken);
   $: hasAuthToken =
     $authTokenRes.status === 'success' && $authTokenRes.data !== undefined;
