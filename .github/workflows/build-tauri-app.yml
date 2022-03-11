@@ -77,9 +77,9 @@ jobs:
     - name: Run the release build
       run: |
         echo "Print tauri info"
-        cargo tauri info
+        yarn tauri info
         echo "Build"
-        cargo tauri build
+        yarn tauri build
     - name: Upload the build artifacts
       uses: actions/upload-artifact@v2
       with:
