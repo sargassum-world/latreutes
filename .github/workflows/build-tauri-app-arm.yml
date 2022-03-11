@@ -18,9 +18,13 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+    - name: Run Docker on tmpfs
+      uses: JonasAlfredsson/docker-on-tmpfs@v1.0.1
+      with:
+        tmpfs_size: 4
     - uses: actions/checkout@v2
     - name: Run the release build
-      uses: uraimo/run-on-arch-action@v2.1.1
+      uses: uraimo/run-on-arch-action@v2
       with:
         arch: ${{ matrix.arch }}
         distro: ${{ matrix.distro }}
@@ -50,7 +54,13 @@ jobs:
           rustup self update
           rustup update
           rustc --version
+          echo "Install Tauri"
           cargo install tauri-cli --version 1.0.0-beta.7
+          # Report disk usage
+          echo "Disk usage"
+          sudo df -h
+          echo
+          sudo free -h
         run: |
           cd ${{ github.workspace }}
           source "${HOME}/.cargo/env"
@@ -67,6 +77,11 @@ jobs:
           # Note: right now tauri's appimage.sh is hardcoded to build AppImages
           # against x86_64, so we can't build AppImage bundles for ARM.
           REMOVE_TRANSFORM_ANIMATIONS=1 cargo tauri build
+          # Report disk usage
+          echo "Disk usage"
+          sudo df -h
+          echo
+          sudo free -h
     - name: Upload the build artifacts
       uses: actions/upload-artifact@v2
       with:
