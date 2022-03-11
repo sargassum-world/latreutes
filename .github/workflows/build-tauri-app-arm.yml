@@ -43,7 +43,7 @@ jobs:
           apt-get update
           echo "Install dependencies"
           apt-get install -y webkit2gtk-4.0 libwebkit2gtk-4.0-dev build-essential curl wget libssl-dev libgtk-3-dev patchelf librsvg2-dev
-          if [[ ${{ matrix.distro }} == "buster" ]]; then
+          if [[ ${{ matrix.distro }} == "bullseye" ]]; then
             apt-get install -y libayatana-appindicator3-dev;
           else
             apt-get install -y libappindicator3-dev;

@@ -8,7 +8,6 @@
   export let toggleTheme: () => void;
 
   const authenticatedMenuItems = [
-    { name: 'Home', path: '/' },
     { name: 'Networks', path: 'networks' },
     { name: 'Peers', path: 'peers' },
   ];
@@ -35,6 +34,17 @@
       <span aria-hidden="true" />
       <span aria-hidden="true" />
     </button>
+
+    <NavLink
+      to="/"
+      {closeMenu}
+      class="navbar-item brand-with-logo"
+      id="main-nav-brand"
+    >
+      <img class="navbar-brand-logo" src="/logo.svg" alt="Latreutes logo" />
+      Latreutes
+    </NavLink>
+
   </div>
   <div class="navbar-menu" class:is-active={isMenuOpen}>
     <div class="navbar-start">
