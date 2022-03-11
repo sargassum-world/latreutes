@@ -44,7 +44,6 @@
       <img class="navbar-brand-logo" src="/logo.svg" alt="Latreutes logo" />
       Latreutes
     </NavLink>
-
   </div>
   <div class="navbar-menu" class:is-active={isMenuOpen}>
     <div class="navbar-start">
