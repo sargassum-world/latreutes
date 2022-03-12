@@ -1,13 +1,11 @@
-import {
-  QueryClient,
+import type {
   UseQueryStoreResult,
   MutationStoreResult,
-  useQuery,
-  useMutation,
 } from '@sveltestack/svelte-query';
+import { QueryClient, useQuery, useMutation } from '@sveltestack/svelte-query';
 import { getVersion } from '@tauri-apps/api/app';
-import { configDir, sep } from '@tauri-apps/api/path';
-import { FsOptions, readTextFile, createDir } from '@tauri-apps/api/fs';
+import { appDir } from '@tauri-apps/api/path';
+import { type FsOptions, readTextFile, createDir } from '@tauri-apps/api/fs';
 
 export const APPLICATION_NAMESPACE = 'latreutes';
 export const QUERY_KEY_CONFIG = [APPLICATION_NAMESPACE, 'config'];
@@ -39,25 +37,19 @@ export const useVersion = (): UseQueryStoreResult<
 
 // Config Directory
 const QUERY_KEY_CONFIG_PATH = [...QUERY_KEY_CONFIG, 'path'];
-export const CONFIG_PARENT = 'sargassum';
-export async function getConfigPath(): Promise<string> {
-  const configBasePath = await configDir();
-  const configSubpath = `${CONFIG_PARENT}${sep}${APPLICATION_NAMESPACE}`;
-  return `${configBasePath}${configSubpath}${sep}`;
-}
 export const useConfigPath = (): UseQueryStoreResult<
   string,
   unknown,
   string,
   string[]
 > =>
-  useQuery(QUERY_KEY_CONFIG_PATH, getConfigPath, {
+  useQuery(QUERY_KEY_CONFIG_PATH, appDir, {
     staleTime: Infinity,
     cacheTime: Infinity,
   });
 export const useConfigDirMaker = (): MutationStoreResult<void, unknown, void> =>
   useMutation(async () => {
-    const configPath = await getConfigPath();
+    const configPath = await appDir();
     await createDir(configPath, { recursive: true });
   });
 

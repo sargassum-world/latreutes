@@ -1,4 +1,10 @@
 <script lang="ts">
+  import {
+    useArch,
+    usePlatform,
+    usePlatformType,
+    useVersion,
+  } from '../../shared/os';
   import { slide } from '../../shared/transitions';
 
   import { ApiStatus, useApiStatus } from '../../zerotier/client/service';
@@ -7,6 +13,10 @@
   export let version: string | undefined;
   export let authToken: string | undefined;
 
+  const platformRes = usePlatform();
+  const archRes = useArch();
+  const platformTypeRes = usePlatformType();
+  const versionRes = useVersion();
   const apiStatusRes = useApiStatus();
   $: apiStatus = $apiStatusRes.data;
   $: nodeInfoRes = useNodeInfo(authToken);
@@ -16,17 +26,18 @@
 <div class="card info-card" in:slide|local>
   <div class="content card-content">
     <h2>This Device</h2>
-    {#if apiStatus !== ApiStatus.success}
-      <p in:slide|local>
-        Latreutes Version:
-        {#if version === undefined}
-          <span class="tag is-danger">Unknown</span>
-        {:else}
-          v{version}
-        {/if}
-      </p>
-    {:else}
-      <div class="content" in:slide|local>
+    <div class="content">
+      {#if apiStatus !== ApiStatus.success}
+        <h3 class="is-size-6">Software Versions</h3>
+        <p>
+          Latreutes:
+          {#if version === undefined}
+            <span class="tag is-danger">Unknown</span>
+          {:else}
+            v{version}
+          {/if}
+        </p>
+      {:else}
         <h3 class="is-size-6">ZeroTier Address</h3>
         {#if node === undefined}
           <span class="tag is-danger">Unknown</span>
@@ -58,8 +69,21 @@
             v{version}
           {/if}
         </p>
-      </div>
-    {/if}
+      {/if}
+      <h3 class="is-size-6">OS</h3>
+      <p>
+        Platform: {$platformRes.data}
+      </p>
+      <p>
+        Type: {$platformTypeRes.data}
+      </p>
+      <p>
+        Arch: {$archRes.data}
+      </p>
+      <p>
+        Version: {$versionRes.data}
+      </p>
+    </div>
   </div>
 </div>
 

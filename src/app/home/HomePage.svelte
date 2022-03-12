@@ -31,9 +31,9 @@
     apiMissing || authTokenMissing || nodeInfoMissing || hasNoNetworks;
 </script>
 
-<main class="main-container scroller">
+<main class="main-container scroller info-card-container">
   {#if showWelcome}
-    <WelcomeInfo {nodeInfoMissing} />
+    <WelcomeInfo {authTokenMissing} {apiMissing} />
   {/if}
   {#if !hasVersion}
     <BrowserRunError />

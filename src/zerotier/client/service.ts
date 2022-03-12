@@ -1,9 +1,10 @@
-import {
+import type {
   QueryClient,
   UseQueryStoreResult,
-  useQuery,
 } from '@sveltestack/svelte-query';
-import { HttpVerb, Response, fetch } from '@tauri-apps/api/http';
+import { useQuery } from '@sveltestack/svelte-query';
+import type { HttpVerb } from '@tauri-apps/api/http';
+import { Response, fetch } from '@tauri-apps/api/http';
 
 export const QUERY_KEY_ZT = ['latreutes', 'zerotier'];
 export const SERVICE_PORT_ZT = 9993;

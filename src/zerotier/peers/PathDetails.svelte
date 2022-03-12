@@ -7,7 +7,7 @@
 
   import { useReverseResolver } from '../../shared/dns';
 
-  import { PathInfo } from '../client/peer';
+  import type { PathInfo } from '../client/peer';
 
   export let path: PathInfo;
 

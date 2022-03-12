@@ -6,10 +6,13 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import scss from 'rollup-plugin-scss';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import copy from 'rollup-plugin-copy';
 import replace from 'rollup-plugin-re';
 
 const production = !process.env.ROLLUP_WATCH;
+const buildDir = 'public/build';
 const remove_transform_animations = process.env.REMOVE_TRANSFORM_ANIMATIONS;
 if (remove_transform_animations) {
 	console.log('CSS transform animations will be removed for compatibility.\n');
@@ -38,7 +41,37 @@ function serve() {
 	};
 }
 
-export default {
+function themeGenerator(theme) {
+	return {
+		input: `src/theme-${theme}.ts`,
+		output: {
+			sourcemap: !production,
+			format: 'iife',
+			name: `appTheme_${theme}`,
+			file: `${buildDir}/theme-${theme}.js`
+		},
+		plugins: [
+			scss({
+				includePaths: [
+					'node_modules',
+					'src'
+				],
+				runtime: require('sass'),
+				output: function (styles, styleNodes) {
+					if (!existsSync(buildDir)) {
+						mkdirSync(buildDir, { recursive: true });
+					}
+					writeFileSync(`${buildDir}/theme-${theme}.css`, styles);
+				},
+			}),
+		],
+		watch: {
+			clearScreen: false
+		}
+	};
+}
+
+const bundleGenerator = {
 	input: 'src/main.ts',
 	output: {
 		sourcemap: !production,
@@ -124,3 +157,5 @@ export default {
 		clearScreen: false
 	}
 };
+
+export default [themeGenerator('light'), themeGenerator('dark'), bundleGenerator];

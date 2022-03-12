@@ -14,6 +14,7 @@
 
   const configPathRes = useConfigPath();
   $: authTokenRes = useAuthToken($configPathRes.data);
+  let authToken: string | undefined;
   $: authToken = $authTokenRes.data;
   $: nodeInfoRes = useNodeInfo(authToken);
   $: hasAuthToken =

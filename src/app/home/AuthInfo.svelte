@@ -8,7 +8,7 @@
     useAuthToken,
     invalidateAuthTokenCache,
   } from '../../shared/config';
-  import { usePlatform } from '../../shared/os';
+  import { usePlatformType } from '../../shared/os';
   import { useShellOpener, useSuCopier } from '../../shared/shell';
   import { slide } from '../../shared/transitions';
 
@@ -24,15 +24,17 @@
   const shellOpener = useShellOpener();
   const suCopier = useSuCopier(invalidateCaches);
   const queryClient = useQueryClient();
-  const platformRes = usePlatform();
+  const platformTypeRes = usePlatformType();
   const configDirMaker = useConfigDirMaker();
   const configPathRes = useConfigPath();
 
+  let configPath: string | undefined;
   $: configPath = $configPathRes.data;
+  let ztOneConfigPath: string;
   $: ztOneConfigPath =
-    $platformRes.data === undefined
+    $platformTypeRes.data === undefined
       ? ''
-      : getZtOneConfigPath($platformRes.data);
+      : getZtOneConfigPath($platformTypeRes.data);
   $: authTokenPath = `${configPath}${AUTHTOKEN_FILENAME}`;
   $: authTokenRes = useAuthToken(configPath);
   $: authTokenStatus = $authTokenRes.status;
@@ -104,7 +106,7 @@
           </button>
           and make sure you can open the copied file with a text editor.
         </p>
-        {#if $platformRes.data === 'linux'}
+        {#if $platformTypeRes.data === 'Linux'}
           <p>
             The easiest way to copy the file so that this program has the
             correct permissions to read the copied file is to run the following
@@ -118,8 +120,8 @@
             You can run that command simply by pressing "Copy File" button
             below; it should prompt you to enter your password so that it can
             read the file with administrator permissions in order to make a copy
-            of it. If it doesn&apos;t work, you&apos;ll need to manually copy
-            the files as described above and then press the "Try Again" button:
+            of it. If it doesn&apos;t work, you should run that command in a
+            terminal and then press the "Try Again" button:
           </p>
           <button class="button is-primary" on:click={copyAuthTokenFile}
             >Copy file</button

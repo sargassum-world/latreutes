@@ -8,7 +8,6 @@
   export let toggleTheme: () => void;
 
   const authenticatedMenuItems = [
-    { name: 'Home', path: '/' },
     { name: 'Networks', path: 'networks' },
     { name: 'Peers', path: 'peers' },
   ];
@@ -22,12 +21,11 @@
   }
 </script>
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
+<nav class="navbar" aria-label="main navigation">
   <div class="navbar-brand left-burger">
     <button
       class="navbar-burger"
       class:is-active={isMenuOpen}
-      role="button"
       aria-label="menu"
       aria-expanded={isMenuOpen}
       on:click={toggleMenu}
@@ -36,6 +34,16 @@
       <span aria-hidden="true" />
       <span aria-hidden="true" />
     </button>
+
+    <NavLink
+      to="/"
+      {closeMenu}
+      class="navbar-item brand-with-logo"
+      id="main-nav-brand"
+    >
+      <img class="navbar-brand-logo" src="/logo.svg" alt="Latreutes logo" />
+      Latreutes
+    </NavLink>
   </div>
   <div class="navbar-menu" class:is-active={isMenuOpen}>
     <div class="navbar-start">
@@ -46,10 +54,10 @@
       {/if}
     </div>
     <div class="navbar-end">
-      <div class="navbar-item">
+      <div class="navbar-item end-buttons">
         <div class="buttons">
           <button
-            class="button is-text"
+            class="button icon-button is-text"
             id="theme-toggle"
             on:click={toggleTheme}
           >

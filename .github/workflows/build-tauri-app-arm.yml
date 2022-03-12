@@ -1,0 +1,104 @@
+name: Build for ARM
+on: push
+
+jobs:
+  bundle:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: aarch64
+            distro: ubuntu20.04
+          # This build fails when determining the package fingerprint for the build script for
+          # src-tauri, due to inability to read that directory, due to the error described
+          # with the docker-on-tmpfs action ("Value too large for defined data type; class=Os")
+          # - arch: armv7
+          #   distro: buster
+          # This build fails when compiling tauri-cli, with error
+          # "failed to write /tmp/rustc9MBNKB/lib.rmeta: No space left on device (os error 28)"
+          # which can probably be solved by tuning the parameters on the docker-on-tmpfs action
+          # - arch: armv7
+          #   distro: bullseye
+
+    runs-on: ubuntu-latest
+    steps:
+    # This is a workaround for using Rust+Cargo on an ARMv7 QEMU image, which is currently broken:
+    # https://github.com/docker/buildx/issues/395
+    # https://github.com/rust-lang/cargo/issues/8719
+    # https://github.com/JonasAlfredsson/docker-nginx-certbot/issues/109
+    # https://users.rust-lang.org/t/rust-docker-image-broken-on-architecture-linux-arm-v7/54868/2
+    - name: Run Docker on tmpfs
+      uses: JonasAlfredsson/docker-on-tmpfs@v1.0.1
+      if: matrix.arch == 'armv7'
+      with:
+        tmpfs_size: 5
+    - uses: actions/checkout@v2
+    - name: Run the release build
+      uses: uraimo/run-on-arch-action@v2.1.1
+      with:
+        arch: ${{ matrix.arch }}
+        distro: ${{ matrix.distro }}
+        githubToken: ${{ github.token }}
+        dockerRunArgs: |
+          -v "${{ github.workspace }}:${{ github.workspace }}"
+        env: |
+          artifact_name: latreutes-${{ matrix.distro }}_${{ matrix.arch }}
+        shell: /bin/bash
+        install: |
+          echo "Update system"
+          apt-get update
+          echo "Install dependencies"
+          apt-get install -y webkit2gtk-4.0 libwebkit2gtk-4.0-dev build-essential curl wget libssl-dev libgtk-3-dev patchelf librsvg2-dev
+          if [[ ${{ matrix.distro }} == "bullseye" ]]; then
+            apt-get install -y libayatana-appindicator3-dev;
+          else
+            apt-get install -y libappindicator3-dev;
+          fi
+          echo "Install NVM"
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          echo "Install Node.js"
+          nvm install lts/erbium --latest-npm
+          nvm use node
+          echo "Install Yarn"
+          npm install --global yarn
+          echo "Install Rust"
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          source "${HOME}/.cargo/env"
+          rustup self update
+          rustup update
+          rustc --version
+          echo "Install Tauri"
+          cargo install tauri-cli --version 1.0.0-rc.7
+          # Report disk usage
+          echo "Disk usage"
+          df -h
+        run: |
+          cd ${{ github.workspace }}
+          source "${HOME}/.cargo/env"
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use node
+          echo "Install app dependencies"
+          # Make optipng build, refer to https://github.com/WebThingsIO/gateway-deb/issues/2
+          # and https://github.com/imagemin/optipng-bin/issues/97
+          export CPPFLAGS="-DPNG_ARM_NEON_OPT=0"
+          yarn
+          cargo tauri info
+          echo "Run bundle build"
+          # Tauri's appimage.sh is still hardcoded to build AppImages against x86_64, so we can't
+          # build AppImage bundles for ARM.
+          # We disable CSS transformation animations because they freeze the webview for some reason
+          REMOVE_TRANSFORM_ANIMATIONS=1 cargo tauri build --bundles deb
+          # Report disk usage
+          echo "Disk usage"
+          df -h
+    - name: Upload the build artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: latreutes-bundle-${{ matrix.arch }}-${{ matrix.distro }}
+        path: |
+          src-tauri/target/release/bundle/*
+          !src-tauri/target/release/bundle/appimage/latreutes.AppDir/
+          src-tauri/target/release/latreutes*

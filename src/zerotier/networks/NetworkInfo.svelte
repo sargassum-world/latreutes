@@ -4,7 +4,8 @@
   import Icon from 'mdi-svelte';
   import { mdiChevronDown } from '@mdi/js';
 
-  import { Status, Type, prefetchNetworkInfo } from '../client/network';
+  import type { Status, Type } from '../client/network';
+  import { prefetchNetworkInfo } from '../client/network';
 
   import NetworkName from './NetworkName.svelte';
   import StatusTags from './StatusTags.svelte';
@@ -31,7 +32,7 @@
 </script>
 
 <header class="panel-heading">
-  <h2 class="network-name"><NetworkName {id} {name} /></h2>
+  <h2 class="entity-name"><NetworkName {id} {name} /></h2>
   <div class="tags">
     <StatusTags {status} {type} {bridge} {portError} />
   </div>
@@ -71,11 +72,3 @@
     {/if}
   </AccordionItem>
 </Accordion>
-
-<style>
-  .network-name {
-    font-weight: normal;
-    margin-bottom: 0.25em;
-    display: inline-flex;
-  }
-</style>
