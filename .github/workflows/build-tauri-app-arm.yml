@@ -9,10 +9,16 @@ jobs:
         include:
           - arch: aarch64
             distro: ubuntu20.04
-          - arch: armv7
-            distro: buster
-          - arch: armv7
-            distro: bullseye
+          # This build fails when determining the package fingerprint for the build script for
+          # src-tauri, due to inability to read that directory, due to the error described
+          # with the docker-on-tmpfs action ("Value too large for defined data type; class=Os")
+          # - arch: armv7
+          #   distro: buster
+          # This build fails when compiling tauri-cli, with error
+          # "failed to write /tmp/rustc9MBNKB/lib.rmeta: No space left on device (os error 28)"
+          # which can probably be solved by tuning the parameters on the docker-on-tmpfs action
+          # - arch: armv7
+          #   distro: bullseye
 
     runs-on: ubuntu-latest
     steps:
