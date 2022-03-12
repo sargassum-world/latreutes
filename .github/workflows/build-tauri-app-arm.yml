@@ -68,8 +68,6 @@ jobs:
           # Report disk usage
           echo "Disk usage"
           df -h
-          echo
-          free -h
         run: |
           cd ${{ github.workspace }}
           source "${HOME}/.cargo/env"
@@ -83,9 +81,10 @@ jobs:
           yarn
           cargo tauri info
           echo "Run bundle build"
-          # Tauri's appimage.sh works on ARMv7 but not ARM64 for some reason
+          # Tauri's appimage.sh is still hardcoded to build AppImages against x86_64, so we can't
+          # build AppImage bundles for ARM.
           # We disable CSS transformation animations because they freeze the webview for some reason
-          REMOVE_TRANSFORM_ANIMATIONS=1 cargo tauri build --verbose
+          REMOVE_TRANSFORM_ANIMATIONS=1 cargo tauri build --bundles deb
           # Report disk usage
           echo "Disk usage"
           df -h
